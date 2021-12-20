@@ -21,7 +21,7 @@ Some notable CHIP-8 specifications:
 - 16 input keys
 
 ## Disassembler
-The CHIP-8 disassembler is a small utility meant to take a binary CHIP-8 ROM file as input and print out the corresponding CHIP-8 assembly language of the file. The disassembled code is very basic and is less human-readable than written assembly (no functions, comments, etc).
+The CHIP-8 disassembler is a small utility meant to take a binary CHIP-8 ROM file as input and print out the corresponding CHIP-8 assembly language of the file. The disassembled code is very basic and is less human-readable than written assembly (no functions, comments, etc). Not all operations are implemented yet, so there will be blank lines in the output.
 
 ### Compiling
 There is a Makefile included with the project that assumes use of `gcc` on Windows. For Unix compatibility:
