@@ -1,3 +1,9 @@
+# Text editor files
 .vscode
-bin/
+
+# Test roms
 rom/
+
+# Build-related files
+bin/
+*.o
