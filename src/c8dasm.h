@@ -3,32 +3,34 @@
 
 #include <stdint.h>
 
-int pc;
-int buffer_size;
+typedef struct StateDisassembler {
+    uint16_t pc;
+    uint16_t buffer_size;
+    uint8_t* buffer;
+} StateDisassembler;
 
 /**
- * @brief Disassembles the instruction at the location and prints it out.
+ * @brief Disassembles the instruction at the program counter and moves to the next instruction.
  * 
- * @param buffer Memory buffer with binary instructions.
- * @param location Pointer to the instruction in the memory buffer.
+ * @param state The disassembler state.
  */
-void disassemble_instruction(uint8_t* buffer, uint16_t offset);
+void disassemble_instruction(StateDisassembler* state);
 
 /**
- * @brief Disassembles all binary instructions in a buffer and prints them out.
+ * @brief Disassembles a program stored in a StateDisassembler.
  * 
- * @param buffer Memory buffer with binary instructions.
+ * @param state The disassembler state.
  * 
  */
-void disassemble_buffer(uint8_t* buffer);
+void disassemble_program(StateDisassembler* state);
 
 /**
- * @brief Loads a binary file into a memory buffer.
+ * @brief Loads a binary file into a StateDisassembler.
  * 
+ * @param state The disassembler state.
  * @param file_name Name of the file.
- * @return uint16_t* Pointer to memory buffer.
  */
-uint8_t* load_file_into_buffer(char* file_name);
+void load_file_into_state(StateDisassembler* state, char* file_name);
 
 /**
  * @brief Main function for disassembler.

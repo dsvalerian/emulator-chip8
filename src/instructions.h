@@ -3,23 +3,18 @@
 
 #include <stdio.h>
 
-typedef struct instruction {
+typedef struct Instruction {
     char* opcode;
     char* disassembly;
     void* func;
-} instruction;
+} Instruction;
 
-const struct instruction instructions[35] = {
-    /*
-    address string = "$%04x"
-    immediate string = #%u"
-    register string = "V%u"
-    */
-    {"0nnn", "SYS   $%04x", NULL},         // SYS  addr
+const struct Instruction instructions[35] = {
+    {"0nnn", "SYS   $%04x", NULL},          // SYS  addr
     {"00E0", "CLS", NULL},                  // CLS
     {"00EE", "RET", NULL},                  // RET
-    {"1nnn", "JP    $%04x", NULL},         // JP   addr
-    {"2nnn", "CALL  $%04x", NULL},         // CALL addr
+    {"1nnn", "JP    $%04x", NULL},          // JP   addr
+    {"2nnn", "CALL  $%04x", NULL},          // CALL addr
     {"3xkk", "SE    V%u, #%u", NULL},       // SE   Vx, byte
     {"4xkk", "SNE   V%u, #%u", NULL},       // SNE  Vx, byte
     {"5xy0", "SE    V%u, V%u", NULL},       // SE   Vx, Vy
@@ -35,8 +30,8 @@ const struct instruction instructions[35] = {
     {"8xy7", "SUBN  V%u, V%u", NULL},       // SUBN Vx, Vy
     {"8xyE", "SHL   V%u", NULL},            // SHL  Vx
     {"9xy0", "SNE   V%u, V%u", NULL},       // SNE  Vx, Vy
-    {"Annn", "LD    I, $%04x", NULL},      // LD   I, addr
-    {"Bnnn", "JP    V0, $%04x", NULL},     // JP   V0, addr
+    {"Annn", "LD    I, $%04x", NULL},       // LD   I, addr
+    {"Bnnn", "JP    V0, $%04x", NULL},      // JP   V0, addr
     {"Cxkk", "RND   V%u, #%u", NULL},       // RND  Vx, byte
     {"Dxyn", "DRW   V%u, V%u, #%u", NULL},  // DRW  Vx, Vy, nibble
     {"Ex9E", "SKP   V%u", NULL},            // SKP  Vx

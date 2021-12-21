@@ -5,38 +5,44 @@
 #include "chip8.h"
 #include "instructions.h"
 
-void print_opcode(uint16_t opcode) {
-    printf("%02x %02x", (opcode & 0xff00) >> 8, opcode & 0xff);
+uint16_t get_opcode(StateDisassembler* state) {
+    uint8_t* opbytes = &(state->buffer[state->pc]);
+    uint16_t opcode;
+
+    // If there's enough data in the buffer, get two bytes. Otherwise, just one.
+    if (state->pc == state->buffer_size - 1) {
+        opcode = (uint16_t)opbytes[0] << 8;
+    }
+    else {
+        opcode = (uint16_t)opbytes[0] << 8 | (uint16_t)opbytes[1];
+    }
+
+    return opcode;
 }
 
-void print_pc() {
-    printf("0x%04x", pc);
+void print_metadata(StateDisassembler* state) {
+    uint16_t opcode = get_opcode(state);
+    printf("0x%04x  %02x %02x", state->pc, (opcode & 0xff00) >> 8, opcode & 0xff);
 }
 
 void error_unrecognized_opcode(uint16_t opcode) {
-    printf("Error: Unrecognized OPCODE ");
-    print_opcode(opcode);
+    printf("Error: Unrecognized OPCODE 0x%04x", opcode);
 }
 
-void disassemble_instruction(uint8_t* buffer, uint16_t offset) {
-    uint16_t opcode = (uint16_t)*(buffer + offset) << 8 | (uint16_t)*(buffer + offset + 1);
+void disassemble_instruction(StateDisassembler* state) {
+    uint16_t opcode = get_opcode(state);
 
-    if (pc == buffer_size - 1) {
-        opcode &= 0xff00;
-    }
-
-    // Potential values
+    // Values that may potentially be printed, depending on the instruction.
     uint16_t nnn = opcode & 0xfff;
     uint8_t kk = opcode & 0xff;
     uint8_t n = opcode & 0xf;
     uint8_t x = (opcode & 0xf00) >> 8;
     uint8_t y = (opcode & 0xf0) >> 4;
 
-    print_pc();
-    printf(" ");
-    print_opcode(opcode);
-    printf("    ");
+    print_metadata(state);
+    printf("  ");
 
+    // Main switch statement, handles every CHIP-8 instruction.
     switch(opcode & 0xf000) {
         case 0x0000:
             switch (opcode & 0x0fff) {
@@ -98,15 +104,16 @@ void disassemble_instruction(uint8_t* buffer, uint16_t offset) {
     printf("\n");
 }
 
-void disassemble_buffer(uint8_t* buffer) {
-    pc = PC_START;
-    while(pc < buffer_size) {
-        disassemble_instruction(buffer, pc);
-        pc += PC_STEP_SIZE;
+void disassemble_program(StateDisassembler* state) {
+    state->pc = PC_START;
+
+    while(state->pc < state->buffer_size) {
+        disassemble_next_instruction(state);
+        state->pc += PC_STEP_SIZE;
     }
 }
 
-uint8_t* load_file_into_buffer(char* file_name) {
+void load_file_into_buffer(StateDisassembler* state, char* file_name) {
     FILE* rom_file = fopen(file_name, "r");
 
     if (rom_file == NULL) {
@@ -118,13 +125,11 @@ uint8_t* load_file_into_buffer(char* file_name) {
     int file_size = ftell(rom_file);
     fseek(rom_file, 0L, SEEK_SET);
 
-    buffer_size = file_size + PC_START;
+    state->buffer_size = file_size + PC_START;
 
-    uint8_t* buffer = malloc(buffer_size);
-    fread(buffer + PC_START, buffer_size, 1, rom_file);
+    state->buffer = malloc(state->buffer_size);
+    fread(state->buffer + PC_START, state->buffer_size, 1, rom_file);
     fclose(rom_file);
-
-    return buffer;
 }
 
 int main(int argc, char** argv) {
@@ -134,9 +139,11 @@ int main(int argc, char** argv) {
         exit(1);
     }  
 
+    StateDisassembler* state = malloc(sizeof(StateDisassembler));
+
     // Read through the file and disassemble every operation.
-    uint8_t* buffer = load_file_into_buffer(argv[1]);  
-    disassemble_buffer(buffer);
+    load_file_into_buffer(state, argv[1]);  
+    disassemble_program(state);
 
     return 0;
 }
