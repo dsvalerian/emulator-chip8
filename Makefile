@@ -4,13 +4,13 @@ CC = gcc
 SRC = src
 BIN = bin
 
-DIS_H_FILES = disassembler.h chip8.h
-DIS_C_FILES = disassembler.c
-DIS_O_FILES = disassembler.o
+DASM_H_FILES = c8dasm.h chip8.h instructions.h
+DASM_C_FILES = c8dasm.c
+DASM_O_FILES = c8dasm.o
 
-DIS_H_PATHS = $(addprefix $(SRC)\\,$(DIS_H_FILES))
-DIS_C_PATHS = $(addprefix $(SRC)\\,$(DIS_C_FILES))
-DIS_O_PATHS = $(addprefix $(SRC)\\,$(DIS_O_FILES))
+DASM_H_PATHS = $(addprefix $(SRC)\\,$(DASM_H_FILES))
+DASM_C_PATHS = $(addprefix $(SRC)\\,$(DASM_C_FILES))
+DASM_O_PATHS = $(addprefix $(SRC)\\,$(DASM_O_FILES))
 
 EMU_H_FILES = chip8.h
 EMU_C_FILES = emulator.c
@@ -20,14 +20,14 @@ EMU_H_PATHS = $(addprefix $(SRC)\\,$(EMU_H_FILES))
 EMU_C_PATHS = $(addprefix $(SRC)\\,$(EMU_C_FILES))
 EMU_O_PATHS = $(addprefix $(SRC)\\,$(EMU_O_FILES))
 
-DIS_OUT = $(BIN)\disassembler.exe
+DASM_OUT = $(BIN)\dasm.exe
 EMU_OUT = $(BIN)\emulator.exe
 
 # ---------------------------------------------------
 
-dis: $(DIS_OUT)
+dasm: $(DASM_OUT)
 
-$(DIS_OUT): $(DIS_O_PATHS) $(DIS_H_PATHS)
+$(DASM_OUT): $(DASM_O_PATHS) $(DASM_H_PATHS)
 	$(CC) -o $@ $^
 
 emu: $(EMU_OUT)
@@ -35,11 +35,8 @@ emu: $(EMU_OUT)
 $(EMU_OUT): $(EMU_O_PATHS)
 	$(CC) -o $@ $^
 
-#$(EMU_O_PATHS): $(EMU_C_PATHS) $(EMU_H_PATHS)#
-#	$(CC) -o $@ $^
-
 clean:
 	del $(EMU_O_PATHS)
-	del $(DIS_O_PATHS)
+	del $(DASM_O_PATHS)
 	del $(EMU_OUT)
-	del $(DIS_OUT)
+	del $(DASM_OUT)

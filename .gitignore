@@ -4,6 +4,9 @@
 # Test roms
 rom/
 
+# Temp directories
+out/
+
 # Build-related files
 bin/
 *.o
