@@ -30,6 +30,82 @@ void error_unrecognized_opcode(uint16_t opcode) {
     printf("Error: Unrecognized OPCODE 0x%04x", opcode);
 }
 
+void pre_process_program(StateDisassembler* state, uint8_t* labels) {
+    state->pc = PC_START;
+
+    // Map used to mark any PC addresses that are valid code
+    uint8_t* codemap = calloc(state->buffer_size, 1);
+
+    // Queue for keeping track of code segments
+    Queue* segments = queue_new();
+    queue_push(segments, state->pc);
+
+    // While there are segments to be processed
+    while (!queue_empty(segments)) {
+        state->pc = queue_pop(segments);
+
+        // Walking through this current segment of the code
+        while (state->pc < state->buffer_size && !codemap[state->pc]) {
+            // Marking this address as actual code
+            codemap[state->pc] = 1;
+
+            // Get the current opcode
+            uint16_t opcode = get_opcode(state);
+
+            // Move to the next op
+            state->pc += PC_STEP_SIZE;
+
+            // Check the current opcode
+            switch (opcode & 0xf000) {
+                // Jumping to an address so we mark the label
+                case 0x1000:        // JP addr
+                    state->pc = opcode & 0xfff;
+                    labels[state->pc] = 1;
+                    break;
+
+                // Jumping to a new segment so we save it and mark the label
+                case 0x2000:        // CALL addr
+                    queue_push(segments, state->pc);
+                    state->pc = opcode & 0xfff;
+                    labels[state->pc] = 1;
+                    break;
+                
+                // Skipping so we save the next segment
+                case 0x3000:        // SE    Vx, byte
+                case 0x4000:        // SNE   Vx, byte
+                case 0x5000:        // SE    Vx, Vy
+                case 0x9000:        // SNE   Vx, Vy
+                    queue_push(segments, state->pc + 2);
+                    break;
+                case 0xe000:
+                    switch (opcode & 0x00ff) {
+                        case 0x9E:  // SKP   Vx
+                        case 0xa1:  // SKNP  Vy
+                            queue_push(segments, state->pc + 2);
+                            break;
+                    }
+                    break;
+
+                // Mark the address for the I register as a label
+                case 0xa000:        // LD    I, addr
+                    labels[state->pc & 0xfff] = 1;
+                    break;
+
+                // V0 could contain anything, we won't know until runtime. So we can't disassemble.
+                case 0xb000:        // JP    V0, addr
+                    printf("Error: Encountered \'");
+                    printf(instructions[21].disassembly, (state->pc - 2) & 0xfff);
+                    printf("\' instruction at 0x%04x.\n", state->pc - 2);
+                    printf("Cannot proceed with disassembly.\n");
+                    break;
+            }
+        }
+    }
+
+    free(codemap);
+    queue_delete(&segments);
+}
+
 void disassemble_instruction(StateDisassembler* state) {
     uint16_t opcode = get_opcode(state);
 
@@ -40,11 +116,11 @@ void disassemble_instruction(StateDisassembler* state) {
     uint8_t x = (opcode & 0xf00) >> 8;
     uint8_t y = (opcode & 0xf0) >> 4;
 
-    print_metadata(state);
-    printf("  ");
+    //print_metadata(state);
+    //printf("  ");
 
     // Main switch statement, handles every CHIP-8 instruction.
-    switch(opcode & 0xf000) {
+    switch (opcode & 0xf000) {
         case 0x0000:
             switch (opcode & 0x0fff) {
                 case 0x0e0: printf(instructions[1].disassembly); break;         // 00E0
@@ -142,11 +218,17 @@ int main(int argc, char** argv) {
 
     StateDisassembler* state = malloc(sizeof(StateDisassembler));
 
-    // Read through the file and disassemble every operation.
-    load_file_into_buffer(state, argv[1]);  
+    load_file_into_buffer(state, argv[1]);
+
+    // Preprocess the program
+    uint8_t* labels = calloc(state->buffer_size, 1);
+    pre_process_program(state, labels);
+
+    // Final disassemble
     disassemble_program(state);
 
     // Clean up memory
+    free(labels);
     free(state->buffer);
     free(state);
 

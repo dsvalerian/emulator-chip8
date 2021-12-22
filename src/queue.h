@@ -42,7 +42,15 @@ uint16_t queue_pop(Queue* queue);
  * @param value The value to check for.
  * @return int 1 if the queue contains the value, 0 otherwise.
  */
-int queue_contains(Queue* queue, uint16_t value);
+//int queue_contains(Queue* queue, uint16_t value);
+
+/**
+ * @brief Checks if a queue is empty.
+ * 
+ * @param queue The queue to check.
+ * @return int 1 if the queue is empty, 0 otherwise.
+ */
+int queue_empty(Queue* queue);
 
 /**
  * @brief Deletes a queue by freeing all of its allocated memory and setting it's pointer to NULL.

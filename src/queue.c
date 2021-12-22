@@ -49,6 +49,7 @@ uint16_t queue_pop(Queue* queue) {
     return retval;
 }
 
+/*
 int queue_contains(Queue* queue, uint16_t value) {
     if (queue == NULL) {
         return 0;
@@ -65,6 +66,15 @@ int queue_contains(Queue* queue, uint16_t value) {
     }
 
     return 0;
+}
+*/
+
+int queue_empty(Queue* queue) {
+    if (queue == NULL) {
+        return 1;
+    }
+
+    return queue->head == NULL;
 }
 
 void queue_delete(Queue** queue) {
