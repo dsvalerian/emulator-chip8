@@ -5,7 +5,7 @@
 rom/
 
 # Temp directories
-out/
+log/
 
 # Build-related files
 bin/

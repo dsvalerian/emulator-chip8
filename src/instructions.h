@@ -3,13 +3,21 @@
 
 #include <stdio.h>
 
+/**
+ * @brief Holds data about a CHIP-8 instruction.
+ * 
+ */
 typedef struct Instruction {
     char* opcode;
     char* disassembly;
     void* func;
 } Instruction;
 
-const struct Instruction instructions[35] = {
+/**
+ * @brief All of handled CHIP-8 instructions.
+ * 
+ */
+static Instruction instructions[35] = {
     {"0nnn", "SYS   $%04x", NULL},          // SYS  addr
     {"00E0", "CLS", NULL},                  // CLS
     {"00EE", "RET", NULL},                  // RET

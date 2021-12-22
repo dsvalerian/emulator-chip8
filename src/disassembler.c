@@ -1,9 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "c8dasm.h"
+#include "disassembler.h"
 #include "chip8.h"
 #include "instructions.h"
+#include "queue.h"
 
 uint16_t get_opcode(StateDisassembler* state) {
     uint8_t* opbytes = &(state->buffer[state->pc]);
@@ -108,7 +109,7 @@ void disassemble_program(StateDisassembler* state) {
     state->pc = PC_START;
 
     while(state->pc < state->buffer_size) {
-        disassemble_next_instruction(state);
+        disassemble_instruction(state);
         state->pc += PC_STEP_SIZE;
     }
 }
@@ -144,6 +145,10 @@ int main(int argc, char** argv) {
     // Read through the file and disassemble every operation.
     load_file_into_buffer(state, argv[1]);  
     disassemble_program(state);
+
+    // Clean up memory
+    free(state->buffer);
+    free(state);
 
     return 0;
 }

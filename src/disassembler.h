@@ -1,5 +1,5 @@
-#ifndef C8DASM
-#define C8DASM
+#ifndef DISASSEMBLER
+#define DISASSEMBLER
 
 #include <stdint.h>
 
