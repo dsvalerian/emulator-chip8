@@ -50,13 +50,13 @@ void drw(StateChip8* state, uint8_t x, uint8_t y, uint8_t n) {
 
         // Store bits big-endian
         uint8_t bits[8];
-        bits[0] = byte & 0b10000000;
-        bits[1] = byte & 0b1000000;
-        bits[2] = byte & 0b100000;
-        bits[3] = byte & 0b10000;
-        bits[4] = byte & 0b1000;
-        bits[5] = byte & 0b100;
-        bits[6] = byte & 0b10;
+        bits[0] = (byte & 0b10000000) >> 7;
+        bits[1] = (byte & 0b1000000) >> 6;
+        bits[2] = (byte & 0b100000) >> 5;
+        bits[3] = (byte & 0b10000) >> 4;
+        bits[4] = (byte & 0b1000) >> 3;
+        bits[5] = (byte & 0b100) >> 2;
+        bits[6] = (byte & 0b10) >> 1;
         bits[7] = byte & 0b1;
 
         // Read through each bit and XOR a pixel in the display
