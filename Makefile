@@ -38,6 +38,3 @@ $(BUILD)/%.o: $(SRC)/%.c
 
 clean:
 	rm $(BUILD)/*.o $(BIN)/*
-
-help:
-	echo $(EMU_OBJ_PATHS)
