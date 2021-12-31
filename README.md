@@ -29,7 +29,7 @@ There is a Makefile included with the project. Simply run `make disassembler` in
 ### Usage
 The disassembler requires a CHIP-8 ROM file as input. Once you have obtained a ROM file and compiled the disassembler into an executable, simply run `./bin/disassembler.exe <path_to_rom_file>` in the root directory.
 
-Below is a small section of output disassembly of the free public domain game Flight Runner, which can be found [here](https://johnearnest.github.io/chip8Archive/).
+Below is a small section of output disassembly of a free public domain CHIP-8 game Flight Runner, which can be found [here](https://johnearnest.github.io/chip8Archive/).
 
 ```
 $ ./bin/disassembler.exe rom/flightrunner.ch8
