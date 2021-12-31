@@ -10,4 +10,4 @@ log/*
 
 # Build-related files
 bin/*
-*.o
+build/*

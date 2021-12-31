@@ -48,7 +48,7 @@ void state_disassembler_delete(StateDisassembler** state) {
     *state = NULL;
 }
 
-void load_file_into_buffer(StateDisassembler* state, char* file_name) {
+void load_file_into_state_disassembler(StateDisassembler* state, char* file_name) {
     FILE* rom_file = fopen(file_name, "r");
 
     if (rom_file == NULL) {
@@ -310,7 +310,7 @@ int main(int argc, char** argv) {
     
     /* ------ Initialize state and file buffer ------ */
     StateDisassembler* state = state_disassembler_new();
-    load_file_into_buffer(state, argv[1]);
+    load_file_into_state_disassembler(state, argv[1]);
 
     /* ------ Preprocess the program (looking for labels and code) ------ */
     Queue* segments = queue_new();

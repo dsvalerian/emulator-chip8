@@ -31,7 +31,7 @@ void state_disassembler_delete(StateDisassembler** state);
  * @param state The disassembler state.
  * @param file_name Name of the file.
  */
-void load_file_into_state(StateDisassembler* state, char* file_name);
+void load_file_into_state_disassembler(StateDisassembler* state, char* file_name);
 
 /**
  * @brief Pre processes a program to construct labels and code segments. Without this step,
