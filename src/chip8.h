@@ -18,7 +18,8 @@ typedef struct StateChip8 {
 
     // Memory
     uint16_t pc;                    // 12-bit program counter       (address)
-    uint16_t* sp;                   // 16-bit stack                 (addresses)
+    uint16_t stack[STACK_SIZE];     // 16-bit stack                 (addresses)
+    uint8_t sp;                     // Current stack index          (integer 0-16)
     uint8_t* memory;                // 8-bit memory space, 4kb      (bytes)
 
     // Other

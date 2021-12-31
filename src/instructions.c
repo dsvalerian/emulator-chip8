@@ -7,8 +7,8 @@ void jp(StateChip8* state, uint16_t addr) {
 }
 
 void call(StateChip8* state, uint16_t addr) {
-    (state->sp) += 1;
-    *(state->sp) = state->pc;
+    state->stack[state->sp] = state->pc;
+    (state->sp)++;
     state->pc = addr - PC_STEP_SIZE;
 }
 
