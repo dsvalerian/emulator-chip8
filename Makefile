@@ -1,6 +1,6 @@
 # Compiler to be used
 CC=gcc
-CFLAGS=-Wall
+CFLAGS=
 
 # Directories
 SRC=src
@@ -8,7 +8,7 @@ BUILD=build
 BIN=bin
 
 # Object files
-DASM_OBJS=disassembler.o queue.o 
+DASM_OBJS=disassembler.o chip8.o instructions.o queue.o 
 EMU_OBJS=emulator.o chip8.o instructions.o
 
 # Full object paths
