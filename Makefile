@@ -17,7 +17,7 @@ DASM_TARGET=$(BIN)/disassembler.exe
 
 # --------------------------------------------------
 
-dasm: $(DASM_TARGET)
+disassembler: $(DASM_TARGET)
 
 $(DASM_TARGET): $(DASM_OBJ_PATHS)
 	$(CC) $(CFLAGS) $^ -o $@

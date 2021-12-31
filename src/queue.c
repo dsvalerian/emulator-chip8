@@ -49,26 +49,6 @@ uint16_t queue_pop(Queue* queue) {
     return retval;
 }
 
-/*
-int queue_contains(Queue* queue, uint16_t value) {
-    if (queue == NULL) {
-        return 0;
-    }
-
-    Node* current_node = queue->head;
-
-    while (current_node != NULL) {
-        if (current_node->value == value) {
-            return 1;
-        }
-
-        current_node = current_node->next;
-    }
-
-    return 0;
-}
-*/
-
 int queue_empty(Queue* queue) {
     if (queue == NULL) {
         return 1;

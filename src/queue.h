@@ -36,15 +36,6 @@ void queue_push(Queue* queue, uint16_t value);
 uint16_t queue_pop(Queue* queue);
 
 /**
- * @brief Checks if a queue contains a value. O(n) complexity.
- * 
- * @param queue The queue to check.
- * @param value The value to check for.
- * @return int 1 if the queue contains the value, 0 otherwise.
- */
-//int queue_contains(Queue* queue, uint16_t value);
-
-/**
  * @brief Checks if a queue is empty.
  * 
  * @param queue The queue to check.
