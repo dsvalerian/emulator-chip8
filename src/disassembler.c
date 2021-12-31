@@ -130,7 +130,7 @@ void pre_process_program(StateDisassembler* state, Queue* segments, uint8_t* cod
     }
 }
 
-void disassemble_instruction(StateDisassembler* state, uint8_t* labels) {
+void disassemble_instruction(StateDisassembler* state, uint8_t* labels, char lazy) {
     uint16_t opcode = get_opcode(state);
 
     // Values that may potentially be printed, depending on the instruction.
@@ -150,14 +150,14 @@ void disassemble_instruction(StateDisassembler* state, uint8_t* labels) {
             }
             break;
         case 0x1000:                                                            // 1nnn
-            if (labels != NULL && labels[nnn])
-                printf("JP    L%03x", nnn);
+            if (lazy)
+                printf(instructions[3].lazy_disassembly, nnn);
             else
                 printf(instructions[3].disassembly, nnn); 
             break;       
         case 0x2000:                                                            // 2nnn
-            if (labels != NULL && labels[nnn])
-                printf("CALL  L%03x", nnn);
+            if (lazy)
+                printf(instructions[4].lazy_disassembly, nnn);
             else
                 printf(instructions[4].disassembly, nnn); 
             break;  
@@ -222,7 +222,7 @@ void disassemble_program(StateDisassembler* state, uint8_t* codemap, uint8_t* la
     /* ------------- If pre-process was skipped, then do a lazy disassemble and exit. */
     if (codemap == NULL || labels == NULL) {
         while(state->pc < state->buffer_size) {
-            disassemble_instruction(state, NULL);
+            disassemble_instruction(state, NULL, 1);
             state->pc += PC_STEP_SIZE;
         }
 
@@ -260,7 +260,7 @@ void disassemble_program(StateDisassembler* state, uint8_t* codemap, uint8_t* la
 
             // Disassemble/print the instructions
             printf("\n    ");
-            disassemble_instruction(state, labels);
+            disassemble_instruction(state, labels, 0);
 
             db_flag = 0;
             db_line_count = 0;

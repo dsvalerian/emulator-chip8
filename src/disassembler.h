@@ -46,7 +46,8 @@ void pre_process_program(StateDisassembler* state, Queue* segments, uint8_t* cod
     uint8_t* labels);
 
 /**
- * @brief Disassembles a program stored in a StateDisassembler.
+ * @brief Disassembles a program stored in a StateDisassembler. If codemap or labels is NULL,
+ *     will do a lazy disassemble without checking for code labels or segments.
  * 
  * @param state The disassembler state.
  * @param codemap A buffer filled with valid code addresses from the pre-processor.
