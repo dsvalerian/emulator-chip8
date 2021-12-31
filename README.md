@@ -29,5 +29,42 @@ There is a Makefile included with the project. Simply run `make disassembler` in
 ### Usage
 The disassembler requires a CHIP-8 ROM file as input. Once you have obtained a ROM file and compiled the disassembler into an executable, simply run `./bin/disassembler.exe <path_to_rom_file>` in the root directory.
 
+### Example
+Below is a small section of output disassembly of the free public domain game Flight Runner, which can be found [here](https://johnearnest.github.io/chip8Archive/).
+
+```
+$ ./bin/disassembler.exe rom/flightrunner.ch8
+;------------------------
+; ROM Size: 295 Bytes
+;------------------------
+    JP    L319
+    DB    #f0, #f0, #18, #f0
+          #ff, #44, #aa, #aa
+          #aa, #44, #cd, #a9
+          #c5, #84, #8d
+; Decoded Text: ≡≡↑≡ D¬¬¬D═⌐┼äì
+L211:
+    LD    V12, #40
+    LD    V11, #03
+    LD    V10, #1c
+    LD    V9, V11
+    LD    V8, V10
+    LD    V14, #04
+    LD    V13, #0e
+    LD    V0, #00
+    LD    V1, V11
+    LD    V2, V10
+    LD    I, $206
+L227:
+    DRW   V0, V1, #01
+    DRW   V0, V2, #01
+    ADD   V0, #08
+    SE    V0, #40
+    JP    L227
+    LD    I, $203
+    DRW   V14, V13, #03
+    RET
+```
+
 ## Emulator
 The CHIP-8 emulator is a utility meant to take a binary CHIP-8 ROM file as input and emulate the program as closely to the CHIP-8 as possible. At the moment, none of it is implemented.
