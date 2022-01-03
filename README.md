@@ -1,4 +1,6 @@
 # emulator-chip8
+**v0.1.1**
+
 A basic CHIP-8 disassembler and emulator written in C.
 
 ### Sections:
