@@ -4,8 +4,9 @@
 #include <stdio.h>
 
 #include "chip8.h"
+#include "screen.h"
 
-void emulate_program(StateChip8* state);
+void emulate_program(StateChip8* state, Screen* screen);
 void load_file_into_state(StateChip8* state, char* filename);
 
 void error_file_not_provided();

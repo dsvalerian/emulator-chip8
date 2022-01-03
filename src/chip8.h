@@ -1,8 +1,6 @@
 #ifndef CHIP8
 #define CHIP8
 
-#include <stdint.h>
-
 #define NUM_REGISTERS 16
 #define STACK_SIZE 16
 
@@ -12,6 +10,8 @@
 
 #define DISPLAY_WIDTH 64
 #define DISPLAY_HEIGHT 32
+
+#include <stdint.h>
 
 typedef struct StateChip8 {
     uint8_t v[NUM_REGISTERS];   // 8-bit Vx registers           (bytes)

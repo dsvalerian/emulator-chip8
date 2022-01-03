@@ -1,8 +1,9 @@
+#define SDL_MAIN_HANDLED
+
 #include <stdio.h>
 #include <stdlib.h>
 
 #include "emulator.h"
-#include "chip8.h"
 #include "instructions.h"
 
 uint16_t get_opcode(StateChip8* state) {
@@ -150,21 +151,32 @@ void emulate_instruction(StateChip8* state) {
     }
 }
 
-void emulate_program(StateChip8* state) {
+void emulate_program(StateChip8* state, Screen* screen) {
     state->pc = PC_START;
-    print_state(state);
 
+    // TODO delete this for full emulation
     unsigned int instruction_count = 0;
 
     while (state->pc < state->program_size + PC_START) {
-        emulate_instruction(state);
-        state->pc += 2;
-        print_state(state);
-
-        instruction_count++;
-        if (instruction_count >= 50000) {
+        // TODO delete this for full emulation
+        if (instruction_count >= 1000) {
             break;
         }
+        //if (instruction_count % 1000 == 0) {
+            printf("Frame %u\n", instruction_count);
+        //}
+
+        prepare_scene(screen);
+
+        emulate_instruction(state);
+        state->pc += 2;
+
+        present_scene(screen);
+
+        SDL_Delay(17);
+
+        // TODO Delete this for full emulation
+        instruction_count++;
     }
 }
 
@@ -205,13 +217,15 @@ int main(int argc, char** argv) {
     }
 
     /* ----- Initialization ----- */
+    Screen* screen = screen_new();
     StateChip8* state = state_chip8_new();
     load_file_into_state(state, argv[1]);
     printf("Loaded ROM: %s\n", argv[1]);
 
     /* ----- Emulation ----- */
-    emulate_program(state);
+    emulate_program(state, screen);
 
     /* ----- Clean up ----- */
+    screen_delete(&screen);
     state_chip8_delete(&state);
 }
