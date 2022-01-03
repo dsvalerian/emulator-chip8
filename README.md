@@ -4,9 +4,9 @@ A basic CHIP-8 disassembler and emulator written in C.
 ### Sections:
 - [Overview](#overview)
 - [Disassembler](#disassembler)
-  -  [Compiling](#compiling)
   -  [Usage](#usage)
 - [Emulator](#overview)
+- [Compiling](#compiling)
 
 ## Overview
 CHIP-8 is an interpreted programming language from the 1970s, initially used on the COSMAC VIP and Telmac 1800 8-bit microcomputers. CHIP-8 programs are run on a virtual machine.
@@ -23,11 +23,8 @@ Some notable CHIP-8 specifications:
 ## Disassembler
 The CHIP-8 disassembler is a small utility meant to take a binary CHIP-8 ROM file as input and print out the corresponding CHIP-8 assembly language of the file. 
 
-### Compiling
-There is a Makefile included with the project. Simply run `make disassembler` in the root directory to compile the disassembler.
-
 ### Usage
-The disassembler requires a CHIP-8 ROM file as input. Once you have obtained a ROM file and compiled the disassembler into an executable, simply run `./bin/disassembler.exe <path_to_rom_file>` in the root directory.
+The disassembler requires a CHIP-8 ROM file as input. Once you have obtained a ROM file and compiled the disassembler into an executable, simply run `<path_to_disassembler> <path_to_rom_file>` in the root directory.
 
 Below is a small section of output disassembly of a free public domain CHIP-8 game Flight Runner, which can be found [here](https://johnearnest.github.io/chip8Archive/).
 
@@ -67,4 +64,12 @@ L227:
 ```
 
 ## Emulator
-The CHIP-8 emulator is a utility meant to take a binary CHIP-8 ROM file as input and emulate the program as closely to the CHIP-8 as possible. At the moment, none of it is implemented.
+The CHIP-8 emulator is a utility meant to take a binary CHIP-8 ROM file as input and emulate the program as closely to the CHIP-8 as possible. At the moment, only some of the CPU state and certain instructions are implemented.
+
+## Compiling
+This project uses CMake to automate the build. Depending on your system, this will generate a Makefile, build.ninja file, Visual Studio solution, etc. You can then use that to build the targets (either `emulator` or `disassembler`). 
+
+In my case, I use the MSYS2 environment on Windows, so my steps are as follows:
+1. Navigate to the root project directory
+2. Run `cmake -S src -B build -G "MSYS Makefiles"`
+3. Run `make -C build/ <target_name>`
