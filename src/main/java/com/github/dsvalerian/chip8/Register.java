@@ -4,7 +4,8 @@ package com.github.dsvalerian.chip8;
  * Representation of a single register, where the size of the register (in bits) is assigned.
  */
 public class Register {
-    private long maxSize;
+    private int numBits;
+    private long maxValue;
     private int value;
 
     /**
@@ -17,7 +18,8 @@ public class Register {
             throw new IllegalArgumentException("cannot assign more than 32 bits to a register");
         }
 
-        maxSize = 1 << numBits;
+        this.numBits = numBits;
+        maxValue = (1 << numBits) - 1;
     }
 
     /**
@@ -32,11 +34,20 @@ public class Register {
     /**
      * Set the value stored in this {@link Register}.
      *
+     * @param value A {@link Register} that is storing the value to set.
+     */
+    public void set(Register value) {
+        set(value.read());
+    }
+
+    /**
+     * Set the value stored in this {@link Register}.
+     *
      * @param value The value.
      */
     public void set(int value) {
-        if (value >= maxSize || value < 0) {
-            throw new IllegalArgumentException("value cannot be outside of register space 0-" + (maxSize - 1));
+        if (value > maxValue || value < 0) {
+            throw new IllegalArgumentException("value " + value + " cannot be stored using " + numBits + " bits");
         }
 
         this.value = value;

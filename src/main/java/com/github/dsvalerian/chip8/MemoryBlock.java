@@ -21,10 +21,20 @@ public class MemoryBlock {
     }
 
     /**
-     * Get the {@link Register} at a specified address.
+     * Get the value at a specified address.
+     *
+     * @param address A {@link Register} that is storing the address to get.
+     * @return The value at the address stored in the {@link Register}.
+     */
+    public int get(Register address) {
+        return get(address.read());
+    }
+
+    /**
+     * Get the value at a specified address.
      *
      * @param address The address to get the byte from.
-     * @return The {@link Register} at the specified address.
+     * @return The value at the specified address.
      */
     public int get(int address) {
         if (address >= this.getSize() || address < 0x00) {
@@ -38,11 +48,42 @@ public class MemoryBlock {
      * Set a value at a specified address.
      *
      * @param address The address to set.
+     * @param value A {@link Register} that is storing the value to set.
+     */
+    public void set(int address, Register value) {
+        set(address, value.read());
+    }
+
+    /**
+     * Set a value at a specified address.
+     *
+     * @param address A {@link Register} that is storing the address to set.
+     * @param value The value to set.
+     */
+    public void set(Register address, int value) {
+        set(address.read(), value);
+    }
+
+    /**
+     * Set a value at a specified address.
+     *
+     * @param address A {@link Register} that is storing the address to set.
+     * @param value A {@link Register} that is storing the value to set.
+     */
+    public void set(Register address, Register value) {
+        set(address.read(), value.read());
+    }
+
+    /**
+     * Set a value at a specified address.
+     *
+     * @param address The address to set.
      * @param value The value to set.
      */
     public void set(int address, int value) {
         if (address >= this.getSize() || address < 0x00) {
-            throw new IllegalArgumentException("address must be within memory space of " + this.getSize() + " bytes");
+            throw new IllegalArgumentException("address must be within memory space of " +
+                    this.getSize() + " registers");
         }
 
         memory[address].set(value);

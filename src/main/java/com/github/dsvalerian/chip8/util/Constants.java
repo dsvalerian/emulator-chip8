@@ -6,6 +6,8 @@ public class Constants {
     public static final int TWELVE_BIT_SIZE = 12;
     public static final int SIXTEEN_BIT_SIZE = 16;
 
+    public static final int MEMORY_SIZE = 0x1000;
+    public static final int STACK_SIZE = 0x1;
     public static final int NUM_REGISTERS = 16;
-    public static final int MEMORY_SIZE = 4096;
+    public static final int DEFAULT_PROGRAM_ADDRESS = 0x200;
 }
