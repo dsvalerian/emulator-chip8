@@ -45,4 +45,30 @@ public class MemoryBlockTest {
         Assertions.assertThrows(IllegalArgumentException.class, () -> memory.set(0x10, -1));
         Assertions.assertThrows(IllegalArgumentException.class, () -> memory.set(0x10, 0xFFFF));
     }
+
+    @Test
+    public void getUsingRegisterTest() {
+        Register register = new Register(Constants.SIXTEEN_BIT_SIZE);
+        register.set(512);
+        memory.set(512, 100);
+
+        Assertions.assertEquals(100, memory.get(register));
+    }
+
+    @Test
+    public void setUsingRegisterTest() {
+        Register address = new Register(Constants.SIXTEEN_BIT_SIZE);
+        address.set(1024);
+        Register value = new Register(Constants.EIGHT_BIT_SIZE);
+        value.set(100);
+        memory.set(512, value);
+        memory.set(address, 255);
+
+        Assertions.assertEquals(100, memory.get(512));
+        Assertions.assertEquals(255, memory.get(1024));
+
+        memory.set(address, value);
+
+        Assertions.assertEquals(100, memory.get(1024));
+    }
 }

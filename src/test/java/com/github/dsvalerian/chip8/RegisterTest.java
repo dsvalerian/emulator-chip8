@@ -24,6 +24,11 @@ public class RegisterTest {
         register.set(0xFF);
         Assertions.assertEquals(0xFF, register.read());
 
+        Register newRegister = new Register(Constants.EIGHT_BIT_SIZE);
+        newRegister.set(0x52);
+        register.set(newRegister);
+        Assertions.assertEquals(0x52, register.read());
+
         Assertions.assertThrows(IllegalArgumentException.class, () -> register.set(0x100));
     }
 }
