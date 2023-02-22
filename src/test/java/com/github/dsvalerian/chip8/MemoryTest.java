@@ -33,7 +33,7 @@ public class MemoryTest {
 
     @Test
     public void emptyMemoryTest() {
-        for (int i = 0; i < Memory.SIZE; i++) {
+        for (int i = 0; i < Memory.MEMORY_SIZE; i++) {
             Assertions.assertEquals(0x0, memory.get(i));
         }
     }
