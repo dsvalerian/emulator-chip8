@@ -1,15 +1,16 @@
 package com.github.dsvalerian.chip8;
 
+import com.github.dsvalerian.chip8.util.Constants;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class MemoryTest {
-    private Memory memory;
+public class MemoryBlockTest {
+    private MemoryBlock memory;
 
     @BeforeEach
     public void setUp() {
-        memory = new Memory();
+        memory = new MemoryBlock(Constants.MEMORY_SIZE, Constants.EIGHT_BIT_SIZE);
     }
 
     @Test
@@ -33,7 +34,7 @@ public class MemoryTest {
 
     @Test
     public void emptyMemoryTest() {
-        for (int i = 0; i < Memory.MEMORY_SIZE; i++) {
+        for (int i = 0; i < memory.getSize(); i++) {
             Assertions.assertEquals(0x0, memory.get(i));
         }
     }
