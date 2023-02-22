@@ -6,6 +6,7 @@ public class Registers {
     // Registers 0 through F, inclusive
     public static final int NUM_REGISTERS = 0x10;
 
+    // Using ints instead of bytes because Java makes everything signed and treats primitive numbers as ints
     private int[] v = new int[NUM_REGISTERS];
     private int i;
 
@@ -41,10 +42,20 @@ public class Registers {
         v[register] = value;
     }
 
+    /**
+     * Get the value in the address register I.
+     *
+     * @return The one-byte value in register I.
+     */
     public int getI() {
         return i;
     }
 
+    /**
+     * Set the value in address register I.
+     *
+     * @param value The one-byte value to set.
+     */
     public void setI(int value) {
         if (value >= Memory.MEMORY_SIZE || value < 0x0) {
             throw new IllegalArgumentException("value must be representative of memory space");
