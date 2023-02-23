@@ -1,4 +1,4 @@
-package com.github.dsvalerian.chip8;
+package com.github.dsvalerian.chip8.data;
 
 import com.github.dsvalerian.chip8.data.MemoryBlock;
 import com.github.dsvalerian.chip8.data.Register;

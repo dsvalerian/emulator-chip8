@@ -1,4 +1,4 @@
-package com.github.dsvalerian.chip8;
+package com.github.dsvalerian.chip8.data;
 
 import com.github.dsvalerian.chip8.data.Register;
 import com.github.dsvalerian.chip8.util.Constants;
