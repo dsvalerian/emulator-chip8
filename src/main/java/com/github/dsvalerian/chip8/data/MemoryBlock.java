@@ -1,4 +1,4 @@
-package com.github.dsvalerian.chip8;
+package com.github.dsvalerian.chip8.data;
 
 /**
  * A block of memory representing an array of {@link Byte}s.
@@ -10,13 +10,28 @@ public class MemoryBlock {
      * Construct a {@link MemoryBlock} of a certain size, with each register capable of storing
      * a specified number of bits.
      *
-     * @param memorySize Size of memory block.
+     * @param size Size of the memory block.
      * @param registerBits Number of bits each {@link Register} in the block can store.
      */
-    public MemoryBlock(int memorySize, int registerBits) {
-        memory = new Register[memorySize];
-        for (int i = 0; i < memorySize; i++) {
+    public MemoryBlock(int size, int registerBits) {
+        memory = new Register[size];
+        for (int i = 0; i < size; i++) {
             memory[i] = new Register(registerBits);
+        }
+    }
+
+    /**
+     * Construct a {@link MemoryBlock} from a data array, with each register capable of storing
+     * a specified number of bits.
+     *
+     * @param data The data array. Each element must be able to fit in a register.
+     * @param registerBits Number of bits each {@link Register} in the block can store.
+     */
+    public MemoryBlock(int[] data, int registerBits) {
+        memory = new Register[data.length];
+        for (int i = 0; i < data.length; i++) {
+            memory[i] = new Register(registerBits);
+            memory[i].set(data[i]);
         }
     }
 

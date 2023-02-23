@@ -1,5 +1,7 @@
 package com.github.dsvalerian.chip8;
 
+import com.github.dsvalerian.chip8.data.MemoryBlock;
+import com.github.dsvalerian.chip8.data.Register;
 import com.github.dsvalerian.chip8.util.Constants;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
