@@ -1,10 +1,2 @@
-# Text editor files
-.vscode
-
-# Build/log files
-build/*
-log/*
-
-# Test roms
-rom/*
-!rom/flightrunner.ch8
+.idea/
+target/
