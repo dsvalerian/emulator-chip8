@@ -1,16 +1,17 @@
 package com.github.dsvalerian.chip8.data;
 
-import com.github.dsvalerian.chip8.util.Constants;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class MemoryBlockTest {
+    private final int MEMORY_SIZE = 0x1000;
+
     private MemoryBlock memory;
 
     @BeforeEach
     public void setUp() {
-        memory = new MemoryBlock(Constants.MEMORY_SIZE, Bits.EIGHT);
+        memory = new MemoryBlock(MEMORY_SIZE, Bits.EIGHT);
     }
 
     @Test

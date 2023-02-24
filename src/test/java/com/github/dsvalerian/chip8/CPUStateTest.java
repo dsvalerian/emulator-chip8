@@ -1,21 +1,16 @@
 package com.github.dsvalerian.chip8;
 
-import com.github.dsvalerian.chip8.util.Constants;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class CPUStateTest {
+    private CPUProfile profile = CPUProfile.CHIP8;
     private CPUState state;
 
     @BeforeEach
     public void setUp() {
-        state = new CPUState(
-                Constants.MEMORY_SIZE, Constants.MEMORY_BITS,
-                Constants.STACK_SIZE, Constants.STACK_BITS, Constants.SP_REGISTER_BITS,
-                Constants.NUM_V_REGISTERS, Constants.V_REGISTER_BITS,
-                Constants.I_REGISTER_BITS, Constants.PC_REGISTER_BITS
-        );
+        state = new CPUState(profile);
     }
 
     @Test
@@ -70,7 +65,7 @@ public class CPUStateTest {
         Assertions.assertThrows(IllegalArgumentException.class, () -> state.setPc(0x10000));
 
         Assertions.assertThrows(IllegalArgumentException.class, () -> {
-           for (int i = 0; i < Constants.STACK_SIZE + 1; i++) {
+           for (int i = 0; i < profile.getStackSize() + 1; i++) {
                state.pushStack(0);
            }
         });

@@ -1,7 +1,5 @@
 package com.github.dsvalerian.chip8.data;
 
-import com.github.dsvalerian.chip8.util.Constants;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;

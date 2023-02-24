@@ -18,7 +18,14 @@ public class CPUState {
     private Register pcRegister;
     private Register spRegister;
 
-    public CPUState(int memorySize, Bits memoryRegisterBits,
+    public CPUState(CPUProfile profile) {
+        this(profile.getMemorySize(), profile.getMemoryRegisterBits(),
+                profile.getStackSize(), profile.getStackRegisterBits(), profile.getSpRegisterBits(),
+                profile.getNumVRegisters(), profile.getVRegisterBits(),
+                profile.getIRegisterBits(), profile.getPcRegisterBits());
+    }
+
+    private CPUState(int memorySize, Bits memoryRegisterBits,
                     int stackSize, Bits stackRegisterBits, Bits spRegisterBits,
                     int numVRegisters, Bits vRegisterBits,
                     Bits iRegisterBits, Bits pcRegisterBits) {

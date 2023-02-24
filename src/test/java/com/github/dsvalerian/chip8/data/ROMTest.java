@@ -1,6 +1,5 @@
 package com.github.dsvalerian.chip8.data;
 
-import com.github.dsvalerian.chip8.util.Constants;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
