@@ -2,6 +2,10 @@ package com.github.dsvalerian.chip8;
 
 import com.github.dsvalerian.chip8.data.Bits;
 
+/**
+ * A representation of the layout of the CPU, with definitions of the memory size, stack size, number of Vx registers,
+ * and number of bits used for each register and block of memory used by the CPU.
+ */
 public enum CPUProfile {
     CHIP8(0x1000, Bits.EIGHT, 16, Bits.SIXTEEN, Bits.EIGHT,
             16, Bits.EIGHT, Bits.TWELVE, Bits.SIXTEEN, 0x200);
@@ -18,9 +22,9 @@ public enum CPUProfile {
     private final int programStartAddress;
 
     CPUProfile(int memorySize, Bits memoryRegisterBits,
-                       int stackSize, Bits stackRegisterBits, Bits spRegisterBits,
-                       int numVRegisters, Bits vRegisterBits,
-                       Bits iRegisterBits, Bits pcRegisterBits, int programStartAddress) {
+               int stackSize, Bits stackRegisterBits, Bits spRegisterBits,
+               int numVRegisters, Bits vRegisterBits,
+               Bits iRegisterBits, Bits pcRegisterBits, int programStartAddress) {
         this.memorySize = memorySize;
         this.memoryRegisterBits = memoryRegisterBits;
         this.stackSize = stackSize;

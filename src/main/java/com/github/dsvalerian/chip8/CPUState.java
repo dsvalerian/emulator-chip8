@@ -5,7 +5,7 @@ import com.github.dsvalerian.chip8.data.MemoryBlock;
 import com.github.dsvalerian.chip8.data.Register;
 
 /**
- * Representation of the CHIP-8 CPU state. Keeps track of all memory, registers, counters, delays, etc, and include
+ * Representation of the CPU state. Keeps track of all memory, registers, counters, delays, etc, and include
  * read and set methods for each.
  */
 public class CPUState {
@@ -17,6 +17,8 @@ public class CPUState {
     private Register iRegister;
     private Register pcRegister;
     private Register spRegister;
+
+    private int programSize;
 
     public CPUState(CPUProfile profile) {
         this(profile.getMemorySize(), profile.getMemoryRegisterBits(),
@@ -37,6 +39,8 @@ public class CPUState {
         iRegister = new Register(iRegisterBits);
         pcRegister = new Register(pcRegisterBits);
         spRegister = new Register(spRegisterBits);
+
+        programSize = 0;
     }
 
     /**
@@ -134,5 +138,13 @@ public class CPUState {
      */
     public void setPc(int value) {
         pcRegister.set(value);
+    }
+
+    public void setProgramSize(int programSize) {
+        this.programSize = programSize;
+    }
+
+    public int getProgramSize() {
+        return programSize;
     }
 }
