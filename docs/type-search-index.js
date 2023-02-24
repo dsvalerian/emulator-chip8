@@ -1,0 +1,1 @@
+typeSearchIndex = [{"l":"All Classes and Interfaces","u":"allclasses-index.html"},{"p":"com.github.dsvalerian.chip8.util","l":"Constants"},{"p":"com.github.dsvalerian.chip8","l":"CPUState"},{"p":"com.github.dsvalerian.chip8.data","l":"MemoryBlock"},{"p":"com.github.dsvalerian.chip8.data","l":"Register"},{"p":"com.github.dsvalerian.chip8.data","l":"ROM"}];updateSearchResults();

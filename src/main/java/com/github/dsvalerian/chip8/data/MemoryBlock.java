@@ -104,6 +104,11 @@ public class MemoryBlock {
         memory[address].set(value);
     }
 
+    /**
+     * Get the size of the memory block.
+     *
+     * @return The number of registers in the block.
+     */
     public int getSize() {
         return memory.length;
     }
