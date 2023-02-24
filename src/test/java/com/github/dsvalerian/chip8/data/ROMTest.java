@@ -36,15 +36,27 @@ public class ROMTest {
 
     @Test
     public void fromFileTest() {
+        int[] bytes = {0x12, 0x55, 0xFF, 0x00, 0x9B};
         URL romTestResource = ROMTest.class.getClassLoader().getResource("romtest.ch8");
 
         if (romTestResource == null) {
             Assertions.fail("could not get resource 'romtest.ch8'");
         }
 
+        ROM rom;
+
         try {
-            ROM rom = ROM.fromFile(Paths.get(romTestResource.toURI()).toString());
+            rom = ROM.fromFile(Paths.get(romTestResource.toURI()).toString());
+
+            for (int i = 0; i < rom.getSize(); i++) {
+                Assertions.assertEquals(bytes[i], rom.get(i));
+            }
+
             rom = ROM.fromFile(Paths.get(romTestResource.toURI()));
+
+            for (int i = 0; i < rom.getSize(); i++) {
+                Assertions.assertEquals(bytes[i], rom.get(i));
+            }
         }
         catch (URISyntaxException ex) {
             ex.printStackTrace();
