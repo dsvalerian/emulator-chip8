@@ -2,6 +2,11 @@ package com.github.dsvalerian.chip8.data;
 
 import com.github.dsvalerian.chip8.util.Constants;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.file.Path;
+
 /**
  * Representation of a block of read-only memory containing byte data, where each register
  * in the block is one byte.
@@ -35,6 +40,10 @@ public class ROM extends MemoryBlock {
 
         // Parse string elements into bytes (assuming hex form).
         for (int i = 0; i < bytes.length; i++) {
+            if (hexBytes[i].length() != 2) {
+                throw new IllegalArgumentException("provided hex string is invalid");
+            }
+
             bytes[i] = Integer.parseInt(hexBytes[i], 16);
         }
 
@@ -44,12 +53,40 @@ public class ROM extends MemoryBlock {
     /**
      * Return a new ROM containing byte data from a file.
      *
-     * @param filePath The path to the file.
-     * @return A new {@link ROM}.
+     * @param filePath The {@link Path} to the file.
+     * @return A new {@link ROM} or null if filepath is incorrect.
+     * @throws IOException if given file path is not valid or there is issue reading the bytes.
      */
-    public static ROM fromFile(String filePath) {
-        // todo
-        return null;
+    public static ROM fromFile(Path filePath) throws IOException {
+        return fromFile(filePath.toString());
+    }
+
+    /**
+     * Return a new ROM containing byte data from a file.
+     *
+     * @param filePath The path to the file.
+     * @return A new {@link ROM} or null if filepath is incorrect.
+     * @throws IOException if given file path is not valid or there is issue reading the bytes.
+     */
+    public static ROM fromFile(String filePath) throws IOException {
+        File file = new File(filePath);
+
+        if (file.length() >= Integer.MAX_VALUE) {
+            throw new UnsupportedOperationException("cannot read a file greater than " + Integer.MAX_VALUE + " bytes");
+        }
+
+        // Get bytes array from file.
+        byte[] bytes = new byte[(int)file.length()];
+        FileInputStream fis = new FileInputStream(file);
+        fis.read(bytes);
+
+        // Convert bytes array to int array.
+        int[] newBytes = new int[bytes.length];
+        for (int i = 0; i < newBytes.length; i++) {
+            newBytes[i] = Byte.toUnsignedInt(bytes[i]);
+        }
+
+        return new ROM(newBytes, Constants.EIGHT_BIT_SIZE);
     }
 
     /**
