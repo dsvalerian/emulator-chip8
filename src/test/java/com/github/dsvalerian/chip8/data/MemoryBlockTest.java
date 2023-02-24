@@ -10,7 +10,7 @@ public class MemoryBlockTest {
 
     @BeforeEach
     public void setUp() {
-        memory = new MemoryBlock(Constants.MEMORY_SIZE, Constants.EIGHT_BIT_SIZE);
+        memory = new MemoryBlock(Constants.MEMORY_SIZE, Bits.EIGHT);
     }
 
     @Test
@@ -48,7 +48,7 @@ public class MemoryBlockTest {
 
     @Test
     public void getUsingRegisterTest() {
-        Register register = new Register(Constants.SIXTEEN_BIT_SIZE);
+        Register register = new Register(Bits.SIXTEEN);
         register.set(512);
         memory.set(512, 100);
 
@@ -57,9 +57,9 @@ public class MemoryBlockTest {
 
     @Test
     public void setUsingRegisterTest() {
-        Register address = new Register(Constants.SIXTEEN_BIT_SIZE);
+        Register address = new Register(Bits.SIXTEEN);
         address.set(1024);
-        Register value = new Register(Constants.EIGHT_BIT_SIZE);
+        Register value = new Register(Bits.EIGHT);
         value.set(100);
         memory.set(512, value);
         memory.set(address, 255);

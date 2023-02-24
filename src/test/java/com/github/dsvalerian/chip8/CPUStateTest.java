@@ -10,7 +10,12 @@ public class CPUStateTest {
 
     @BeforeEach
     public void setUp() {
-        state = new CPUState();
+        state = new CPUState(
+                Constants.MEMORY_SIZE, Constants.MEMORY_BITS,
+                Constants.STACK_SIZE, Constants.STACK_BITS, Constants.SP_REGISTER_BITS,
+                Constants.NUM_V_REGISTERS, Constants.V_REGISTER_BITS,
+                Constants.I_REGISTER_BITS, Constants.PC_REGISTER_BITS
+        );
     }
 
     @Test

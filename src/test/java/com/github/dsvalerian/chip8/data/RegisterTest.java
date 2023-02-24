@@ -10,22 +10,17 @@ public class RegisterTest {
 
     @Test
     public void constructorTest() {
-        register = new Register(Constants.EIGHT_BIT_SIZE);
+        register = new Register(Bits.EIGHT);
         Assertions.assertEquals(0, register.read());
     }
 
     @Test
-    public void invalidConstructorTest() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> register = new Register(33));
-    }
-
-    @Test
     public void setterGetterTest() {
-        register = new Register(Constants.EIGHT_BIT_SIZE);
+        register = new Register(Bits.EIGHT);
         register.set(0xFF);
         Assertions.assertEquals(0xFF, register.read());
 
-        Register newRegister = new Register(Constants.EIGHT_BIT_SIZE);
+        Register newRegister = new Register(Bits.EIGHT);
         newRegister.set(0x52);
         register.set(newRegister);
         Assertions.assertEquals(0x52, register.read());

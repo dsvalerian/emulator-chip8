@@ -71,7 +71,7 @@ public class ROMTest {
     @Test
     public void setterTest() {
         int someInt = 0x00;
-        Register someRegister = new Register(Constants.EIGHT_BIT_SIZE);
+        Register someRegister = new Register(Bits.EIGHT);
 
         ROM rom = ROM.fromBytes(new int[0]);
         Assertions.assertThrows(UnsupportedOperationException.class, () -> rom.set(someInt, someRegister));

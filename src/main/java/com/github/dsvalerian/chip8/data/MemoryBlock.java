@@ -13,7 +13,7 @@ public class MemoryBlock {
      * @param size Size of the memory block.
      * @param registerBits Number of bits each {@link Register} in the block can store.
      */
-    public MemoryBlock(int size, int registerBits) {
+    public MemoryBlock(int size, Bits registerBits) {
         memory = new Register[size];
         for (int i = 0; i < size; i++) {
             memory[i] = new Register(registerBits);
@@ -27,7 +27,7 @@ public class MemoryBlock {
      * @param data The data array. Each element must be able to fit in a register.
      * @param registerBits Number of bits each {@link Register} in the block can store.
      */
-    public MemoryBlock(int[] data, int registerBits) {
+    public MemoryBlock(int[] data, Bits registerBits) {
         memory = new Register[data.length];
         for (int i = 0; i < data.length; i++) {
             memory[i] = new Register(registerBits);

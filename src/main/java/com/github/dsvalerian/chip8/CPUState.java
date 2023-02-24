@@ -1,22 +1,36 @@
 package com.github.dsvalerian.chip8;
 
+import com.github.dsvalerian.chip8.data.Bits;
 import com.github.dsvalerian.chip8.data.MemoryBlock;
 import com.github.dsvalerian.chip8.data.Register;
-import com.github.dsvalerian.chip8.util.Constants;
 
 /**
  * Representation of the CHIP-8 CPU state. Keeps track of all memory, registers, counters, delays, etc, and include
  * read and set methods for each.
  */
 public class CPUState {
-    private MemoryBlock memory = new MemoryBlock(Constants.MEMORY_SIZE, Constants.EIGHT_BIT_SIZE);
-    private MemoryBlock stack = new MemoryBlock(Constants.STACK_SIZE, Constants.SIXTEEN_BIT_SIZE);
+    private MemoryBlock memory;
+    private MemoryBlock stack;
 
-    private MemoryBlock vRegisters = new MemoryBlock(Constants.NUM_REGISTERS, Constants.EIGHT_BIT_SIZE);
+    private MemoryBlock vRegisters;
 
-    private Register iRegister = new Register(Constants.TWELVE_BIT_SIZE);
-    private Register pcRegister = new Register(Constants.SIXTEEN_BIT_SIZE);
-    private Register spRegister = new Register(Constants.EIGHT_BIT_SIZE);
+    private Register iRegister;
+    private Register pcRegister;
+    private Register spRegister;
+
+    public CPUState(int memorySize, Bits memoryRegisterBits,
+                    int stackSize, Bits stackRegisterBits, Bits spRegisterBits,
+                    int numVRegisters, Bits vRegisterBits,
+                    Bits iRegisterBits, Bits pcRegisterBits) {
+        memory = new MemoryBlock(memorySize, memoryRegisterBits);
+        stack = new MemoryBlock(stackSize, stackRegisterBits);
+
+        vRegisters = new MemoryBlock(numVRegisters, vRegisterBits);
+
+        iRegister = new Register(iRegisterBits);
+        pcRegister = new Register(pcRegisterBits);
+        spRegister = new Register(spRegisterBits);
+    }
 
     /**
      * Read the value at an address in main memory.
