@@ -36,22 +36,22 @@ public class MemoryBlock {
     }
 
     /**
-     * Get the value at a specified address.
+     * Read the value at a specified address.
      *
      * @param address A {@link Register} that is storing the address to get.
      * @return The value at the address stored in the {@link Register}.
      */
-    public int get(Register address) {
-        return get(address.read());
+    public int read(Register address) {
+        return read(address.read());
     }
 
     /**
-     * Get the value at a specified address.
+     * Read the value at a specified address.
      *
      * @param address The address to get the byte from.
      * @return The value at the specified address.
      */
-    public int get(int address) {
+    public int read(int address) {
         if (address >= this.getSize() || address < 0x00) {
             throw new IllegalArgumentException("address must be within memory space of " + this.getSize() + " bytes");
         }

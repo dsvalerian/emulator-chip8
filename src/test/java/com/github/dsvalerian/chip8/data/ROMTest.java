@@ -16,7 +16,7 @@ public class ROMTest {
         ROM rom = ROM.fromBytes(bytes);
 
         for (int i = 0; i < rom.getSize(); i++) {
-            Assertions.assertEquals(bytes[i], rom.get(i));
+            Assertions.assertEquals(bytes[i], rom.read(i));
         }
     }
 
@@ -27,7 +27,7 @@ public class ROMTest {
         ROM rom = ROM.fromHexString(hexString);
 
         for (int i = 0; i < rom.getSize(); i++) {
-            Assertions.assertEquals(bytes[i], rom.get(i));
+            Assertions.assertEquals(bytes[i], rom.read(i));
         }
 
         String invalidHexString = "12 5D 98F 00";
@@ -49,13 +49,13 @@ public class ROMTest {
             rom = ROM.fromFile(Paths.get(romTestResource.toURI()).toString());
 
             for (int i = 0; i < rom.getSize(); i++) {
-                Assertions.assertEquals(bytes[i], rom.get(i));
+                Assertions.assertEquals(bytes[i], rom.read(i));
             }
 
             rom = ROM.fromFile(Paths.get(romTestResource.toURI()));
 
             for (int i = 0; i < rom.getSize(); i++) {
-                Assertions.assertEquals(bytes[i], rom.get(i));
+                Assertions.assertEquals(bytes[i], rom.read(i));
             }
         }
         catch (URISyntaxException ex) {

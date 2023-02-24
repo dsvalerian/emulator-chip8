@@ -5,7 +5,7 @@ import com.github.dsvalerian.chip8.data.Register;
 import com.github.dsvalerian.chip8.util.Constants;
 
 /**
- * Representation of the CPU state. Keeps track of all memory, registers, counters, delays, etc, and include
+ * Representation of the CHIP-8 CPU state. Keeps track of all memory, registers, counters, delays, etc, and include
  * read and set methods for each.
  */
 public class CPUState {
@@ -25,7 +25,7 @@ public class CPUState {
      * @return The value at the address.
      */
     public int readMemory(int address) {
-        return memory.get(address);
+        return memory.read(address);
     }
 
     /**
@@ -44,7 +44,7 @@ public class CPUState {
      * @return The popped value.
      */
     public int popStack() {
-        int value = stack.get(spRegister.read());
+        int value = stack.read(spRegister.read());
         spRegister.set(spRegister.read() - 1);
         return value;
     }
@@ -66,7 +66,7 @@ public class CPUState {
      * @return The value stored in the Vx register.
      */
     public int readV(int x) {
-        return vRegisters.get(x);
+        return vRegisters.read(x);
     }
 
     /**
@@ -102,7 +102,7 @@ public class CPUState {
      *
      * @return The value.
      */
-    public int readPC() {
+    public int readPc() {
         return pcRegister.read();
     }
 
@@ -111,7 +111,7 @@ public class CPUState {
      *
      * @param value The value.
      */
-    public void setPC(int value) {
+    public void setPc(int value) {
         pcRegister.set(value);
     }
 }
