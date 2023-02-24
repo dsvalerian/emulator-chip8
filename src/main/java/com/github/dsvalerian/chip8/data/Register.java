@@ -1,7 +1,7 @@
 package com.github.dsvalerian.chip8.data;
 
 /**
- * Representation of a single register, where the size of the register (in bits) is assigned.
+ * Representation of a single register that can store a specified number of bits.
  */
 public class Register {
     private int numBits;
