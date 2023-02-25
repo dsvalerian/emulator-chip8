@@ -1,4 +1,4 @@
-package com.github.dsvalerian.chip8.data.util;
+package com.github.dsvalerian.chip8.util;
 
 import com.github.dsvalerian.chip8.data.Bits;
 

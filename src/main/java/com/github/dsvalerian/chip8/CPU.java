@@ -1,10 +1,9 @@
 package com.github.dsvalerian.chip8;
 
-import com.github.dsvalerian.chip8.data.Instructions;
 import com.github.dsvalerian.chip8.data.MemoryBlock;
 import com.github.dsvalerian.chip8.data.ROM;
 import com.github.dsvalerian.chip8.data.Register;
-import com.github.dsvalerian.chip8.data.util.Constants;
+import com.github.dsvalerian.chip8.util.Constants;
 
 /**
  * Representation of the Chip-8 CPU. This class is in charge of stepping through programs

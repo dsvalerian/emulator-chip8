@@ -1,8 +1,11 @@
 package com.github.dsvalerian.chip8;
 
+import com.github.dsvalerian.chip8.exception.FullStackException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.util.EmptyStackException;
 
 public class CPUStateTest {
     private CPUProfile profile = CPUProfile.CHIP8;
@@ -51,6 +54,8 @@ public class CPUStateTest {
 
     @Test
     public void pushPopStackTest() {
+        Assertions.assertThrows(EmptyStackException.class, () -> state.popStack());
+
         int[] values = {0x42, 0xFFFF, 0x00, 0x9B};
 
         for (int i = 0; i < values.length; i++) {
@@ -64,7 +69,7 @@ public class CPUStateTest {
         Assertions.assertThrows(IllegalArgumentException.class, () -> state.pushStack(-1));
         Assertions.assertThrows(IllegalArgumentException.class, () -> state.setPc(0x10000));
 
-        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+        Assertions.assertThrows(FullStackException.class, () -> {
            for (int i = 0; i < profile.getStackSize() + 1; i++) {
                state.pushStack(0);
            }

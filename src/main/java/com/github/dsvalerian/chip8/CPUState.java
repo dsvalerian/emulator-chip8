@@ -3,6 +3,9 @@ package com.github.dsvalerian.chip8;
 import com.github.dsvalerian.chip8.data.Bits;
 import com.github.dsvalerian.chip8.data.MemoryBlock;
 import com.github.dsvalerian.chip8.data.Register;
+import com.github.dsvalerian.chip8.exception.FullStackException;
+
+import java.util.EmptyStackException;
 
 /**
  * Representation of the CPU state. Keeps track of all memory, registers, counters, delays, etc, and include
@@ -64,14 +67,17 @@ public class CPUState {
     }
 
     /**
-     * Pop the top value off the stack and set the SP register back.
+     * Set the SP register back and pop the value off the top.
      *
      * @return The popped value.
      */
     public int popStack() {
-        int value = stack.read(spRegister.read());
+        if (isStackEmpty()) {
+            throw new EmptyStackException();
+        }
+
         spRegister.set(spRegister.read() - 1);
-        return value;
+        return stack.read(spRegister.read());
     }
 
     /**
@@ -80,8 +86,12 @@ public class CPUState {
      * @param value The value to push to the stack.
      */
     public void pushStack(int value) {
-        spRegister.set(spRegister.read() + 1);
+        if (isStackFull()) {
+            throw new FullStackException();
+        }
+
         stack.set(spRegister, value);
+        spRegister.set(spRegister.read() + 1);
     }
 
     /**
@@ -140,11 +150,33 @@ public class CPUState {
         pcRegister.set(value);
     }
 
+    /**
+     * Set the size of the program that was loaded.
+     *
+     * @param programSize The size of the loaded program.
+     */
     public void setProgramSize(int programSize) {
         this.programSize = programSize;
     }
 
+    /**
+     * @return The size of the loaded program.
+     */
     public int getProgramSize() {
         return programSize;
+    }
+
+    /**
+     * @return True if the subroutine stack is empty.
+     */
+    private boolean isStackEmpty() {
+        return spRegister.read() == 0;
+    }
+
+    /**
+     * @return True if the subroutine stack is full.
+     */
+    private boolean isStackFull() {
+        return spRegister.read() == stack.getSize();
     }
 }
