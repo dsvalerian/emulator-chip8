@@ -1,11 +1,32 @@
 package com.github.dsvalerian.chip8;
 
 import com.github.dsvalerian.chip8.data.Register;
+import com.github.dsvalerian.chip8.exception.IllegalInstructionException;
+import com.github.dsvalerian.chip8.util.Constants;
 
 /**
  * This class handles executing the entire Chip-8 instruction set and updating {@link CPUState}s accordingly.
  */
 public class Instructions {
+    /**
+     * Load an instruction from main memory in a {@link CPUState} into a {@link Register}.
+     *
+     * @param register The {@link Register} to load the instruction into. Must be 16-bit.
+     * @param state The {@link CPUState} with the memory block and PC pointing to the instruction.
+     */
+    public static void load(CPUState state, Register register) {
+        int instructionValue = 0;
+
+        for (int i = 0; i < Constants.CHIP8_PC_STEP_SIZE; i++) {
+            // Big endian, so bit shift the first values more, and the last isn't shifted at all.
+            int byteValue = state.readMemory(state.readPc() + i);
+            byteValue = byteValue << (Constants.CHIP8_PC_STEP_SIZE - i - 1) * Constants.ONE_BYTE_BITS;
+            instructionValue += byteValue;
+        }
+
+        register.set(instructionValue);
+    }
+
     /**
      * Decode and execute a Chip-8 instruction stored in a {@link Register}.
      *
@@ -49,8 +70,42 @@ public class Instructions {
                 // 2nnn - Call subroutine at address nnn.
                 call(state, instruction & 0x0FFF);
                 break;
+            case 0x3000:
+                // 3xkk - Skip next instruction if Vx == kk
+                seByte(state, instruction & 0x0F00, instruction & 0x00FF);
+                break;
+            case 0x4000:
+                // 4xkk - Skip next instruction if Vx != kk
+                sneByte(state, instruction & 0x0F00, instruction & 0x00FF);
+                break;
+            case 0x5000:
+                switch (instruction & 0x000F) {
+                    case 0x0:
+                        // 5xy0 - Skip next instruction if Vx == Vy
+                        seRegister(state, instruction & 0x0F00, instruction & 0x00F0);
+                        break;
+                    default:
+                        throw new IllegalInstructionException(instruction);
+                }
+            case 0x6000:
+                // 6xkk - Set Vx = kk
+                ldByte(state, instruction & 0x0F00, instruction & 0x00FF);
+                break;
+            case 0x7000:
+                // 7xkk - Set Vx = Vx + kk
+                addByte(state, instruction & 0x0F00, instruction & 0x00FF);
+                break;
+            case 0x9000:
+                switch (instruction & 0x000F) {
+                    case 0x0:
+                        // 9xy0 - Skip next instruction if Vx == Vy
+                        sneRegister(state, instruction & 0x0F00, instruction & 0x00F0);
+                        break;
+                    default:
+                        throw new IllegalInstructionException(instruction);
+                }
             default:
-                throw new IllegalArgumentException("provided instruction is not a valid Chip-8 instruction");
+                throw new IllegalInstructionException(instruction);
         }
     }
 
@@ -73,5 +128,41 @@ public class Instructions {
     private static void call(CPUState state, int address) {
         state.pushStack(state.readPc());
         state.setPc(address);
+    }
+
+    private static void seByte(CPUState state, int x, int kk) {
+        // skip instruction if register Vx == kk
+        if (state.readV(x) == kk) {
+            state.setPc(state.readPc() + Constants.CHIP8_PC_STEP_SIZE);
+        }
+    }
+
+    private static void seRegister(CPUState state, int x, int y) {
+        // skip instruction if register Vx == Vy
+        if (state.readV(x) == state.readV(y)) {
+            state.setPc(state.readPc() + Constants.CHIP8_PC_STEP_SIZE);
+        }
+    }
+
+    private static void sneByte(CPUState state, int x, int kk) {
+        // skip instruction if register Vx == kk
+        if (state.readV(x) != kk) {
+            state.setPc(state.readPc() + Constants.CHIP8_PC_STEP_SIZE);
+        }
+    }
+
+    private static void sneRegister(CPUState state, int x, int y) {
+        // skip instruction if register Vx != Vy
+        if (state.readV(x) != state.readV(y)) {
+            state.setPc(state.readPc() + Constants.CHIP8_PC_STEP_SIZE);
+        }
+    }
+
+    private static void ldByte(CPUState state, int x, int kk) {
+        state.setV(x, kk);
+    }
+
+    private static void addByte(CPUState state, int x, int kk) {
+        state.setV(x, (state.readV(x) + kk) & 0x00FF);
     }
 }

@@ -12,4 +12,9 @@ public class Constants {
      * The number of bits in a Chip-8 instruction.
      */
     public static final Bits CHIP8_INSTRUCTION_BITS = Bits.SIXTEEN;
+
+    /**
+     * The size of each increment of the Chip-8 program counter.
+     */
+    public static final int CHIP8_PC_STEP_SIZE = CHIP8_INSTRUCTION_BITS.getValue() / ONE_BYTE_BITS;
 }

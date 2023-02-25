@@ -13,13 +13,10 @@ import com.github.dsvalerian.chip8.util.Constants;
 public class CPU {
     private CPUProfile profile = CPUProfile.CHIP8;
     private CPUState state;
-
-    private int pcStepSize;
     private Register instruction;
 
     public CPU() {
         this.state = new CPUState(profile);
-        pcStepSize = Constants.CHIP8_INSTRUCTION_BITS.getValue() / Constants.ONE_BYTE_BITS;
         instruction = new Register(Constants.CHIP8_INSTRUCTION_BITS);
     }
 
@@ -29,7 +26,7 @@ public class CPU {
     public void processNextInstruction() {
         // Read and execute the instruction at the program counter.
         // Instructions are in charge of incrementing the program counter, so we don't do it here.
-        loadInstruction(instruction, state);
+        Instructions.load(state, instruction);
         Instructions.execute(state, instruction);
     }
 
@@ -57,25 +54,6 @@ public class CPU {
      */
     private void resetPc() {
         state.setPc(profile.getProgramStartAddress());
-    }
-
-    /**
-     * Load an instruction from the main memory block in a {@link CPUState} into a register.
-     *
-     * @param register The {@link Register} to load the instruction into. Must be 16-bit.
-     * @param state The {@link CPUState} with the memory block and PC pointing to the instruction.
-     */
-    private void loadInstruction(Register register, CPUState state) {
-        int instructionValue = 0;
-
-        for (int i = 0; i < pcStepSize; i++) {
-            // Big endian, so bit shift the first values more, and the last isn't shifted at all.
-            int byteValue = state.readMemory(state.readPc() + i);
-            byteValue = byteValue << (pcStepSize - i - 1) * Constants.ONE_BYTE_BITS;
-            instructionValue += byteValue;
-        }
-
-        register.set(instructionValue);
     }
 
     /**
