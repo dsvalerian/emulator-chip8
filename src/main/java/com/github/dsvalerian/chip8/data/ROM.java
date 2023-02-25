@@ -1,7 +1,5 @@
 package com.github.dsvalerian.chip8.data;
 
-import com.github.dsvalerian.chip8.util.Constants;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -12,7 +10,7 @@ import java.nio.file.Path;
  * in the block is one byte.
  */
 public class ROM extends MemoryBlock {
-    private ROM(int[] data, int registerBits) {
+    private ROM(int[] data, Bits registerBits) {
         super(data, registerBits);
     }
 
@@ -23,7 +21,7 @@ public class ROM extends MemoryBlock {
      * @return A new {@link ROM}.
      */
     public static ROM fromBytes(int[] bytes) {
-        return new ROM(bytes, Constants.EIGHT_BIT_SIZE);
+        return new ROM(bytes, Bits.EIGHT);
     }
 
     /**
@@ -47,7 +45,7 @@ public class ROM extends MemoryBlock {
             bytes[i] = Integer.parseInt(hexBytes[i], 16);
         }
 
-        return new ROM(bytes, Constants.EIGHT_BIT_SIZE);
+        return new ROM(bytes, Bits.EIGHT);
     }
 
     /**
@@ -86,7 +84,16 @@ public class ROM extends MemoryBlock {
             newBytes[i] = Byte.toUnsignedInt(bytes[i]);
         }
 
-        return new ROM(newBytes, Constants.EIGHT_BIT_SIZE);
+        return new ROM(newBytes, Bits.EIGHT);
+    }
+
+    /**
+     * Return a new empty ROM.
+     *
+     * @return An empty {@link ROM}.
+     */
+    public static ROM fromEmpty() {
+        return new ROM(new int[0], Bits.EIGHT);
     }
 
     /**

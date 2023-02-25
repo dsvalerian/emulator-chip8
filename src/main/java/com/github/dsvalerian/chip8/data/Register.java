@@ -4,7 +4,7 @@ package com.github.dsvalerian.chip8.data;
  * Representation of a single register that can store a specified number of bits.
  */
 public class Register {
-    private int numBits;
+    private Bits numBits;
     private long maxValue;
     private int value;
 
@@ -13,13 +13,9 @@ public class Register {
      *
      * @param numBits The number of bits this {@link Register} can store.
      */
-    public Register(int numBits) {
-        if (numBits > 32) {
-            throw new IllegalArgumentException("cannot assign more than 32 bits to a register");
-        }
-
+    public Register(Bits numBits) {
         this.numBits = numBits;
-        maxValue = (1 << numBits) - 1;
+        maxValue = (1 << numBits.getValue()) - 1;
     }
 
     /**
@@ -47,7 +43,8 @@ public class Register {
      */
     public void set(int value) {
         if (value > maxValue || value < 0) {
-            throw new IllegalArgumentException("value " + value + " cannot be stored using " + numBits + " bits");
+            throw new IllegalArgumentException("value " + value + " cannot be stored using " +
+                    numBits.getValue() + " bits");
         }
 
         this.value = value;
