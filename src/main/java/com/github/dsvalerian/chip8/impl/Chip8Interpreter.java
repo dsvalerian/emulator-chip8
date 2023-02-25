@@ -1,5 +1,6 @@
 package com.github.dsvalerian.chip8.impl;
 
+import com.github.dsvalerian.chip8.CPUProfile;
 import com.github.dsvalerian.chip8.CPUState;
 import com.github.dsvalerian.chip8.Interpreter;
 import com.github.dsvalerian.chip8.data.Register;
@@ -7,11 +8,14 @@ import com.github.dsvalerian.chip8.exception.IllegalInstructionException;
 import com.github.dsvalerian.chip8.util.Constants;
 
 /**
- * @inheritDocs
+ * {@inheritDoc}
  *
  * The default implementation of {@link Interpreter}.
  */
 public class Chip8Interpreter implements Interpreter {
+    private final CPUProfile PROFILE = CPUProfile.CHIP8;
+    private final int PC_STEP_SIZE = PROFILE.getInstructionBits().getValue() / Constants.ONE_BYTE_BITS;
+
     private Chip8CPUState state;
 
     /**
@@ -24,7 +28,7 @@ public class Chip8Interpreter implements Interpreter {
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     @Override
     public void executeInstruction(Register instruction) {
@@ -121,28 +125,28 @@ public class Chip8Interpreter implements Interpreter {
     private void seByte(int x, int kk) {
         // skip instruction if register Vx == kk
         if (state.readV(x) == kk) {
-            state.setPc(state.readPc() + Constants.CHIP8_PC_STEP_SIZE);
+            state.setPc(state.readPc() + PC_STEP_SIZE);
         }
     }
 
     private void seRegister(int x, int y) {
         // skip instruction if register Vx == Vy
         if (state.readV(x) == state.readV(y)) {
-            state.setPc(state.readPc() + Constants.CHIP8_PC_STEP_SIZE);
+            state.setPc(state.readPc() + PC_STEP_SIZE);
         }
     }
 
     private void sneByte(int x, int kk) {
         // skip instruction if register Vx == kk
         if (state.readV(x) != kk) {
-            state.setPc(state.readPc() + Constants.CHIP8_PC_STEP_SIZE);
+            state.setPc(state.readPc() + PC_STEP_SIZE);
         }
     }
 
     private void sneRegister(int x, int y) {
         // skip instruction if register Vx != Vy
         if (state.readV(x) != state.readV(y)) {
-            state.setPc(state.readPc() + Constants.CHIP8_PC_STEP_SIZE);
+            state.setPc(state.readPc() + PC_STEP_SIZE);
         }
     }
 

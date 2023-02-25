@@ -9,7 +9,7 @@ import com.github.dsvalerian.chip8.exception.FullStackException;
 import java.util.EmptyStackException;
 
 /**
- * @inheritDocs
+ * {@inheritDoc}
  *
  * The default implementation of {@link CPUState}.
  */
@@ -44,7 +44,7 @@ public class Chip8CPUState implements CPUState {
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     @Override
     public int readMemory(int address) {
@@ -52,7 +52,7 @@ public class Chip8CPUState implements CPUState {
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     @Override
     public void setMemory(int address, int value) {
@@ -60,7 +60,7 @@ public class Chip8CPUState implements CPUState {
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     @Override
     public int popStack() {
@@ -73,7 +73,7 @@ public class Chip8CPUState implements CPUState {
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     @Override
     public void pushStack(int value) {
@@ -86,7 +86,7 @@ public class Chip8CPUState implements CPUState {
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     @Override
     public int readV(int x) {
@@ -94,7 +94,7 @@ public class Chip8CPUState implements CPUState {
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     @Override
     public void setV(int x, int value) {
@@ -102,7 +102,7 @@ public class Chip8CPUState implements CPUState {
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     @Override
     public int readI() {
@@ -110,7 +110,7 @@ public class Chip8CPUState implements CPUState {
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     @Override
     public void setI(int value) {
@@ -118,7 +118,7 @@ public class Chip8CPUState implements CPUState {
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     @Override
     public int readPc() {
@@ -126,7 +126,7 @@ public class Chip8CPUState implements CPUState {
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     @Override
     public void setPc(int value) {

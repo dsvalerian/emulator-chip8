@@ -13,7 +13,7 @@ public enum CPUProfile {
      * The profile used for the default Chip-8 implementation.
      */
     CHIP8(0x1000, Bits.EIGHT, 16, Bits.SIXTEEN, Bits.EIGHT,
-            16, Bits.EIGHT, Bits.TWELVE, Bits.SIXTEEN, 0x200);
+            16, Bits.EIGHT, Bits.SIXTEEN, 0x200, Bits.SIXTEEN, Bits.TWELVE);
 
     private final int memorySize;
     private final Bits memoryRegisterBits;
@@ -25,11 +25,13 @@ public enum CPUProfile {
     private final Bits iRegisterBits;
     private final Bits pcRegisterBits;
     private final int programStartAddress;
+    private final Bits instructionBits;
 
     CPUProfile(int memorySize, Bits memoryRegisterBits,
                int stackSize, Bits stackRegisterBits, Bits spRegisterBits,
                int numVRegisters, Bits vRegisterBits,
-               Bits iRegisterBits, Bits pcRegisterBits, int programStartAddress) {
+               Bits pcRegisterBits, int programStartAddress,
+               Bits instructionBits, Bits iRegisterBits) {
         this.memorySize = memorySize;
         this.memoryRegisterBits = memoryRegisterBits;
         this.stackSize = stackSize;
@@ -37,9 +39,10 @@ public enum CPUProfile {
         this.spRegisterBits = spRegisterBits;
         this.numVRegisters = numVRegisters;
         this.vRegisterBits = vRegisterBits;
-        this.iRegisterBits = iRegisterBits;
         this.pcRegisterBits = pcRegisterBits;
         this.programStartAddress = programStartAddress;
+        this.instructionBits = instructionBits;
+        this.iRegisterBits = iRegisterBits;
     }
 
     /**
@@ -110,5 +113,12 @@ public enum CPUProfile {
      */
     public int getProgramStartAddress() {
         return programStartAddress;
+    }
+
+    /**
+     * @return The number of bits used for each instruction.
+     */
+    public Bits getInstructionBits() {
+        return instructionBits;
     }
 }

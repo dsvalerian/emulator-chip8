@@ -8,12 +8,13 @@ import com.github.dsvalerian.chip8.data.Register;
 import com.github.dsvalerian.chip8.util.Constants;
 
 /**
- * @inheritDocs
+ * {@inheritDoc}
  *
  * The default implementation of {@link CPU}.
  */
 public class Chip8CPU implements CPU {
     private final CPUProfile PROFILE = CPUProfile.CHIP8;
+    private final int PC_STEP_SIZE = PROFILE.getInstructionBits().getValue() / Constants.ONE_BYTE_BITS;
 
     private Chip8CPUState state;
     private Chip8Interpreter instructions;
@@ -27,12 +28,12 @@ public class Chip8CPU implements CPU {
     public Chip8CPU() {
         state = new Chip8CPUState();
         instructions = new Chip8Interpreter(state);
-        instructionBuffer = new Register(Constants.CHIP8_INSTRUCTION_BITS);
+        instructionBuffer = new Register(PROFILE.getInstructionBits());
         program = ROM.fromEmpty();
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public void processNextInstruction() {
         // Read and execute the next instruction. The state has the program and program counter already.
@@ -41,7 +42,7 @@ public class Chip8CPU implements CPU {
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public boolean hasMoreInstructions() {
         return state.readPc() < PROFILE.getProgramStartAddress() + program.getSize() &&
@@ -49,7 +50,7 @@ public class Chip8CPU implements CPU {
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public void loadProgram(ROM program) {
         this.program = program;
@@ -63,10 +64,10 @@ public class Chip8CPU implements CPU {
     private void loadNextInstruction() {
         int instructionValue = 0;
 
-        for (int i = 0; i < Constants.CHIP8_PC_STEP_SIZE; i++) {
+        for (int i = 0; i < PC_STEP_SIZE; i++) {
             // Big endian, so bit shift the first values more, and the last isn't shifted at all.
             int byteValue = state.readMemory(state.readPc() + i);
-            byteValue = byteValue << (Constants.CHIP8_PC_STEP_SIZE - i - 1) * Constants.ONE_BYTE_BITS;
+            byteValue = byteValue << (PC_STEP_SIZE - i - 1) * Constants.ONE_BYTE_BITS;
             instructionValue += byteValue;
         }
 
