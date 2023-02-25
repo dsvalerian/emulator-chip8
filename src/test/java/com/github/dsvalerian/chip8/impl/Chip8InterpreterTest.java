@@ -1,4 +1,4 @@
-package com.github.dsvalerian.chip8;
+package com.github.dsvalerian.chip8.impl;
 
 import com.github.dsvalerian.chip8.data.Register;
 import com.github.dsvalerian.chip8.util.Constants;
@@ -6,12 +6,14 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class InstructionsTest {
-    private CPUState state;
+public class Chip8InterpreterTest {
+    private Chip8CPUState state;
+    private Chip8Interpreter instructions;
 
     @BeforeEach
     public void setUp() {
-        state = new CPUState(CPUProfile.CHIP8);
+        state = new Chip8CPUState();
+        instructions = new Chip8Interpreter(state);
     }
 
     @Test
@@ -21,22 +23,22 @@ public class InstructionsTest {
 
         // CALL 0x455
         instruction.set(0x2455);
-        Instructions.execute(state, instruction);
+        instructions.executeInstruction(instruction);
         Assertions.assertEquals(0x0455, state.readPc());
 
         // CALL 0xFFF
         instruction.set(0x2FFF);
-        Instructions.execute(state, instruction);
+        instructions.executeInstruction(instruction);
         Assertions.assertEquals(0x0FFF, state.readPc());
 
         // RET
         instruction.set(0x00EE);
-        Instructions.execute(state, instruction);
+        instructions.executeInstruction(instruction);
         Assertions.assertEquals(0x0455, state.readPc());
 
         // RET
         instruction.set(0x00EE);
-        Instructions.execute(state, instruction);
+        instructions.executeInstruction(instruction);
         Assertions.assertEquals(0x0000, state.readPc());
     }
 
@@ -47,7 +49,7 @@ public class InstructionsTest {
 
         // JP 0x150
         instruction.set(0x1150);
-        Instructions.execute(state, instruction);
+        instructions.executeInstruction(instruction);
         Assertions.assertEquals(0x150, state.readPc());
     }
 }

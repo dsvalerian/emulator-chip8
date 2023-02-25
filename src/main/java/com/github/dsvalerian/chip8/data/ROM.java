@@ -88,6 +88,15 @@ public class ROM extends MemoryBlock {
     }
 
     /**
+     * Return a new empty ROM.
+     *
+     * @return An empty {@link ROM}.
+     */
+    public static ROM fromEmpty() {
+        return new ROM(new int[0], Bits.EIGHT);
+    }
+
+    /**
      * Unsupported operation. Cannot set an address in read-only memory.
      */
     @Override
