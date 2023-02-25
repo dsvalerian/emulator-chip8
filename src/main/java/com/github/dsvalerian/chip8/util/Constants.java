@@ -7,5 +7,10 @@ public class Constants {
     /**
      * The number of bits in one byte.
      */
-    public static final int ONE_BYTE_BITS = 8;
+    public static final int ONE_BYTE = 8;
+
+    /**
+     * The number of bits in two bytes.
+     */
+    public static final int TWO_BYTES = 16;
 }

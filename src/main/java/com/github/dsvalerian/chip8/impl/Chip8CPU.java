@@ -14,10 +14,10 @@ import com.github.dsvalerian.chip8.util.Constants;
  */
 public class Chip8CPU implements CPU {
     private final CPUProfile PROFILE = CPUProfile.CHIP8;
-    private final int PC_STEP_SIZE = PROFILE.getInstructionBits().getValue() / Constants.ONE_BYTE_BITS;
+    private final int PC_STEP_SIZE = PROFILE.getInstructionBits().getValue() / Constants.ONE_BYTE;
 
     private Chip8CPUState state;
-    private Chip8Interpreter instructions;
+    private Chip8Interpreter interpreter;
 
     private Register instructionBuffer;
     private ROM program;
@@ -27,7 +27,7 @@ public class Chip8CPU implements CPU {
      */
     public Chip8CPU() {
         state = new Chip8CPUState();
-        instructions = new Chip8Interpreter(state);
+        interpreter = new Chip8Interpreter(state);
         instructionBuffer = new Register(PROFILE.getInstructionBits());
         program = ROM.fromEmpty();
     }
@@ -38,7 +38,7 @@ public class Chip8CPU implements CPU {
     public void processNextInstruction() {
         // Read and execute the next instruction. The state has the program and program counter already.
         loadNextInstruction();
-        instructions.executeInstruction(instructionBuffer);
+        interpreter.executeInstruction(instructionBuffer);
     }
 
     /**
@@ -67,7 +67,7 @@ public class Chip8CPU implements CPU {
         for (int i = 0; i < PC_STEP_SIZE; i++) {
             // Big endian, so bit shift the first values more, and the last isn't shifted at all.
             int byteValue = state.readMemory(state.readPc() + i);
-            byteValue = byteValue << (PC_STEP_SIZE - i - 1) * Constants.ONE_BYTE_BITS;
+            byteValue = byteValue << (PC_STEP_SIZE - i - 1) * Constants.ONE_BYTE;
             instructionValue += byteValue;
         }
 
