@@ -145,6 +145,10 @@ public class Chip8Interpreter implements Interpreter {
         }
     }
 
+    private void incrementPc() {
+        state.setPc(state.readPc() + PC_STEP_SIZE);
+    }
+
     /**
      * Get the x value, aka the second nibble, from an instruction.
      *
@@ -202,6 +206,7 @@ public class Chip8Interpreter implements Interpreter {
      */
     private void sys(int address) {
         // Ignore.
+        incrementPc();
     }
 
     /**
@@ -247,8 +252,10 @@ public class Chip8Interpreter implements Interpreter {
     private void skipIfVxEqualKk(int x, int kk) {
         // skip instruction if register Vx == kk
         if (state.readV(x) == kk) {
-            state.setPc(state.readPc() + PC_STEP_SIZE);
+            incrementPc();
         }
+
+        incrementPc();
     }
 
     /**
@@ -259,8 +266,10 @@ public class Chip8Interpreter implements Interpreter {
     private void skipIfVxEqualVy(int x, int y) {
         // skip instruction if register Vx == Vy
         if (state.readV(x) == state.readV(y)) {
-            state.setPc(state.readPc() + PC_STEP_SIZE);
+            incrementPc();
         }
+
+        incrementPc();
     }
 
     /**
@@ -271,8 +280,10 @@ public class Chip8Interpreter implements Interpreter {
     private void skipIfVxNotEqualKk(int x, int kk) {
         // skip instruction if register Vx == kk
         if (state.readV(x) != kk) {
-            state.setPc(state.readPc() + PC_STEP_SIZE);
+            incrementPc();
         }
+
+        incrementPc();
     }
 
     /**
@@ -283,8 +294,10 @@ public class Chip8Interpreter implements Interpreter {
     private void skipIfVxNotEqualVy(int x, int y) {
         // skip instruction if register Vx != Vy
         if (state.readV(x) != state.readV(y)) {
-            state.setPc(state.readPc() + PC_STEP_SIZE);
+            incrementPc();
         }
+
+        incrementPc();
     }
 
     /**
@@ -309,6 +322,8 @@ public class Chip8Interpreter implements Interpreter {
      */
     private void loadByteIntoVx(int x, int kk) {
         state.setV(x, kk);
+
+        incrementPc();
     }
 
     /**
@@ -317,6 +332,8 @@ public class Chip8Interpreter implements Interpreter {
      */
     private void loadVyIntoVx(int x, int y) {
         state.setV(x, state.readV(y));
+
+        incrementPc();
     }
 
     /**
@@ -325,6 +342,8 @@ public class Chip8Interpreter implements Interpreter {
      */
     private void loadNnnIntoI(int nnn) {
         state.setI(nnn);
+
+        incrementPc();
     }
 
     /**
@@ -334,6 +353,8 @@ public class Chip8Interpreter implements Interpreter {
     private void addKkToVx(int x, int kk) {
         int value = state.readV(x) + kk;
         state.setV(x, value & 0x00FF);
+
+        incrementPc();
     }
 
     /**
@@ -347,6 +368,8 @@ public class Chip8Interpreter implements Interpreter {
 
         state.setV(x, value & 0x00FF);
         state.setV(0xF, carry);
+
+        incrementPc();
     }
 
     /**
@@ -357,6 +380,8 @@ public class Chip8Interpreter implements Interpreter {
      */
     private void or(int x, int y) {
         state.setV(x, state.readV(x) | state.readV(y));
+
+        incrementPc();
     }
 
     /**
@@ -367,6 +392,8 @@ public class Chip8Interpreter implements Interpreter {
      */
     private void and(int x, int y) {
         state.setV(x, state.readV(x) & state.readV(y));
+
+        incrementPc();
     }
 
     /**
@@ -377,6 +404,8 @@ public class Chip8Interpreter implements Interpreter {
      */
     private void xor(int x, int y) {
         state.setV(x, state.readV(x) ^ state.readV(y));
+
+        incrementPc();
     }
 
     /**
@@ -390,6 +419,8 @@ public class Chip8Interpreter implements Interpreter {
 
         state.setV(x, value & 0x00FF);
         state.setV(0xF, notBorrow);
+
+        incrementPc();
     }
 
     /**
@@ -403,6 +434,8 @@ public class Chip8Interpreter implements Interpreter {
 
         state.setV(x, value & 0x00FF);
         state.setV(0xF, notBorrow);
+
+        incrementPc();
     }
 
     /**
@@ -416,6 +449,8 @@ public class Chip8Interpreter implements Interpreter {
 
         state.setV(x, value);
         state.setV(0xF, vf & 0x00FF);
+
+        incrementPc();
     }
 
     /**
@@ -429,6 +464,8 @@ public class Chip8Interpreter implements Interpreter {
 
         state.setV(x, value);
         state.setV(0xF, vf & 0x00FF);
+
+        incrementPc();
     }
 
     /**
@@ -436,7 +473,7 @@ public class Chip8Interpreter implements Interpreter {
      * The program counter is set to nnn plus the value of V0.
      */
     private void jumpV0PlusNnn(int nnn) {
-        state.setV(0x0, nnn);
+        state.setPc(state.readV(0x0) + nnn);
     }
 
     /**
@@ -445,6 +482,8 @@ public class Chip8Interpreter implements Interpreter {
      */
     private void rand(int x, int kk) {
         state.setV(x, kk & random.nextInt(256));
+
+        incrementPc();
     }
 
     /**
@@ -466,6 +505,8 @@ public class Chip8Interpreter implements Interpreter {
      */
     private void loadDtIntoX(int x) {
         state.setV(x, state.readDt());
+
+        incrementPc();
     }
 
     /**
@@ -482,6 +523,8 @@ public class Chip8Interpreter implements Interpreter {
      */
     private void loadXIntoDt(int x) {
         state.setDt(state.readV(x));
+
+        incrementPc();
     }
 
      /**
@@ -490,6 +533,8 @@ public class Chip8Interpreter implements Interpreter {
      */
      private void loadXIntoSt(int x) {
          state.setSt(state.readV(x));
+
+         incrementPc();
      }
 
      /**
@@ -498,6 +543,8 @@ public class Chip8Interpreter implements Interpreter {
      */
      private void addVxToI(int x) {
          state.setI(state.readI() + state.readV(x));
+
+         incrementPc();
      }
 
      /**
@@ -524,6 +571,8 @@ public class Chip8Interpreter implements Interpreter {
          for (int i = 0; i < x; i++) {
              state.setMemory(state.readI() + i, state.readV(i));
          }
+
+         incrementPc();
      }
 
      /**
@@ -534,5 +583,7 @@ public class Chip8Interpreter implements Interpreter {
          for (int i = 0; i < x; i++) {
              state.setV(i, state.readMemory(state.readI() + i));
          }
+
+         incrementPc();
      }
 }
