@@ -6,6 +6,8 @@ import com.github.dsvalerian.chip8.Interpreter;
 import com.github.dsvalerian.chip8.data.Register;
 import com.github.dsvalerian.chip8.exception.IllegalInstructionException;
 
+import java.util.Random;
+
 import static com.github.dsvalerian.chip8.util.Constants.*;
 
 /**
@@ -18,6 +20,7 @@ public class Chip8Interpreter implements Interpreter {
     private final int PC_STEP_SIZE = PROFILE.getInstructionBits().getValue() / BYTE;
 
     private Chip8CPUState state;
+    private Random random;
 
     /**
      * Constructs a {@link Chip8Interpreter} with an assigned {@link Chip8CPUState}.
@@ -26,6 +29,7 @@ public class Chip8Interpreter implements Interpreter {
      */
     public Chip8Interpreter(Chip8CPUState state) {
         this.state = state;
+        random = new Random();
     }
 
     /**
@@ -42,7 +46,7 @@ public class Chip8Interpreter implements Interpreter {
             case 0x0000:
                 switch(instruction & 0x0FFF) {
                     // 00E0
-                    case 0x0E0: cls(); break;
+                    case 0x0E0: clearScreen(); break;
                     // 00EE
                     case 0x0EE: ret(); break;
                     // 0nnn
@@ -50,28 +54,28 @@ public class Chip8Interpreter implements Interpreter {
                 }
                 break;
             // 1nnn
-            case 0x1000: jp(getNnn(instruction)); break;
+            case 0x1000: jumpNnn(getNnn(instruction)); break;
             // 2nnn
-            case 0x2000: call(getNnn(instruction)); break;
+            case 0x2000: callNnn(getNnn(instruction)); break;
             // 3xkk
-            case 0x3000: seByte(getX(instruction), getKk(instruction)); break;
+            case 0x3000: skipIfVxEqualKk(getX(instruction), getKk(instruction)); break;
             // 4xkk
-            case 0x4000: sneByte(getX(instruction), getKk(instruction)); break;
+            case 0x4000: skipIfVxNotEqualKk(getX(instruction), getKk(instruction)); break;
             case 0x5000:
                 switch (instruction & 0x000F) {
                     // 5xy0
-                    case 0x0: seRegister(getX(instruction), getY(instruction)); break;
+                    case 0x0: skipIfVxEqualVy(getX(instruction), getY(instruction)); break;
                     default: throw new IllegalInstructionException(instruction);
                 }
                 break;
             // 6xkk
-            case 0x6000: ldByte(getX(instruction), getKk(instruction)); break;
+            case 0x6000: loadByteIntoVx(getX(instruction), getKk(instruction)); break;
             // 7xkk
-            case 0x7000: addByte(getX(instruction), getKk(instruction)); break;
+            case 0x7000: addKkToVx(getX(instruction), getKk(instruction)); break;
             case 0x8000:
                 switch (instruction & 0x000F) {
                     // 8xy0
-                    case 0x0: ldRegister(getX(instruction), getY(instruction)); break;
+                    case 0x0: loadVyIntoVx(getX(instruction), getY(instruction)); break;
                     // 8xy1
                     case 0x1: or(getX(instruction), getY(instruction)); break;
                     // 8xy2
@@ -79,13 +83,13 @@ public class Chip8Interpreter implements Interpreter {
                     // 8xy3
                     case 0x3: xor(getX(instruction), getY(instruction)); break;
                     // 8xy4
-                    case 0x4: addRegister(getX(instruction), getY(instruction)); break;
+                    case 0x4: addVyToVx(getX(instruction), getY(instruction)); break;
                     // 8xy5
-                    case 0x5: sub(getX(instruction), getY(instruction)); break;
+                    case 0x5: subtractVyFromVx(getX(instruction), getY(instruction)); break;
                     // 8xy6
                     case 0x6: shr(getX(instruction), getY(instruction)); break;
                     // 8xy7
-                    case 0x7: subn(getX(instruction), getY(instruction)); break;
+                    case 0x7: subtractVxFromVy(getX(instruction), getY(instruction)); break;
                     // 8xyE
                     case 0xE: shl(getX(instruction), getY(instruction)); break;
                     default: throw new IllegalInstructionException(instruction);
@@ -94,8 +98,47 @@ public class Chip8Interpreter implements Interpreter {
             case 0x9000:
                 switch (instruction & 0x000F) {
                     // 9xy0
-                    case 0x0: sneRegister(getX(instruction), getY(instruction)); break;
+                    case 0x0: skipIfVxNotEqualVy(getX(instruction), getY(instruction)); break;
                     default: throw new IllegalInstructionException(instruction);
+                }
+                break;
+            // Annn
+            case 0xA000: loadNnnIntoI(getNnn(instruction)); break;
+            // Bnnn
+            case 0xB000: jumpV0PlusNnn(getNnn(instruction)); break;
+            // Cxkk
+            case 0xC000: rand(getX(instruction), getKk(instruction)); break;
+            // Dxyn
+            case 0xD000: draw(getX(instruction), getY(instruction), getNibble(instruction));
+            case 0xE000:
+                switch (instruction & 0x00FF) {
+                    // Ex9E
+                    case 0x9E: skipIfKeyPressed(getX(instruction)); break;
+                    // ExA1
+                    case 0xA1: skipIfKeyNotPressed(getX(instruction)); break;
+                    default: throw new IllegalInstructionException(instruction);
+                }
+                break;
+            case 0xF000:
+                switch (instruction & 0x00FF) {
+                    // Fx07
+                    case 0x07: loadDtIntoX(getX(instruction)); break;
+                    // Fx0A
+                    case 0x0A: loadOnKeyPress(getX(instruction)); break;
+                    // Fx15
+                    case 0x15: loadXIntoDt(getX(instruction)); break;
+                    // Fx18
+                    case 0x18: loadXIntoSt(getX(instruction)); break;
+                    // Fx1E
+                    case 0x1E: addVxToI(getX(instruction)); break;
+                    // Fx29
+                    case 0x29: loadSpriteIntoI(getX(instruction)); break;
+                    // Fx33
+                    case 0x33: loadDecimalIntoI(getX(instruction)); break;
+                    // Fx55
+                    case 0x55: loadVRegistersIntoIAddress(getX(instruction)); break;
+                    // Fx65
+                    case 0x65: loadIBlockIntoVRegisters(getX(instruction)); break;
                 }
                 break;
             default: throw new IllegalInstructionException(instruction);
@@ -143,6 +186,16 @@ public class Chip8Interpreter implements Interpreter {
     }
 
     /**
+     * Get the n value, aka the last nibble, from an instruction.
+     *
+     * @param instruction The instruction to get the n value from.
+     * @return The last nibble in the instruction.
+     */
+    private int getNibble(int instruction) {
+        return instruction & 0x000F;
+    }
+
+    /**
      * 0nnn - SYS addr
      * This instruction is only used on the old computers on which Chip-8 was originally implemented.
      * It is ignored by modern interpreters.
@@ -155,7 +208,7 @@ public class Chip8Interpreter implements Interpreter {
      * 00E0 - CLS
      * Clear the display.
      */
-    private void cls() {
+    private void clearScreen() {
         // todo clear the screen
     }
 
@@ -172,7 +225,7 @@ public class Chip8Interpreter implements Interpreter {
      * 1nnn - JP addr
      * The interpreter sets the program counter to nnn.
      */
-    private void jp(int address) {
+    private void jumpNnn(int address) {
         state.setPc(address);
     }
 
@@ -181,7 +234,7 @@ public class Chip8Interpreter implements Interpreter {
      * The interpreter increments the stack pointer, then puts the current PC on the top of the stack.
      * The PC is then set to nnn.
      */
-    private void call(int address) {
+    private void callNnn(int address) {
         state.pushStack(state.readPc());
         state.setPc(address);
     }
@@ -191,7 +244,7 @@ public class Chip8Interpreter implements Interpreter {
      * The interpreter compares register Vx to kk, and if they are equal,
      * increments the program counter by 2.
      */
-    private void seByte(int x, int kk) {
+    private void skipIfVxEqualKk(int x, int kk) {
         // skip instruction if register Vx == kk
         if (state.readV(x) == kk) {
             state.setPc(state.readPc() + PC_STEP_SIZE);
@@ -203,7 +256,7 @@ public class Chip8Interpreter implements Interpreter {
      * The interpreter compares register Vx to register Vy, and if they are equal,
      * increments the program counter by 2.
      */
-    private void seRegister(int x, int y) {
+    private void skipIfVxEqualVy(int x, int y) {
         // skip instruction if register Vx == Vy
         if (state.readV(x) == state.readV(y)) {
             state.setPc(state.readPc() + PC_STEP_SIZE);
@@ -215,7 +268,7 @@ public class Chip8Interpreter implements Interpreter {
      * The interpreter compares register Vx to kk, and if they are not equal,
      * increments the program counter by 2.
      */
-    private void sneByte(int x, int kk) {
+    private void skipIfVxNotEqualKk(int x, int kk) {
         // skip instruction if register Vx == kk
         if (state.readV(x) != kk) {
             state.setPc(state.readPc() + PC_STEP_SIZE);
@@ -227,7 +280,7 @@ public class Chip8Interpreter implements Interpreter {
      * The values of Vx and Vy are compared, and if they are not equal,
      * the program counter is increased by 2.
      */
-    private void sneRegister(int x, int y) {
+    private void skipIfVxNotEqualVy(int x, int y) {
         // skip instruction if register Vx != Vy
         if (state.readV(x) != state.readV(y)) {
             state.setPc(state.readPc() + PC_STEP_SIZE);
@@ -235,10 +288,26 @@ public class Chip8Interpreter implements Interpreter {
     }
 
     /**
+     * Ex9E - SKP Vx
+     * Checks the keyboard, and if the key corresponding to the value of Vx is currently in the down position, PC is increased by 2.
+     */
+    private void skipIfKeyPressed(int x) {
+        // todo implement
+    }
+
+    /**
+     * ExA1 - SKNP Vx
+     * Checks the keyboard, and if the key corresponding to the value of Vx is currently in the up position, PC is increased by 2.
+     */
+    private void skipIfKeyNotPressed(int x) {
+        // todo implement
+    }
+
+    /**
      * 6xkk - LD Vx, byte
      * The interpreter puts the value kk into register Vx.
      */
-    private void ldByte(int x, int kk) {
+    private void loadByteIntoVx(int x, int kk) {
         state.setV(x, kk);
     }
 
@@ -246,15 +315,23 @@ public class Chip8Interpreter implements Interpreter {
      * 8xy0 - LD Vx, Vy
      * Stores the value of register Vy in register Vx.
      */
-    private void ldRegister(int x, int y) {
+    private void loadVyIntoVx(int x, int y) {
         state.setV(x, state.readV(y));
+    }
+
+    /**
+     * Annn - LD I, addr
+     * The value of register I is set to nnn.
+     */
+    private void loadNnnIntoI(int nnn) {
+        state.setI(nnn);
     }
 
     /**
      * 7xkk - ADD Vx, byte
      * Adds the value kk to the value of register Vx, then stores the result in Vx.
      */
-    private void addByte(int x, int kk) {
+    private void addKkToVx(int x, int kk) {
         int value = state.readV(x) + kk;
         state.setV(x, value & 0x00FF);
     }
@@ -264,7 +341,7 @@ public class Chip8Interpreter implements Interpreter {
      * The values of Vx and Vy are added together. If the result is greater than 8 bits (i.e., > 255,)
      * VF is set to 1, otherwise 0. Only the lowest 8 bits of the result are kept, and stored in Vx.
      */
-    private void addRegister(int x, int y) {
+    private void addVyToVx(int x, int y) {
         int value = state.readV(x) + state.readV(y);
         int carry = value > 0x00FF ? 1 : 0;
 
@@ -307,7 +384,7 @@ public class Chip8Interpreter implements Interpreter {
      * If Vx > Vy, then VF is set to 1, otherwise 0. Then Vy is subtracted from Vx,
      * and the results stored in Vx.
      */
-    private void sub(int x, int y) {
+    private void subtractVyFromVx(int x, int y) {
         int notBorrow = state.readV(x) > state.readV(y) ? 1 : 0;
         int value = state.readV(x) - state.readV(y);
 
@@ -320,7 +397,7 @@ public class Chip8Interpreter implements Interpreter {
      * If Vy > Vx, then VF is set to 1, otherwise 0. Then Vx is subtracted from Vy,
      * and the results stored in Vx.
      */
-    private void subn(int x, int y) {
+    private void subtractVxFromVy(int x, int y) {
         int notBorrow = state.readV(y) > state.readV(x) ? 1 : 0;
         int value = state.readV(y) - state.readV(x);
 
@@ -353,4 +430,109 @@ public class Chip8Interpreter implements Interpreter {
         state.setV(x, value);
         state.setV(0xF, vf & 0x00FF);
     }
+
+    /**
+     * Bnnn - JP V0, addr
+     * The program counter is set to nnn plus the value of V0.
+     */
+    private void jumpV0PlusNnn(int nnn) {
+        state.setV(0x0, nnn);
+    }
+
+    /**
+     * Cxkk - RND Vx, byte
+     * Generates a random number from 0 to 255, which is then ANDed with the value kk. The results are stored in Vx.
+     */
+    private void rand(int x, int kk) {
+        state.setV(x, kk & random.nextInt(256));
+    }
+
+    /**
+     * Dxyn - DRW Vx, Vy, nibble
+     * The interpreter reads n bytes from memory, starting at the address stored in I.
+     * These bytes are then displayed as sprites on screen at coordinates (Vx, Vy). Sprites are XORed
+     * onto the existing screen. If this causes any pixels to be erased, VF is set to 1, otherwise it is set to 0.
+     * If the sprite is positioned so part of it is outside the coordinates of the display,
+     * it wraps around to the opposite side of the screen. See instruction 8xy3 for more information on XOR,
+     * and section 2.4, Display, for more information on the Chip-8 screen and sprites.
+     */
+    private void draw(int x, int y, int nibble) {
+        // todo implement
+    }
+
+    /**
+     * Fx07 - LD Vx, DT
+     * The value of DT is placed into Vx.
+     */
+    private void loadDtIntoX(int x) {
+        state.setV(x, state.readDt());
+    }
+
+    /**
+     * Fx0A - LD Vx, K
+     * All execution stops until a key is pressed, then the value of that key is stored in Vx.
+     */
+    private void loadOnKeyPress(int x) {
+        // todo implement
+    }
+
+    /**
+     * Fx15 - LD DT, Vx
+     * DT is set equal to the value of Vx.
+     */
+    private void loadXIntoDt(int x) {
+        state.setDt(state.readV(x));
+    }
+
+     /**
+     * Fx18 - LD ST, Vx
+     * ST is set equal to the value of Vx.
+     */
+     private void loadXIntoSt(int x) {
+         state.setSt(state.readV(x));
+     }
+
+     /**
+     * Fx1E - ADD I, Vx
+     * The values of I and Vx are added, and the results are stored in I.
+     */
+     private void addVxToI(int x) {
+         state.setI(state.readI() + state.readV(x));
+     }
+
+     /**
+     * Fx29 - LD F, Vx
+     * The value of I is set to the location for the hexadecimal sprite corresponding to the value of Vx.
+     */
+     private void loadSpriteIntoI(int x) {
+         // todo implement
+     }
+
+     /**
+     * Fx33 - LD B, Vx
+     * The interpreter takes the decimal value of Vx, and places the hundreds digit in memory at location in I, the tens digit at location I+1, and the ones digit at location I+2.
+     */
+     private void loadDecimalIntoI(int x) {
+         // todo implement
+     }
+
+     /**
+     * Fx55 - LD [I], Vx
+     * The interpreter copies the values of registers V0 through Vx into memory, starting at the address in I.
+     */
+     private void loadVRegistersIntoIAddress(int x) {
+         for (int i = 0; i < x; i++) {
+             state.setMemory(state.readI() + i, state.readV(i));
+         }
+     }
+
+     /**
+     * Fx65 - LD Vx, [I]
+     * The interpreter reads values from memory starting at location I into registers V0 through Vx.
+     */
+     private void loadIBlockIntoVRegisters(int x) {
+         for (int i = 0; i < x; i++) {
+             state.setV(i, state.readMemory(state.readI() + i));
+         }
+     }
 }

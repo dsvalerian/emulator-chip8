@@ -66,7 +66,7 @@ public interface CPUState {
     void setI(int value);
 
     /**
-     * Set the value stored in the PC register.
+     * Read the value stored in the PC register.
      *
      * @return The value.
      */
@@ -78,4 +78,32 @@ public interface CPUState {
      * @param value The value.
      */
     void setPc(int value);
+
+    /**
+     * Read the value stored in the delay timer register.
+     *
+     * @return The value.
+     */
+    int readDt();
+
+    /**
+     * Set the value stored in the delay timer register.
+     *
+     * @param value The value.
+     */
+    void setDt(int value);
+
+    /**
+     * Read the value stored in the sound timer register.
+     *
+     * @return The value.
+     */
+    int readSt();
+
+    /**
+     * Set the value stored in the sound timer register.
+     *
+     * @param value The value.
+     */
+    void setSt(int value);
 }

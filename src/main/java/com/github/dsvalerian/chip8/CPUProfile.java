@@ -13,7 +13,8 @@ public enum CPUProfile {
      * The profile used for the default Chip-8 implementation.
      */
     CHIP8(0x1000, Bits.EIGHT, 16, Bits.SIXTEEN, Bits.EIGHT,
-            16, Bits.EIGHT, Bits.SIXTEEN, 0x200, Bits.SIXTEEN, Bits.TWELVE);
+            16, Bits.EIGHT, Bits.SIXTEEN, 0x200, Bits.SIXTEEN, Bits.TWELVE,
+            Bits.EIGHT, Bits.EIGHT);
 
     private final int memorySize;
     private final Bits memoryRegisterBits;
@@ -26,12 +27,14 @@ public enum CPUProfile {
     private final Bits pcRegisterBits;
     private final int programStartAddress;
     private final Bits instructionBits;
+    private final Bits dtRegisterBits;
+    private final Bits stRegisterBits;
 
     CPUProfile(int memorySize, Bits memoryRegisterBits,
                int stackSize, Bits stackRegisterBits, Bits spRegisterBits,
                int numVRegisters, Bits vRegisterBits,
                Bits pcRegisterBits, int programStartAddress,
-               Bits instructionBits, Bits iRegisterBits) {
+               Bits instructionBits, Bits iRegisterBits, Bits dtRegisterBits, Bits stRegisterBits) {
         this.memorySize = memorySize;
         this.memoryRegisterBits = memoryRegisterBits;
         this.stackSize = stackSize;
@@ -43,6 +46,9 @@ public enum CPUProfile {
         this.programStartAddress = programStartAddress;
         this.instructionBits = instructionBits;
         this.iRegisterBits = iRegisterBits;
+        this.dtRegisterBits = dtRegisterBits;
+        this.stRegisterBits = stRegisterBits;
+
     }
 
     /**
@@ -106,6 +112,20 @@ public enum CPUProfile {
      */
     public Bits getPcRegisterBits() {
         return pcRegisterBits;
+    }
+
+    /**
+     * @return The number of bits the delay timer {@link Register} can store.
+     */
+    public Bits getDtRegisterBits() {
+        return dtRegisterBits;
+    }
+
+    /**
+     * @return The number of bits the sound timer {@link Register} can store.
+     */
+    public Bits getStRegisterBits() {
+        return stRegisterBits;
     }
 
     /**

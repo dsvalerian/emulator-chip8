@@ -25,6 +25,9 @@ public class Chip8CPUState implements CPUState {
     private Register pcRegister;
     private Register spRegister;
 
+    private Register dtRegister;
+    private Register stRegister;
+
     private int programSize;
 
     /**
@@ -39,6 +42,9 @@ public class Chip8CPUState implements CPUState {
         iRegister = new Register(PROFILE.getIRegisterBits());
         pcRegister = new Register(PROFILE.getPcRegisterBits());
         spRegister = new Register(PROFILE.getSpRegisterBits());
+
+        dtRegister = new Register(PROFILE.getDtRegisterBits());
+        stRegister = new Register(PROFILE.getStRegisterBits());
 
         programSize = 0;
     }
@@ -131,6 +137,38 @@ public class Chip8CPUState implements CPUState {
     @Override
     public void setPc(int value) {
         pcRegister.set(value);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int readDt() {
+        return dtRegister.read();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setDt(int value) {
+        dtRegister.set(value);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int readSt() {
+        return stRegister.read();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setSt(int value) {
+        stRegister.set(value);
     }
 
     /**
