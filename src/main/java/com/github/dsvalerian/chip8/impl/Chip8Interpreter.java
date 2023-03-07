@@ -5,10 +5,8 @@ import com.github.dsvalerian.chip8.CPUState;
 import com.github.dsvalerian.chip8.Interpreter;
 import com.github.dsvalerian.chip8.data.Register;
 import com.github.dsvalerian.chip8.exception.IllegalInstructionException;
-import com.github.dsvalerian.chip8.util.Constants;
 
-import static com.github.dsvalerian.chip8.util.Constants.ONE_BYTE;
-import static com.github.dsvalerian.chip8.util.Constants.TWO_BYTES;
+import static com.github.dsvalerian.chip8.util.Constants.*;
 
 /**
  * {@inheritDoc}
@@ -17,7 +15,7 @@ import static com.github.dsvalerian.chip8.util.Constants.TWO_BYTES;
  */
 public class Chip8Interpreter implements Interpreter {
     private final CPUProfile PROFILE = CPUProfile.CHIP8;
-    private final int PC_STEP_SIZE = PROFILE.getInstructionBits().getValue() / Constants.ONE_BYTE;
+    private final int PC_STEP_SIZE = PROFILE.getInstructionBits().getValue() / BYTE;
 
     private Chip8CPUState state;
 
@@ -43,109 +41,105 @@ public class Chip8Interpreter implements Interpreter {
         switch (instruction & 0xF000) {
             case 0x0000:
                 switch(instruction & 0x0FFF) {
-                    case 0x0E0:
-                        // 00E0
-                        cls();
-                        break;
-                    case 0x0EE:
-                        // 00EE
-                        ret();
-                        break;
-                    default:
-                        // 0nnn
-                        sys(instruction & 0x0FFF);
-                        break;
+                    // 00E0
+                    case 0x0E0: cls(); break;
+                    // 00EE
+                    case 0x0EE: ret(); break;
+                    // 0nnn
+                    default: sys(getNnn(instruction)); break;
                 }
                 break;
-            case 0x1000:
-                // 1nnn
-                jp(instruction & 0x0FFF);
-                break;
-            case 0x2000:
-                // 2nnn
-                call(instruction & 0x0FFF);
-                break;
-            case 0x3000:
-                // 3xkk
-                seByte((instruction & 0x0F00) >> TWO_BYTES, instruction & 0x00FF);
-                break;
-            case 0x4000:
-                // 4xkk
-                sneByte((instruction & 0x0F00) >> TWO_BYTES, instruction & 0x00FF);
-                break;
+            // 1nnn
+            case 0x1000: jp(getNnn(instruction)); break;
+            // 2nnn
+            case 0x2000: call(getNnn(instruction)); break;
+            // 3xkk
+            case 0x3000: seByte(getX(instruction), getKk(instruction)); break;
+            // 4xkk
+            case 0x4000: sneByte(getX(instruction), getKk(instruction)); break;
             case 0x5000:
                 switch (instruction & 0x000F) {
-                    case 0x0:
-                        // 5xy0
-                        seRegister((instruction & 0x0F00) >> TWO_BYTES, (instruction & 0x00F0) >> ONE_BYTE);
-                        break;
-                    default:
-                        throw new IllegalInstructionException(instruction);
+                    // 5xy0
+                    case 0x0: seRegister(getX(instruction), getY(instruction)); break;
+                    default: throw new IllegalInstructionException(instruction);
                 }
                 break;
-            case 0x6000:
-                // 6xkk
-                ldByte((instruction & 0x0F00) >> TWO_BYTES, instruction & 0x00FF);
-                break;
-            case 0x7000:
-                // 7xkk
-                addByte((instruction & 0x0F00) >> TWO_BYTES, instruction & 0x00FF);
-                break;
+            // 6xkk
+            case 0x6000: ldByte(getX(instruction), getKk(instruction)); break;
+            // 7xkk
+            case 0x7000: addByte(getX(instruction), getKk(instruction)); break;
             case 0x8000:
                 switch (instruction & 0x000F) {
-                    case 0x0:
-                        // 8xy0
-                        ldRegister((instruction & 0x0F00) >> TWO_BYTES, (instruction & 0x00F0) >> ONE_BYTE);
-                        break;
-                    case 0x1:
-                        // 8xy1
-                        or((instruction & 0x0F00) >> TWO_BYTES, (instruction & 0x00F0) >> ONE_BYTE);
-                        break;
-                    case 0x2:
-                        // 8xy2
-                        and((instruction & 0x0F00) >> TWO_BYTES, (instruction & 0x00F0) >> ONE_BYTE);
-                        break;
-                    case 0x3:
-                        // 8xy3
-                        xor((instruction & 0x0F00) >> TWO_BYTES, (instruction & 0x00F0) >> ONE_BYTE);
-                        break;
-                    case 0x4:
-                        // 8xy4
-                        addRegister((instruction & 0x0F00) >> TWO_BYTES, (instruction & 0x00F0) >> ONE_BYTE);
-                        break;
-                    case 0x5:
-                        // 8xy5
-                        sub((instruction & 0x0F00) >> TWO_BYTES, (instruction & 0x00F0) >> ONE_BYTE);
-                        break;
-                    case 0x6:
-                        // 8xy6
-                        shr((instruction & 0x0F00) >> TWO_BYTES, (instruction & 0x00F0) >> ONE_BYTE);
-                        break;
-                    case 0x7:
-                        // 8xy7
-                        subn((instruction & 0x0F00) >> TWO_BYTES, (instruction & 0x00F0) >> ONE_BYTE);
-                        break;
-                    case 0xE:
-                        // 8xyE
-                        shl((instruction & 0x0F00) >> TWO_BYTES, (instruction & 0x00F0) >> ONE_BYTE);
-                        break;
-                    default:
-                        throw new IllegalInstructionException(instruction);
+                    // 8xy0
+                    case 0x0: ldRegister(getX(instruction), getY(instruction)); break;
+                    // 8xy1
+                    case 0x1: or(getX(instruction), getY(instruction)); break;
+                    // 8xy2
+                    case 0x2: and(getX(instruction), getY(instruction)); break;
+                    // 8xy3
+                    case 0x3: xor(getX(instruction), getY(instruction)); break;
+                    // 8xy4
+                    case 0x4: addRegister(getX(instruction), getY(instruction)); break;
+                    // 8xy5
+                    case 0x5: sub(getX(instruction), getY(instruction)); break;
+                    // 8xy6
+                    case 0x6: shr(getX(instruction), getY(instruction)); break;
+                    // 8xy7
+                    case 0x7: subn(getX(instruction), getY(instruction)); break;
+                    // 8xyE
+                    case 0xE: shl(getX(instruction), getY(instruction)); break;
+                    default: throw new IllegalInstructionException(instruction);
                 }
                 break;
             case 0x9000:
                 switch (instruction & 0x000F) {
-                    case 0x0:
-                        // 9xy0
-                        sneRegister((instruction & 0x0F00) >> TWO_BYTES, (instruction & 0x00F0) >> ONE_BYTE);
-                        break;
-                    default:
-                        throw new IllegalInstructionException(instruction);
+                    // 9xy0
+                    case 0x0: sneRegister(getX(instruction), getY(instruction)); break;
+                    default: throw new IllegalInstructionException(instruction);
                 }
                 break;
-            default:
-                throw new IllegalInstructionException(instruction);
+            default: throw new IllegalInstructionException(instruction);
         }
+    }
+
+    /**
+     * Get the x value, aka the second nibble, from an instruction.
+     *
+     * @param instruction The instruction to get the x value from.
+     * @return The second nibble in the instruction.
+     */
+    private int getX(int instruction) {
+        return (instruction & 0x0F00) >> BYTE;
+    }
+
+    /**
+     * Get the y value, aka the third nibble, from an instruction.
+     *
+     * @param instruction The instruction to get the y value from.
+     * @return The third nibble in the instruction.
+     */
+    private int getY(int instruction) {
+        return (instruction & 0x00F0) >> NIBBLE;
+    }
+
+    /**
+     * Get the kk value, aka the last byte, from an instruction.
+     *
+     * @param instruction The instruction to get the kk value from.
+     * @return The last byte in the instruction.
+     */
+    private int getKk(int instruction) {
+        return instruction & 0x00FF;
+    }
+
+    /**
+     * Get the nnn value, aka the last three nibbles, from an instruction.
+     *
+     * @param instruction The instruction to get the nnn value from.
+     * @return The last three nibbles in the instruction.
+     */
+    private int getNnn(int instruction) {
+        return instruction & 0x0FFF;
     }
 
     /**

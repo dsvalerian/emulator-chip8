@@ -5,12 +5,12 @@ package com.github.dsvalerian.chip8.util;
  */
 public class Constants {
     /**
-     * The number of bits in one byte.
+     * The number of bits in one nibble.
      */
-    public static final int ONE_BYTE = 8;
+    public static final int NIBBLE = 4;
 
     /**
-     * The number of bits in two bytes.
+     * The number of bits in one byte.
      */
-    public static final int TWO_BYTES = 16;
+    public static final int BYTE = 8;
 }

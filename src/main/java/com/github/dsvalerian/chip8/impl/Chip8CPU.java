@@ -14,7 +14,7 @@ import com.github.dsvalerian.chip8.util.Constants;
  */
 public class Chip8CPU implements CPU {
     private final CPUProfile PROFILE = CPUProfile.CHIP8;
-    private final int PC_STEP_SIZE = PROFILE.getInstructionBits().getValue() / Constants.ONE_BYTE;
+    private final int PC_STEP_SIZE = PROFILE.getInstructionBits().getValue() / Constants.BYTE;
 
     private Chip8CPUState state;
     private Chip8Interpreter interpreter;
@@ -67,7 +67,7 @@ public class Chip8CPU implements CPU {
         for (int i = 0; i < PC_STEP_SIZE; i++) {
             // Big endian, so bit shift the first values more, and the last isn't shifted at all.
             int byteValue = state.readMemory(state.readPc() + i);
-            byteValue = byteValue << (PC_STEP_SIZE - i - 1) * Constants.ONE_BYTE;
+            byteValue = (byteValue << (PC_STEP_SIZE - i - 1)) * Constants.BYTE;
             instructionValue += byteValue;
         }
 
@@ -79,7 +79,8 @@ public class Chip8CPU implements CPU {
      * at a specified address.
      *
      * @param state The {@link Chip8CPUState} into which the new {@link MemoryBlock} will be loaded.
-     * @param address The address in the {@link Chip8CPUState}'s memory at which the new {@link MemoryBlock} will be loaded.
+     * @param address The address in the {@link Chip8CPUState}'s memory at which the
+     *                new {@link MemoryBlock} will be loaded.
      * @param memory The {@link MemoryBlock} to load into the {@link Chip8CPUState}.
      */
     private void loadMemory(Chip8CPUState state, int address, MemoryBlock memory) {
