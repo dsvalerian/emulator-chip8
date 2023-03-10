@@ -1,4 +1,4 @@
-package com.github.dsvalerian.chip8.impl;
+package com.github.dsvalerian.chip8;
 
 import com.github.dsvalerian.chip8.exception.FullStackException;
 import org.junit.jupiter.api.Assertions;
@@ -7,14 +7,14 @@ import org.junit.jupiter.api.Test;
 
 import java.util.EmptyStackException;
 
-public class Chip8CPUStateTest {
+public class CPUStateTest {
     private final int STACK_SIZE = 16;
 
-    private Chip8CPUState state;
+    private CPUState state;
 
     @BeforeEach
     public void setUp() {
-        state = new Chip8CPUState();
+        state = new CPUState();
     }
 
     @Test

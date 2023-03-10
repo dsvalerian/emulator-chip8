@@ -1,4 +1,4 @@
-package com.github.dsvalerian.chip8.impl;
+package com.github.dsvalerian.chip8;
 
 import com.github.dsvalerian.chip8.data.Bits;
 import com.github.dsvalerian.chip8.data.Register;
@@ -6,18 +6,18 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class Chip8InterpreterTest {
+public class InterpreterTest {
     private final Bits INSTRUCTION_BITS = Bits.SIXTEEN;
     private final int PC_STEP_SIZE = 2;
 
-    private Chip8CPUState state;
-    private Chip8Interpreter interpreter;
+    private CPUState state;
+    private Interpreter interpreter;
     private Register currentInstruction;
 
     @BeforeEach
     public void setUp() {
-        state = new Chip8CPUState();
-        interpreter = new Chip8Interpreter(state, PC_STEP_SIZE);
+        state = new CPUState();
+        interpreter = new Interpreter(state, PC_STEP_SIZE);
         currentInstruction = new Register(INSTRUCTION_BITS);
 
         Assertions.assertEquals(0x00, state.readPc());
