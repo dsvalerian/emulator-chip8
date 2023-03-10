@@ -20,6 +20,7 @@ public class Interpreter {
      * Constructs a {@link Interpreter} with an assigned {@link CPUState}.
      *
      * @param state The {@link CPUState} that will be used when processing instructions.
+     * @param pcStepSize The size that the program counter should increment to get to the next instruction.
      */
     public Interpreter(CPUState state, int pcStepSize) {
         this.state = state;
