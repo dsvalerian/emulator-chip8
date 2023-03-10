@@ -1,1 +1,1 @@
-packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"com.github.dsvalerian.chip8"},{"l":"com.github.dsvalerian.chip8.data"},{"l":"com.github.dsvalerian.chip8.exception"},{"l":"com.github.dsvalerian.chip8.impl"},{"l":"com.github.dsvalerian.chip8.util"}];updateSearchResults();
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"com.github.dsvalerian.chip8"},{"l":"com.github.dsvalerian.chip8.data"},{"l":"com.github.dsvalerian.chip8.exception"}];updateSearchResults();
