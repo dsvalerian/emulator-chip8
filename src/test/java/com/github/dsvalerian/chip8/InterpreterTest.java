@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test;
 
 public class InterpreterTest {
     private final Bits INSTRUCTION_BITS = Bits.SIXTEEN;
-    private final int PC_STEP_SIZE = 2;
 
     private CPUState state;
     private Interpreter interpreter;
@@ -17,7 +16,7 @@ public class InterpreterTest {
     @BeforeEach
     public void setUp() {
         state = new CPUState();
-        interpreter = new Interpreter(state, PC_STEP_SIZE);
+        interpreter = new Interpreter(state);
         currentInstruction = new Register(INSTRUCTION_BITS);
 
         Assertions.assertEquals(0x00, state.readPc());
@@ -273,6 +272,20 @@ public class InterpreterTest {
         currentInstruction.set(0x9010);
         interpreter.executeInstruction(currentInstruction);
         Assertions.assertEquals(0xC, state.readPc());
+    }
+
+    @Test
+    public void advancedLoadTest() {
+        // LD V0, 254
+        currentInstruction.set(0x60FE);
+        interpreter.executeInstruction(currentInstruction);
+
+        // Fx33 - LD B, Vx
+        currentInstruction.set(0xF033);
+        interpreter.executeInstruction(currentInstruction);
+        Assertions.assertEquals(2, state.readMemory(state.readI()));
+        Assertions.assertEquals(5, state.readMemory(state.readI() + 1));
+        Assertions.assertEquals(4, state.readMemory(state.readI() + 2));
     }
 
     // todo loading sprite

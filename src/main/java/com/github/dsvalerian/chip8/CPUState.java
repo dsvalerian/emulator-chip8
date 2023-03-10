@@ -8,7 +8,7 @@ import com.github.dsvalerian.chip8.exception.FullStackException;
 import java.util.EmptyStackException;
 
 /**
- * Representation of the CPU state. Keeps track of all memory, registers, counters, delays, etc, and include
+ * Representation of the Chip-8 CPU state. Keeps track of all memory, registers, counters, delays, etc, and include
  * read and set methods for each.
  */
 public class CPUState {
@@ -33,8 +33,6 @@ public class CPUState {
     private Register delayTimer;
     private Register soundTimer;
 
-    private int programSize;
-
     /**
      * Construct a {@link CPUState}.
      */
@@ -47,8 +45,6 @@ public class CPUState {
         programCounter = new Register(PROGRAM_COUNTER_SIZE);
         delayTimer = new Register(DELAY_TIMER_SIZE);
         soundTimer = new Register(SOUND_TIMER_SIZE);
-
-        programSize = 0;
     }
 
     /**

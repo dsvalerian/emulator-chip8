@@ -6,12 +6,11 @@ import com.github.dsvalerian.chip8.data.ROM;
 import com.github.dsvalerian.chip8.data.Register;
 
 /**
- * Representation of the full system. In charge of all the necessary parts for loading and
+ * Representation of the Chip-8 machine. In charge of all the necessary parts for loading and
  * executing programs.
  */
 public class CPU {
     private final Bits INSTRUCTION_BITS = Bits.SIXTEEN;
-    private final int PC_STEP_SIZE = 2;
     private final int PROGRAM_START_ADDRESS = 0x200;
 
     private CPUState state;
@@ -25,7 +24,7 @@ public class CPU {
      */
     public CPU() {
         state = new CPUState();
-        interpreter = new Interpreter(state, PC_STEP_SIZE);
+        interpreter = new Interpreter(state);
         instructionBuffer = new Register(INSTRUCTION_BITS);
         program = ROM.fromEmpty();
     }

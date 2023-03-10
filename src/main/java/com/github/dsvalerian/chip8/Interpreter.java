@@ -1,31 +1,28 @@
 package com.github.dsvalerian.chip8;
 
-import com.github.dsvalerian.chip8.data.Bits;
 import com.github.dsvalerian.chip8.data.Register;
 import com.github.dsvalerian.chip8.exception.IllegalInstructionException;
 
 import java.util.Random;
 
 /**
- * Handles instruction processing.
+ * Handles Chip-8 instruction processing.
  */
 public class Interpreter {
-    private final Bits V_REGISTER_SIZE = Bits.EIGHT;
+    private final int PC_STEP_SIZE = 2;
+    private final int MAX_V_REGISTER_VALUE = 256;
 
     private CPUState state;
     private Random random;
-    private int pcStepSize;
 
     /**
      * Constructs a {@link Interpreter} with an assigned {@link CPUState}.
      *
      * @param state The {@link CPUState} that will be used when processing instructions.
-     * @param pcStepSize The size that the program counter should increment to get to the next instruction.
      */
-    public Interpreter(CPUState state, int pcStepSize) {
+    public Interpreter(CPUState state) {
         this.state = state;
         random = new Random();
-        this.pcStepSize = pcStepSize;
     }
 
     /**
@@ -143,7 +140,7 @@ public class Interpreter {
     }
 
     private void incrementPc() {
-        state.setPc(state.readPc() + pcStepSize);
+        state.setPc(state.readPc() + PC_STEP_SIZE);
     }
 
     /**
@@ -212,6 +209,8 @@ public class Interpreter {
      */
     private void clearScreen() {
         // todo clear the screen
+
+        incrementPc();
     }
 
     /**
@@ -303,6 +302,8 @@ public class Interpreter {
      */
     private void skipIfKeyPressed(int x) {
         // todo implement
+
+        incrementPc();
     }
 
     /**
@@ -311,6 +312,8 @@ public class Interpreter {
      */
     private void skipIfKeyNotPressed(int x) {
         // todo implement
+
+        incrementPc();
     }
 
     /**
@@ -415,7 +418,7 @@ public class Interpreter {
 
         // if newValue is negative, add it to the max value (so it wraps around, essentially)
         int newValue = state.readV(x) - state.readV(y);
-        newValue = newValue < 0 ? (1 << V_REGISTER_SIZE.getValue()) + newValue : newValue;
+        newValue = newValue < 0 ? MAX_V_REGISTER_VALUE + newValue : newValue;
 
         state.setV(x, newValue);
 
@@ -432,7 +435,7 @@ public class Interpreter {
 
         // if newValue is negative, add it to the max value (so it wraps around, essentially)
         int newValue = state.readV(y) - state.readV(x);
-        newValue = newValue < 0 ? (1 << V_REGISTER_SIZE.getValue()) + newValue : newValue;
+        newValue = newValue < 0 ? MAX_V_REGISTER_VALUE + newValue : newValue;
 
         state.setV(x, newValue);
 
@@ -460,7 +463,7 @@ public class Interpreter {
      */
     private void shl(int x, int y) {
         state.setV(x, state.readV(y) << 1);
-        state.setV(0xF, (state.readV(y) & 0b10000000) >> (V_REGISTER_SIZE.getValue() - 1));
+        state.setV(0xF, (state.readV(y) & 0b10000000) >> 7);
 
         incrementPc();
     }
@@ -494,6 +497,8 @@ public class Interpreter {
      */
     private void draw(int x, int y, int nibble) {
         // todo implement
+
+        incrementPc();
     }
 
     /**
@@ -512,6 +517,8 @@ public class Interpreter {
      */
     private void loadOnKeyPress(int x) {
         // todo implement
+
+        incrementPc();
     }
 
     /**
@@ -550,14 +557,26 @@ public class Interpreter {
      */
      private void loadSpriteIntoI(int x) {
          // todo implement
+
+         incrementPc();
      }
 
      /**
      * Fx33 - LD B, Vx
-     * The interpreter takes the decimal value of Vx, and places the hundreds digit in memory at location in I, the tens digit at location I+1, and the ones digit at location I+2.
+     * The interpreter takes the decimal value of Vx, and places the hundreds digit in memory at location in I,
+      * the tens digit at location I+1, and the ones digit at location I+2.
      */
      private void loadDecimalIntoI(int x) {
-         // todo implement
+         int value =  state.readV(x);
+         int hundredsDigit = value / 100;
+         int tensDigit = (value % 100) / 10;
+         int onesDigit = value % 10;
+
+         state.setMemory(state.readI(), hundredsDigit);
+         state.setMemory(state.readI() + 1, tensDigit);
+         state.setMemory(state.readI() + 2, onesDigit);
+
+         incrementPc();
      }
 
      /**
