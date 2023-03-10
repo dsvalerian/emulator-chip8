@@ -209,6 +209,8 @@ public class Interpreter {
      */
     private void clearScreen() {
         // todo clear the screen
+
+        incrementPc();
     }
 
     /**
@@ -300,6 +302,8 @@ public class Interpreter {
      */
     private void skipIfKeyPressed(int x) {
         // todo implement
+
+        incrementPc();
     }
 
     /**
@@ -308,6 +312,8 @@ public class Interpreter {
      */
     private void skipIfKeyNotPressed(int x) {
         // todo implement
+
+        incrementPc();
     }
 
     /**
@@ -491,6 +497,8 @@ public class Interpreter {
      */
     private void draw(int x, int y, int nibble) {
         // todo implement
+
+        incrementPc();
     }
 
     /**
@@ -509,6 +517,8 @@ public class Interpreter {
      */
     private void loadOnKeyPress(int x) {
         // todo implement
+
+        incrementPc();
     }
 
     /**
@@ -547,14 +557,26 @@ public class Interpreter {
      */
      private void loadSpriteIntoI(int x) {
          // todo implement
+
+         incrementPc();
      }
 
      /**
      * Fx33 - LD B, Vx
-     * The interpreter takes the decimal value of Vx, and places the hundreds digit in memory at location in I, the tens digit at location I+1, and the ones digit at location I+2.
+     * The interpreter takes the decimal value of Vx, and places the hundreds digit in memory at location in I,
+      * the tens digit at location I+1, and the ones digit at location I+2.
      */
      private void loadDecimalIntoI(int x) {
-         // todo implement
+         int value =  state.readV(x);
+         int hundredsDigit = value / 100;
+         int tensDigit = (value % 100) / 10;
+         int onesDigit = value % 10;
+
+         state.setMemory(state.readI(), hundredsDigit);
+         state.setMemory(state.readI() + 1, tensDigit);
+         state.setMemory(state.readI() + 2, onesDigit);
+
+         incrementPc();
      }
 
      /**

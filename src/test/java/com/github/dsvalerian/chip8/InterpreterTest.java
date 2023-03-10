@@ -274,6 +274,20 @@ public class InterpreterTest {
         Assertions.assertEquals(0xC, state.readPc());
     }
 
+    @Test
+    public void advancedLoadTest() {
+        // LD V0, 254
+        currentInstruction.set(0x60FE);
+        interpreter.executeInstruction(currentInstruction);
+
+        // Fx33 - LD B, Vx
+        currentInstruction.set(0xF033);
+        interpreter.executeInstruction(currentInstruction);
+        Assertions.assertEquals(2, state.readMemory(state.readI()));
+        Assertions.assertEquals(5, state.readMemory(state.readI() + 1));
+        Assertions.assertEquals(4, state.readMemory(state.readI() + 2));
+    }
+
     // todo loading sprite
     // todo load decimal
     // todo load on keypress
