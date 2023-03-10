@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test;
 
 public class InterpreterTest {
     private final Bits INSTRUCTION_BITS = Bits.SIXTEEN;
-    private final int PC_STEP_SIZE = 2;
 
     private CPUState state;
     private Interpreter interpreter;
@@ -17,7 +16,7 @@ public class InterpreterTest {
     @BeforeEach
     public void setUp() {
         state = new CPUState();
-        interpreter = new Interpreter(state, PC_STEP_SIZE);
+        interpreter = new Interpreter(state);
         currentInstruction = new Register(INSTRUCTION_BITS);
 
         Assertions.assertEquals(0x00, state.readPc());
