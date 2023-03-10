@@ -11,12 +11,12 @@ public class MemoryBlock {
      * a specified number of bits.
      *
      * @param size Size of the memory block.
-     * @param registerBits Number of bits each {@link Register} in the block can store.
+     * @param registerSize Size of each {@link Register} in the block.
      */
-    public MemoryBlock(int size, Bits registerBits) {
+    public MemoryBlock(int size, Bits registerSize) {
         memory = new Register[size];
         for (int i = 0; i < size; i++) {
-            memory[i] = new Register(registerBits);
+            memory[i] = new Register(registerSize);
         }
     }
 
@@ -25,12 +25,12 @@ public class MemoryBlock {
      * a specified number of bits.
      *
      * @param data The data array. Each element must be able to fit in a register.
-     * @param registerBits Number of bits each {@link Register} in the block can store.
+     * @param registerSize Size of each {@link Register} in the block.
      */
-    public MemoryBlock(int[] data, Bits registerBits) {
+    public MemoryBlock(int[] data, Bits registerSize) {
         memory = new Register[data.length];
         for (int i = 0; i < data.length; i++) {
-            memory[i] = new Register(registerBits);
+            memory[i] = new Register(registerSize);
             memory[i].set(data[i]);
         }
     }
@@ -53,7 +53,7 @@ public class MemoryBlock {
      */
     public int read(int address) {
         if (address >= this.getSize() || address < 0x00) {
-            throw new IllegalArgumentException("address must be within memory space of " + this.getSize() + " bytes");
+            throw new IllegalArgumentException("Address must be within memory space of " + this.getSize() + " registers.");
         }
 
         return memory[address].read();
@@ -97,8 +97,8 @@ public class MemoryBlock {
      */
     public void set(int address, int value) {
         if (address >= this.getSize() || address < 0x00) {
-            throw new IllegalArgumentException("address must be within memory space of " +
-                    this.getSize() + " registers");
+            throw new IllegalArgumentException("Address must be within memory space of " +
+                    this.getSize() + " registers.");
         }
 
         memory[address].set(value);

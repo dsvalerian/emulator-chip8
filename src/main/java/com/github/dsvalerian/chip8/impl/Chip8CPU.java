@@ -1,7 +1,7 @@
 package com.github.dsvalerian.chip8.impl;
 
 import com.github.dsvalerian.chip8.CPU;
-import com.github.dsvalerian.chip8.CPUProfile;
+import com.github.dsvalerian.chip8.data.Bits;
 import com.github.dsvalerian.chip8.data.MemoryBlock;
 import com.github.dsvalerian.chip8.data.ROM;
 import com.github.dsvalerian.chip8.data.Register;
@@ -13,8 +13,9 @@ import com.github.dsvalerian.chip8.util.Constants;
  * The default implementation of {@link CPU}.
  */
 public class Chip8CPU implements CPU {
-    private final CPUProfile PROFILE = CPUProfile.CHIP8;
-    private final int PC_STEP_SIZE = PROFILE.getInstructionBits().getValue() / Constants.BYTE;
+    private final Bits INSTRUCTION_BITS = Bits.SIXTEEN;
+    private final int PC_STEP_SIZE = 2;
+    private final int PROGRAM_START_ADDRESS = 0x200;
 
     private Chip8CPUState state;
     private Chip8Interpreter interpreter;
@@ -23,12 +24,12 @@ public class Chip8CPU implements CPU {
     private ROM program;
 
     /**
-     * Construct a {@link Chip8CPU}. Uses the default {@link CPUProfile}.
+     * Construct a {@link Chip8CPU}.
      */
     public Chip8CPU() {
         state = new Chip8CPUState();
-        interpreter = new Chip8Interpreter(state);
-        instructionBuffer = new Register(PROFILE.getInstructionBits());
+        interpreter = new Chip8Interpreter(state, PC_STEP_SIZE);
+        instructionBuffer = new Register(INSTRUCTION_BITS);
         program = ROM.fromEmpty();
     }
 
@@ -45,8 +46,8 @@ public class Chip8CPU implements CPU {
      * {@inheritDoc}
      */
     public boolean hasMoreInstructions() {
-        return state.readPc() < PROFILE.getProgramStartAddress() + program.getSize() &&
-                state.readPc() >= PROFILE.getProgramStartAddress();
+        return state.readPc() < PROGRAM_START_ADDRESS + program.getSize() &&
+                state.readPc() >= PROGRAM_START_ADDRESS;
     }
 
     /**
@@ -54,7 +55,7 @@ public class Chip8CPU implements CPU {
      */
     public void loadProgram(ROM program) {
         this.program = program;
-        loadMemory(state, PROFILE.getProgramStartAddress(), program);
+        loadMemory(state, PROGRAM_START_ADDRESS, program);
         resetPc();
     }
 
@@ -93,6 +94,6 @@ public class Chip8CPU implements CPU {
      * Set the program counter to the program start address.
      */
     private void resetPc() {
-        state.setPc(PROFILE.getProgramStartAddress());
+        state.setPc(PROGRAM_START_ADDRESS);
     }
 }

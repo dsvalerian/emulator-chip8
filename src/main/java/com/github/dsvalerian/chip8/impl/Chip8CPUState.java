@@ -1,7 +1,7 @@
 package com.github.dsvalerian.chip8.impl;
 
-import com.github.dsvalerian.chip8.CPUProfile;
 import com.github.dsvalerian.chip8.CPUState;
+import com.github.dsvalerian.chip8.data.Bits;
 import com.github.dsvalerian.chip8.data.MemoryBlock;
 import com.github.dsvalerian.chip8.data.Register;
 import com.github.dsvalerian.chip8.exception.FullStackException;
@@ -14,37 +14,41 @@ import java.util.EmptyStackException;
  * The default implementation of {@link CPUState}.
  */
 public class Chip8CPUState implements CPUState {
-    private final CPUProfile PROFILE = CPUProfile.CHIP8;
+    private final int MEMORY_SIZE = 4096;
+    private final Bits MEMORY_REGISTER_SIZE = Bits.EIGHT;
+    private final int STACK_SIZE = 16;
+    private final Bits STACK_REGISTER_SIZE = Bits.SIXTEEN;
+    private final Bits STACK_POINTER_SIZE = Bits.EIGHT;
+    private final int NUM_V_REGISTERS = 16;
+    private final Bits V_REGISTER_SIZE = Bits.EIGHT;
+    private final Bits I_REGISTER_SIZE = Bits.TWELVE;
+    private final Bits PROGRAM_COUNTER_SIZE = Bits.SIXTEEN;
+    private final Bits DELAY_TIMER_SIZE = Bits.EIGHT;
+    private final Bits SOUND_TIMER_SIZE = Bits.EIGHT;
 
     private MemoryBlock memory;
     private MemoryBlock stack;
-
+    private Register stackPointer;
     private MemoryBlock vRegisters;
-
     private Register iRegister;
-    private Register pcRegister;
-    private Register spRegister;
-
-    private Register dtRegister;
-    private Register stRegister;
+    private Register programCounter;
+    private Register delayTimer;
+    private Register soundTimer;
 
     private int programSize;
 
     /**
-     * Construct a {@link Chip8CPUState}. Uses the default {@link CPUProfile}.
+     * Construct a {@link Chip8CPUState}.
      */
     public Chip8CPUState() {
-        memory = new MemoryBlock(PROFILE.getMemorySize(), PROFILE.getMemoryRegisterBits());
-        stack = new MemoryBlock(PROFILE.getStackSize(), PROFILE.getStackRegisterBits());
-
-        vRegisters = new MemoryBlock(PROFILE.getNumVRegisters(), PROFILE.getVRegisterBits());
-
-        iRegister = new Register(PROFILE.getIRegisterBits());
-        pcRegister = new Register(PROFILE.getPcRegisterBits());
-        spRegister = new Register(PROFILE.getSpRegisterBits());
-
-        dtRegister = new Register(PROFILE.getDtRegisterBits());
-        stRegister = new Register(PROFILE.getStRegisterBits());
+        memory = new MemoryBlock(MEMORY_SIZE, MEMORY_REGISTER_SIZE);
+        stack = new MemoryBlock(STACK_SIZE, STACK_REGISTER_SIZE);
+        stackPointer = new Register(STACK_POINTER_SIZE);
+        vRegisters = new MemoryBlock(NUM_V_REGISTERS, V_REGISTER_SIZE);
+        iRegister = new Register(I_REGISTER_SIZE);
+        programCounter = new Register(PROGRAM_COUNTER_SIZE);
+        delayTimer = new Register(DELAY_TIMER_SIZE);
+        soundTimer = new Register(SOUND_TIMER_SIZE);
 
         programSize = 0;
     }
@@ -74,8 +78,8 @@ public class Chip8CPUState implements CPUState {
             throw new EmptyStackException();
         }
 
-        spRegister.set(spRegister.read() - 1);
-        return stack.read(spRegister.read());
+        stackPointer.set(stackPointer.read() - 1);
+        return stack.read(stackPointer.read());
     }
 
     /**
@@ -87,8 +91,8 @@ public class Chip8CPUState implements CPUState {
             throw new FullStackException();
         }
 
-        stack.set(spRegister, value);
-        spRegister.set(spRegister.read() + 1);
+        stack.set(stackPointer, value);
+        stackPointer.set(stackPointer.read() + 1);
     }
 
     /**
@@ -128,7 +132,7 @@ public class Chip8CPUState implements CPUState {
      */
     @Override
     public int readPc() {
-        return pcRegister.read();
+        return programCounter.read();
     }
 
     /**
@@ -136,7 +140,7 @@ public class Chip8CPUState implements CPUState {
      */
     @Override
     public void setPc(int value) {
-        pcRegister.set(value);
+        programCounter.set(value);
     }
 
     /**
@@ -144,7 +148,7 @@ public class Chip8CPUState implements CPUState {
      */
     @Override
     public int readDt() {
-        return dtRegister.read();
+        return delayTimer.read();
     }
 
     /**
@@ -152,7 +156,7 @@ public class Chip8CPUState implements CPUState {
      */
     @Override
     public void setDt(int value) {
-        dtRegister.set(value);
+        delayTimer.set(value);
     }
 
     /**
@@ -160,7 +164,7 @@ public class Chip8CPUState implements CPUState {
      */
     @Override
     public int readSt() {
-        return stRegister.read();
+        return soundTimer.read();
     }
 
     /**
@@ -168,20 +172,20 @@ public class Chip8CPUState implements CPUState {
      */
     @Override
     public void setSt(int value) {
-        stRegister.set(value);
+        soundTimer.set(value);
     }
 
     /**
      * @return True if the subroutine stack is empty.
      */
     private boolean isStackEmpty() {
-        return spRegister.read() == 0;
+        return stackPointer.read() == 0;
     }
 
     /**
      * @return True if the subroutine stack is full.
      */
     private boolean isStackFull() {
-        return spRegister.read() == stack.getSize();
+        return stackPointer.read() == stack.getSize();
     }
 }

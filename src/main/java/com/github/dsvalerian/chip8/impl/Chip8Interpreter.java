@@ -1,8 +1,8 @@
 package com.github.dsvalerian.chip8.impl;
 
-import com.github.dsvalerian.chip8.CPUProfile;
 import com.github.dsvalerian.chip8.CPUState;
 import com.github.dsvalerian.chip8.Interpreter;
+import com.github.dsvalerian.chip8.data.Bits;
 import com.github.dsvalerian.chip8.data.Register;
 import com.github.dsvalerian.chip8.exception.IllegalInstructionException;
 
@@ -16,20 +16,21 @@ import static com.github.dsvalerian.chip8.util.Constants.*;
  * The default implementation of {@link Interpreter}.
  */
 public class Chip8Interpreter implements Interpreter {
-    private final CPUProfile PROFILE = CPUProfile.CHIP8;
-    private final int PC_STEP_SIZE = PROFILE.getInstructionBits().getValue() / BYTE;
+    private final Bits V_REGISTER_SIZE = Bits.EIGHT;
 
     private Chip8CPUState state;
     private Random random;
+    private int pcStepSize;
 
     /**
      * Constructs a {@link Chip8Interpreter} with an assigned {@link Chip8CPUState}.
      *
      * @param state The {@link CPUState} that will be used when processing instructions.
      */
-    public Chip8Interpreter(Chip8CPUState state) {
+    public Chip8Interpreter(Chip8CPUState state, int pcStepSize) {
         this.state = state;
         random = new Random();
+        this.pcStepSize = pcStepSize;
     }
 
     /**
@@ -146,7 +147,7 @@ public class Chip8Interpreter implements Interpreter {
     }
 
     private void incrementPc() {
-        state.setPc(state.readPc() + PC_STEP_SIZE);
+        state.setPc(state.readPc() + pcStepSize);
     }
 
     /**
@@ -414,11 +415,13 @@ public class Chip8Interpreter implements Interpreter {
      * and the results stored in Vx.
      */
     private void subtractVyFromVx(int x, int y) {
-        int notBorrow = state.readV(x) > state.readV(y) ? 1 : 0;
-        int value = state.readV(x) - state.readV(y);
+        state.setV(0xF, state.readV(x) > state.readV(y) ? 1 : 0);
 
-        state.setV(x, value & 0x00FF);
-        state.setV(0xF, notBorrow);
+        // if newValue is negative, add it to the max value (so it wraps around, essentially)
+        int newValue = state.readV(x) - state.readV(y);
+        newValue = newValue < 0 ? (1 << V_REGISTER_SIZE.getValue()) + newValue : newValue;
+
+        state.setV(x, newValue);
 
         incrementPc();
     }
@@ -429,41 +432,39 @@ public class Chip8Interpreter implements Interpreter {
      * and the results stored in Vx.
      */
     private void subtractVxFromVy(int x, int y) {
-        int notBorrow = state.readV(y) > state.readV(x) ? 1 : 0;
-        int value = state.readV(y) - state.readV(x);
+        state.setV(0xF, state.readV(x) < state.readV(y) ? 1 : 0);
 
-        state.setV(x, value & 0x00FF);
-        state.setV(0xF, notBorrow);
+        // if newValue is negative, add it to the max value (so it wraps around, essentially)
+        int newValue = state.readV(y) - state.readV(x);
+        newValue = newValue < 0 ? (1 << V_REGISTER_SIZE.getValue()) + newValue : newValue;
+
+        state.setV(x, newValue);
 
         incrementPc();
     }
 
     /**
      * 8xy6 - SHR Vx {, Vy}
-     * If the least-significant bit of Vx is 1, then VF is set to 1, otherwise 0.
-     * Then Vx is divided by 2.
+     * Store the value of register VY shifted right one bit in register VX
+     * Set register VF to the least significant bit prior to the shift
+     * VY is unchanged
      */
     private void shr(int x, int y) {
-        int vf = (state.readV(x) & 0b1) == 1 ? 1 : 0;
-        int value = state.readV(x) / 2;
-
-        state.setV(x, value);
-        state.setV(0xF, vf & 0x00FF);
+        state.setV(x, state.readV(y) >> 1);
+        state.setV(0xF, state.readV(y) & 0b1);
 
         incrementPc();
     }
 
     /**
      * 8xyE - SHL Vx {, Vy}
-     * If the most-significant bit of Vx is 1, then VF is set to 1, otherwise to 0.
-     * Then Vx is multiplied by 2.
+     * Store the value of register VY shifted left one bit in register VX
+     * Set register VF to the most significant bit prior to the shift
+     * VY is unchanged
      */
     private void shl(int x, int y) {
-        int vf = (state.readV(x) & 0b1) == 1 ? 1 : 0;
-        int value = state.readV(x) * 2;
-
-        state.setV(x, value);
-        state.setV(0xF, vf & 0x00FF);
+        state.setV(x, state.readV(y) << 1);
+        state.setV(0xF, (state.readV(y) & 0b10000000) >> (V_REGISTER_SIZE.getValue() - 1));
 
         incrementPc();
     }
@@ -568,10 +569,11 @@ public class Chip8Interpreter implements Interpreter {
      * The interpreter copies the values of registers V0 through Vx into memory, starting at the address in I.
      */
      private void loadVRegistersIntoIAddress(int x) {
-         for (int i = 0; i < x; i++) {
+         for (int i = 0; i <= x; i++) {
              state.setMemory(state.readI() + i, state.readV(i));
          }
 
+         state.setI(state.readI() + x + 1);
          incrementPc();
      }
 
@@ -580,10 +582,11 @@ public class Chip8Interpreter implements Interpreter {
      * The interpreter reads values from memory starting at location I into registers V0 through Vx.
      */
      private void loadIBlockIntoVRegisters(int x) {
-         for (int i = 0; i < x; i++) {
+         for (int i = 0; i <= x; i++) {
              state.setV(i, state.readMemory(state.readI() + i));
          }
 
+         state.setI(state.readI() + x + 1);
          incrementPc();
      }
 }

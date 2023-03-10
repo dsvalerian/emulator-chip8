@@ -4,18 +4,18 @@ package com.github.dsvalerian.chip8.data;
  * Representation of a single register that can store a specified number of bits.
  */
 public class Register {
-    private Bits numBits;
+    private Bits size;
     private long maxValue;
     private int value;
 
     /**
      * Construct a {@link Register} that is capable of storing a specified number of bits.
      *
-     * @param numBits The number of bits this {@link Register} can store.
+     * @param size The size, in bits, of this {@link Register}.
      */
-    public Register(Bits numBits) {
-        this.numBits = numBits;
-        maxValue = (1 << numBits.getValue()) - 1;
+    public Register(Bits size) {
+        this.size = size;
+        maxValue = (1 << size.getValue()) - 1;
     }
 
     /**
@@ -44,7 +44,7 @@ public class Register {
     public void set(int value) {
         if (value > maxValue || value < 0) {
             throw new IllegalArgumentException("value " + value + " cannot be stored using " +
-                    numBits.getValue() + " bits");
+                    size.getValue() + " bits");
         }
 
         this.value = value;
