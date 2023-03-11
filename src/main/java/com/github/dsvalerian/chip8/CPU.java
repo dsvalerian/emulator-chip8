@@ -1,6 +1,5 @@
 package com.github.dsvalerian.chip8;
 
-import com.github.dsvalerian.chip8.data.MemoryBlock;
 import com.github.dsvalerian.chip8.data.ROM;
 import com.github.dsvalerian.chip8.data.Register;
 

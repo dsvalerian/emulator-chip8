@@ -2,7 +2,6 @@ package com.github.dsvalerian.chip8;
 
 import com.github.dsvalerian.chip8.data.Bits;
 import com.github.dsvalerian.chip8.data.MemoryBlock;
-import com.github.dsvalerian.chip8.data.ROM;
 import com.github.dsvalerian.chip8.data.Register;
 import com.github.dsvalerian.chip8.exception.StackEmptyException;
 import com.github.dsvalerian.chip8.exception.StackFullException;
