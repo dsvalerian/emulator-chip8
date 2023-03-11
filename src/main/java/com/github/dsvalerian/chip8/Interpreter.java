@@ -1,7 +1,8 @@
 package com.github.dsvalerian.chip8;
 
+import com.github.dsvalerian.chip8.data.Bits;
 import com.github.dsvalerian.chip8.data.Register;
-import com.github.dsvalerian.chip8.exception.IllegalInstructionException;
+import com.github.dsvalerian.chip8.exception.UnsupportedInstructionException;
 
 import java.util.Random;
 
@@ -9,19 +10,30 @@ import java.util.Random;
  * Handles Chip-8 instruction processing.
  */
 public class Interpreter {
-    private final int PC_STEP_SIZE = 2;
-    private final int MAX_V_REGISTER_VALUE = 256;
+    /**
+     * The number of bits each instruction uses.
+     */
+    public static final Bits INSTRUCTION_BITS = Bits.SIXTEEN;
+    /**
+     * The size of steps the program counter makes to get to the next instruction.
+     */
+    public static final int PC_STEP_SIZE = 2;
+
+    private final int MAX_V_REGISTER_VALUE = 1 << CPUState.V_REGISTER_SIZE.getValue();
 
     private CPUState state;
+    private Screen screen;
     private Random random;
 
     /**
      * Constructs a {@link Interpreter} with an assigned {@link CPUState}.
      *
      * @param state The {@link CPUState} that will be used when processing instructions.
+     * @param screen The {@link Screen} that will be drawn to when processing instructions.
      */
-    public Interpreter(CPUState state) {
+    public Interpreter(CPUState state, Screen screen) {
         this.state = state;
+        this.screen = screen;
         random = new Random();
     }
 
@@ -59,7 +71,7 @@ public class Interpreter {
                 switch (instruction & 0x000F) {
                     // 5xy0
                     case 0x0: skipIfVxEqualVy(getX(instruction), getY(instruction)); break;
-                    default: throw new IllegalInstructionException(instruction);
+                    default: throw new UnsupportedInstructionException(instruction);
                 }
                 break;
             // 6xkk
@@ -86,14 +98,14 @@ public class Interpreter {
                     case 0x7: subtractVxFromVy(getX(instruction), getY(instruction)); break;
                     // 8xyE
                     case 0xE: shl(getX(instruction), getY(instruction)); break;
-                    default: throw new IllegalInstructionException(instruction);
+                    default: throw new UnsupportedInstructionException(instruction);
                 }
                 break;
             case 0x9000:
                 switch (instruction & 0x000F) {
                     // 9xy0
                     case 0x0: skipIfVxNotEqualVy(getX(instruction), getY(instruction)); break;
-                    default: throw new IllegalInstructionException(instruction);
+                    default: throw new UnsupportedInstructionException(instruction);
                 }
                 break;
             // Annn
@@ -103,14 +115,14 @@ public class Interpreter {
             // Cxkk
             case 0xC000: rand(getX(instruction), getKk(instruction)); break;
             // Dxyn
-            case 0xD000: draw(getX(instruction), getY(instruction), getNibble(instruction));
+            case 0xD000: draw(getX(instruction), getY(instruction), getNibble(instruction)); break;
             case 0xE000:
                 switch (instruction & 0x00FF) {
                     // Ex9E
                     case 0x9E: skipIfKeyPressed(getX(instruction)); break;
                     // ExA1
                     case 0xA1: skipIfKeyNotPressed(getX(instruction)); break;
-                    default: throw new IllegalInstructionException(instruction);
+                    default: throw new UnsupportedInstructionException(instruction);
                 }
                 break;
             case 0xF000:
@@ -135,7 +147,7 @@ public class Interpreter {
                     case 0x65: loadIBlockIntoVRegisters(getX(instruction)); break;
                 }
                 break;
-            default: throw new IllegalInstructionException(instruction);
+            default: throw new UnsupportedInstructionException(instruction);
         }
     }
 
@@ -208,7 +220,7 @@ public class Interpreter {
      * Clear the display.
      */
     private void clearScreen() {
-        // todo clear the screen
+        screen.clearScreen();
 
         incrementPc();
     }
@@ -487,7 +499,7 @@ public class Interpreter {
     }
 
     /**
-     * Dxyn - DRW Vx, Vy, nibble
+     * Dxyn - DRW Vx, Vy, n
      * The interpreter reads n bytes from memory, starting at the address stored in I.
      * These bytes are then displayed as sprites on screen at coordinates (Vx, Vy). Sprites are XORed
      * onto the existing screen. If this causes any pixels to be erased, VF is set to 1, otherwise it is set to 0.
@@ -495,8 +507,28 @@ public class Interpreter {
      * it wraps around to the opposite side of the screen. See instruction 8xy3 for more information on XOR,
      * and section 2.4, Display, for more information on the Chip-8 screen and sprites.
      */
-    private void draw(int x, int y, int nibble) {
-        // todo implement
+    private void draw(int x, int y, int n) {
+        boolean pixelsDeactivated = false;
+        System.out.println(String.format("x: %d, y: %d, n: %d", x, y, n));
+
+        for (int i = 0; i < n; i++) {
+            int spriteRow = state.readMemory(state.readI() + i);
+
+            // Split and draw each bit in the row as a sprite.
+            for (int j = 0; j < 8; j++) {
+                int shiftAmount = 8 - j - 1;
+                int currentBit = (spriteRow & (1 << shiftAmount)) >> shiftAmount;
+                int xCoordinate = (state.readV(x) + j) % Screen.WIDTH;
+                int yCoordinate = (state.readV(y) + i) % Screen.HEIGHT;
+                int oldPixel = screen.readPixel(xCoordinate, yCoordinate);
+                int newPixel = oldPixel ^ currentBit;
+
+                screen.setPixel(xCoordinate, yCoordinate, newPixel);
+                pixelsDeactivated = oldPixel == 1 && newPixel == 0 ? true : pixelsDeactivated;
+            }
+        }
+
+        state.setV(0xF, pixelsDeactivated ? 1 : 0);
 
         incrementPc();
     }
@@ -556,7 +588,7 @@ public class Interpreter {
      * The value of I is set to the location for the hexadecimal sprite corresponding to the value of Vx.
      */
      private void loadSpriteIntoI(int x) {
-         // todo implement
+         state.setI(Sprites.lookUp(state.readV(x) & 0xF));
 
          incrementPc();
      }

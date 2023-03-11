@@ -1,32 +1,37 @@
 package com.github.dsvalerian.chip8;
 
-import com.github.dsvalerian.chip8.data.Bits;
 import com.github.dsvalerian.chip8.data.MemoryBlock;
 import com.github.dsvalerian.chip8.data.ROM;
 import com.github.dsvalerian.chip8.data.Register;
 
 /**
- * Representation of the Chip-8 machine. In charge of all the necessary parts for loading and
+ * Representation of the Chip-8 CPU. In charge of all the necessary parts for loading and
  * executing programs.
  */
 public class CPU {
-    private final Bits INSTRUCTION_BITS = Bits.SIXTEEN;
     private final int PROGRAM_START_ADDRESS = 0x200;
 
     private CPUState state;
     private Interpreter interpreter;
+    private Screen screen;
 
     private Register instructionBuffer;
     private ROM program;
 
     /**
      * Construct a {@link CPU}.
+     *
+     * @param screen The {@link Screen} used by the system.
      */
-    public CPU() {
+    public CPU(Screen screen) {
         state = new CPUState();
-        interpreter = new Interpreter(state);
-        instructionBuffer = new Register(INSTRUCTION_BITS);
+        interpreter = new Interpreter(state, screen);
+        this.screen = screen;
+        instructionBuffer = new Register(Interpreter.INSTRUCTION_BITS);
         program = ROM.fromEmpty();
+
+        // Load sprites into main memory.
+        Sprites.load(state);
     }
 
     /**
@@ -53,7 +58,7 @@ public class CPU {
      */
     public void loadProgram(ROM program) {
         this.program = program;
-        loadMemory(state, PROGRAM_START_ADDRESS, program);
+        state.loadMemory(PROGRAM_START_ADDRESS, program);
         resetPc();
     }
 
@@ -65,21 +70,6 @@ public class CPU {
         int secondByteValue = state.readMemory(state.readPc() + 1);
 
         instructionBuffer.set((firstByteValue << 8) + secondByteValue);
-    }
-
-    /**
-     * Load a block of memory into the main memory of a {@link CPUState}, starting
-     * at a specified address.
-     *
-     * @param state The {@link CPUState} into which the new {@link MemoryBlock} will be loaded.
-     * @param address The address in the {@link CPUState}'s memory at which the
-     *                new {@link MemoryBlock} will be loaded.
-     * @param memory The {@link MemoryBlock} to load into the {@link CPUState}.
-     */
-    private void loadMemory(CPUState state, int address, MemoryBlock memory) {
-        for (int i = 0; i < memory.getSize(); i++) {
-            state.setMemory(address + i, memory.read(i));
-        }
     }
 
     /**
