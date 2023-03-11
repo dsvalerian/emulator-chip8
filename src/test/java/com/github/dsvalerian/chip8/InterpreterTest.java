@@ -1,23 +1,24 @@
 package com.github.dsvalerian.chip8;
 
-import com.github.dsvalerian.chip8.data.Bits;
 import com.github.dsvalerian.chip8.data.Register;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class InterpreterTest {
-    private final Bits INSTRUCTION_BITS = Bits.SIXTEEN;
-
     private CPUState state;
+    private Screen screen;
     private Interpreter interpreter;
     private Register currentInstruction;
 
     @BeforeEach
     public void setUp() {
         state = new CPUState();
-        interpreter = new Interpreter(state);
-        currentInstruction = new Register(INSTRUCTION_BITS);
+        screen = new Screen();
+        interpreter = new Interpreter(state, screen);
+        currentInstruction = new Register(Interpreter.INSTRUCTION_BITS);
+
+        Sprites.load(state);
 
         Assertions.assertEquals(0x00, state.readPc());
     }
@@ -286,6 +287,55 @@ public class InterpreterTest {
         Assertions.assertEquals(2, state.readMemory(state.readI()));
         Assertions.assertEquals(5, state.readMemory(state.readI() + 1));
         Assertions.assertEquals(4, state.readMemory(state.readI() + 2));
+    }
+
+    @Test
+    public void screenTest() {
+        // Fx29 - LD F, V0
+        currentInstruction.set(0xF029);
+        interpreter.executeInstruction(currentInstruction);
+
+        // Dxyn - DRW V0, V0, 5
+        currentInstruction.set(0xD005);
+        interpreter.executeInstruction(currentInstruction);
+
+        // Verify a 4x5 zero is drawn to the screen.
+        Assertions.assertEquals(1, screen.readPixel(0, 0));
+        Assertions.assertEquals(1, screen.readPixel(1, 0));
+        Assertions.assertEquals(1, screen.readPixel(2, 0));
+        Assertions.assertEquals(1, screen.readPixel(3, 0));
+        Assertions.assertEquals(1, screen.readPixel(0, 1));
+        Assertions.assertEquals(0, screen.readPixel(1, 1));
+        Assertions.assertEquals(0, screen.readPixel(2, 1));
+        Assertions.assertEquals(1, screen.readPixel(3, 1));
+        Assertions.assertEquals(1, screen.readPixel(0, 2));
+        Assertions.assertEquals(0, screen.readPixel(1, 2));
+        Assertions.assertEquals(0, screen.readPixel(2, 2));
+        Assertions.assertEquals(1, screen.readPixel(3, 2));
+        Assertions.assertEquals(1, screen.readPixel(0, 3));
+        Assertions.assertEquals(0, screen.readPixel(1, 3));
+        Assertions.assertEquals(0, screen.readPixel(2, 3));
+        Assertions.assertEquals(1, screen.readPixel(3, 3));
+        Assertions.assertEquals(1, screen.readPixel(0, 4));
+        Assertions.assertEquals(1, screen.readPixel(1, 4));
+        Assertions.assertEquals(1, screen.readPixel(2, 4));
+        Assertions.assertEquals(1, screen.readPixel(3, 4));
+
+        // 00E0 - CLS
+        currentInstruction.set(0x00E0);
+        interpreter.executeInstruction(currentInstruction);
+
+        // Verify screen is clear.
+        for (int i = 0; i < Screen.WIDTH; i++) {
+            for (int j = 0; j < Screen.HEIGHT; j++) {
+                Assertions.assertEquals(0, screen.readPixel(i, j));
+            }
+        }
+    }
+
+    @Test
+    public void test() {
+        System.out.println(1 << CPUState.V_REGISTER_SIZE.getValue());
     }
 
     // todo loading sprite

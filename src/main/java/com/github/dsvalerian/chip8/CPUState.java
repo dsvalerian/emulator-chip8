@@ -2,27 +2,60 @@ package com.github.dsvalerian.chip8;
 
 import com.github.dsvalerian.chip8.data.Bits;
 import com.github.dsvalerian.chip8.data.MemoryBlock;
+import com.github.dsvalerian.chip8.data.ROM;
 import com.github.dsvalerian.chip8.data.Register;
-import com.github.dsvalerian.chip8.exception.FullStackException;
-
-import java.util.EmptyStackException;
+import com.github.dsvalerian.chip8.exception.StackEmptyException;
+import com.github.dsvalerian.chip8.exception.StackFullException;
 
 /**
  * Representation of the Chip-8 CPU state. Keeps track of all memory, registers, counters, delays, etc, and include
  * read and set methods for each.
  */
 public class CPUState {
-    private final int MEMORY_SIZE = 4096;
-    private final Bits MEMORY_REGISTER_SIZE = Bits.EIGHT;
-    private final int STACK_SIZE = 16;
-    private final Bits STACK_REGISTER_SIZE = Bits.SIXTEEN;
-    private final Bits STACK_POINTER_SIZE = Bits.EIGHT;
-    private final int NUM_V_REGISTERS = 16;
-    private final Bits V_REGISTER_SIZE = Bits.EIGHT;
-    private final Bits I_REGISTER_SIZE = Bits.TWELVE;
-    private final Bits PROGRAM_COUNTER_SIZE = Bits.SIXTEEN;
-    private final Bits DELAY_TIMER_SIZE = Bits.EIGHT;
-    private final Bits SOUND_TIMER_SIZE = Bits.EIGHT;
+    /**
+     * The size of main memory.
+     */
+    public static final int MEMORY_SIZE = 4096;
+    /**
+     * The number of bits used for each register in main memory.
+     */
+    public static final Bits MEMORY_REGISTER_SIZE = Bits.EIGHT;
+    /**
+     * The size of the program stack.
+     */
+    public static final int STACK_SIZE = 16;
+    /**
+     * The number of bits used for each register in the program stack.
+     */
+    public static final Bits STACK_REGISTER_SIZE = Bits.SIXTEEN;
+    /**
+     * The number of bits used by the stack pointer.
+     */
+    public static final Bits STACK_POINTER_SIZE = Bits.EIGHT;
+    /**
+     * The number of general-purpose V registers.
+     */
+    public static final int NUM_V_REGISTERS = 16;
+    /**
+     * The number of bits used by each general-purpose V register.
+     */
+    public static final Bits V_REGISTER_SIZE = Bits.EIGHT;
+    /**
+     * The number of bits used by the I index register.
+     */
+    public static final Bits I_REGISTER_SIZE = Bits.TWELVE;
+    /**
+     * The number of bits used by the program counter register.
+     */
+    public static final Bits PROGRAM_COUNTER_SIZE = Bits.SIXTEEN;
+    /**
+     * The number of bits used by the delay timer register.
+     */
+    public static final Bits DELAY_TIMER_SIZE = Bits.EIGHT;
+    /**
+     * The number of bits used by the sound timer register.
+     */
+    public static final Bits SOUND_TIMER_SIZE = Bits.EIGHT;
 
     private MemoryBlock memory;
     private MemoryBlock stack;
@@ -68,13 +101,25 @@ public class CPUState {
     }
 
     /**
+     * Load a block of memory into the main memory, starting at a specified address.
+     *
+     * @param address The address in the memory at which the new {@link MemoryBlock} will be loaded.
+     * @param memory The {@link MemoryBlock} to load into the memory.
+     */
+    public void loadMemory(int address, MemoryBlock memory) {
+        for (int i = 0; i < memory.getSize(); i++) {
+            setMemory(address + i, memory.read(i));
+        }
+    }
+
+    /**
      * Set the SP register back and pop the value off the top.
      *
      * @return The popped value.
      */
     public int popStack() {
         if (isStackEmpty()) {
-            throw new EmptyStackException();
+            throw new StackEmptyException();
         }
 
         stackPointer.set(stackPointer.read() - 1);
@@ -88,7 +133,7 @@ public class CPUState {
      */
     public void pushStack(int value) {
         if (isStackFull()) {
-            throw new FullStackException();
+            throw new StackFullException();
         }
 
         stack.set(stackPointer, value);
