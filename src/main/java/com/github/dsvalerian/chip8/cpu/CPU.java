@@ -22,7 +22,14 @@ public class CPU {
     private Register instructionBuffer;
     private ROM program;
 
-    protected CPU(CPUState state, CPUTimings timings, Screen screen, Keyboard keyboard) {
+    /**
+     * Create a new {@link CPU}.
+     * @param state Represents the state of the CPU.
+     * @param timings Handles time-related CPU tasks.
+     * @param screen Represents the system screen.
+     * @param keyboard Represents the state of the keyboard.
+     */
+    public CPU(CPUState state, CPUTimings timings, Screen screen, Keyboard keyboard) {
         this.state = state;
         this.timings = timings;
         this.interpreter = new Interpreter(state, screen, keyboard);

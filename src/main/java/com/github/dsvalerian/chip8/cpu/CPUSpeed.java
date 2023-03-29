@@ -1,5 +1,8 @@
 package com.github.dsvalerian.chip8.cpu;
 
+/**
+ * Values representing the CPU speed in hertz.
+ */
 public enum CPUSpeed {
     /**
      * Half speed of the CPU, at 250hz.

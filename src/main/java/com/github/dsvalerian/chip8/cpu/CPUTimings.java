@@ -1,6 +1,13 @@
 package com.github.dsvalerian.chip8.cpu;
 
+/**
+ * This class is for handling all the time-related CPU tasks, like adhering to clock
+ * cycle frequencies and decrementing delay and sound timers.
+ */
 public class CPUTimings {
+    /**
+     * The number of nanoseconds in a second.
+     */
     protected static final int NANOS_FREQUENCY = 1000000000;
     private static final int TIMERS_FREQUENCY = 60;
     private static final long TIMERS_PERIOD = NANOS_FREQUENCY / TIMERS_FREQUENCY;
@@ -12,6 +19,7 @@ public class CPUTimings {
     /**
      * Create a new {@link CPUTimings} set at a certain speed.
      * @param speed The speed of the CPU.
+     * @param state The {@link CPUState} being used by the {@link CPU}.
      */
     public CPUTimings(CPUSpeed speed, CPUState state) {
         CYCLE_DELTA = NANOS_FREQUENCY / speed.getHertz();

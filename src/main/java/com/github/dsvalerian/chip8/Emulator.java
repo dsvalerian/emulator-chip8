@@ -11,6 +11,10 @@ import com.github.dsvalerian.chip8.io.Screen;
 public class Emulator {
     private static MainWindow gui;
 
+    /**
+     * The main entry point to the program.
+     * @param args Arguments provided to the program.
+     */
     public static void main(String[] args) {
         gui = new MainWindow();
 

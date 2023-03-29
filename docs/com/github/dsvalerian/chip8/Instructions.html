@@ -72,7 +72,7 @@ loadScripts(document, 'script');</script>
 <h1 title="Class Instructions" class="title">Class Instructions</h1>
 </div>
 <div class="inheritance" title="Inheritance Tree"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">java.lang.Object</a>
-<div class="inheritance">com.github.dsvalerian.chip8.Interpreter</div>
+<div class="inheritance">com.github.dsvalerian.chip8.cpu.Interpreter</div>
 </div>
 <section class="class-description" id="class-description">
 <hr>
@@ -107,13 +107,13 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#execute(com.github.dsvalerian.chip8.CPUState,com.github.dsvalerian.chip8.data.Register)" class="member-name-link">execute</a><wbr>(<a href="CPUState.html" title="class in com.github.dsvalerian.chip8">CPUState</a>&nbsp;state,
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#execute(com.github.dsvalerian.chip8.cpu.CPUState,com.github.dsvalerian.chip8.data.Register)" class="member-name-link">execute</a><wbr>(<a href="CPUState.html" title="class in com.github.dsvalerian.chip8">CPUState</a>&nbsp;state,
  <a href="data/Register.html" title="class in com.github.dsvalerian.chip8.data">Register</a>&nbsp;instruction)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">Decode and execute a Chip-8 instruction stored in a <a href="data/Register.html" title="class in com.github.dsvalerian.chip8.data"><code>Register</code></a>.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#load(com.github.dsvalerian.chip8.CPUState,com.github.dsvalerian.chip8.data.Register)" class="member-name-link">load</a><wbr>(<a href="CPUState.html" title="class in com.github.dsvalerian.chip8">CPUState</a>&nbsp;state,
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#load(com.github.dsvalerian.chip8.cpu.CPUState,com.github.dsvalerian.chip8.data.Register)" class="member-name-link">load</a><wbr>(<a href="CPUState.html" title="class in com.github.dsvalerian.chip8">CPUState</a>&nbsp;state,
  <a href="data/Register.html" title="class in com.github.dsvalerian.chip8.data">Register</a>&nbsp;register)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">Load an instruction from main memory in a <a href="CPUState.html" title="class in com.github.dsvalerian.chip8"><code>CPUState</code></a> into a <a href="data/Register.html" title="class in com.github.dsvalerian.chip8.data"><code>Register</code></a>.</div>
@@ -150,7 +150,7 @@ loadScripts(document, 'script');</script>
 <h2>Method Details</h2>
 <ul class="member-list">
 <li>
-<section class="detail" id="load(com.github.dsvalerian.chip8.CPUState,com.github.dsvalerian.chip8.data.Register)">
+<section class="detail" id="load(com.github.dsvalerian.chip8.cpu.CPUState,com.github.dsvalerian.chip8.data.Register)">
 <h3>load</h3>
 <div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">load</span><wbr><span class="parameters">(<a href="CPUState.html" title="class in com.github.dsvalerian.chip8">CPUState</a>&nbsp;state,
  <a href="data/Register.html" title="class in com.github.dsvalerian.chip8.data">Register</a>&nbsp;register)</span></div>
@@ -163,7 +163,7 @@ loadScripts(document, 'script');</script>
 </section>
 </li>
 <li>
-<section class="detail" id="execute(com.github.dsvalerian.chip8.CPUState,com.github.dsvalerian.chip8.data.Register)">
+<section class="detail" id="execute(com.github.dsvalerian.chip8.cpu.CPUState,com.github.dsvalerian.chip8.data.Register)">
 <h3>execute</h3>
 <div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">execute</span><wbr><span class="parameters">(<a href="CPUState.html" title="class in com.github.dsvalerian.chip8">CPUState</a>&nbsp;state,
  <a href="data/Register.html" title="class in com.github.dsvalerian.chip8.data">Register</a>&nbsp;instruction)</span></div>

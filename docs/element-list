@@ -1,4 +1,6 @@
 com.github.dsvalerian.chip8
+com.github.dsvalerian.chip8.cpu
 com.github.dsvalerian.chip8.data
 com.github.dsvalerian.chip8.exception
+com.github.dsvalerian.chip8.gui
 com.github.dsvalerian.chip8.io
