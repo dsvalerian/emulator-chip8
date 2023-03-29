@@ -1,4 +1,4 @@
-package com.github.dsvalerian.chip8;
+package com.github.dsvalerian.chip8.io;
 
 /**
  * Represents a Chip-8 screen. Handles setting and reading pixels.

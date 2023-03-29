@@ -2,6 +2,9 @@ package com.github.dsvalerian.chip8;
 
 import com.github.dsvalerian.chip8.data.ROM;
 import com.github.dsvalerian.chip8.data.Register;
+import com.github.dsvalerian.chip8.data.Sprites;
+import com.github.dsvalerian.chip8.io.Keyboard;
+import com.github.dsvalerian.chip8.io.Screen;
 
 /**
  * Representation of the Chip-8 CPU. In charge of all the necessary parts for loading and
@@ -13,6 +16,7 @@ public class CPU {
     private CPUState state;
     private Interpreter interpreter;
     private Screen screen;
+    private Keyboard keyboard;
 
     private Register instructionBuffer;
     private ROM program;
@@ -22,10 +26,11 @@ public class CPU {
      *
      * @param screen The {@link Screen} used by the system.
      */
-    public CPU(Screen screen) {
+    public CPU(Screen screen, Keyboard keyboard) {
         state = new CPUState();
-        interpreter = new Interpreter(state, screen);
+        interpreter = new Interpreter(state, screen, keyboard);
         this.screen = screen;
+        this.keyboard = keyboard;
         instructionBuffer = new Register(Interpreter.INSTRUCTION_BITS);
         program = ROM.fromEmpty();
 
@@ -38,8 +43,10 @@ public class CPU {
      */
     public void processNextInstruction() {
         // Read and execute the next instruction. The state has the program and program counter already.
-        loadNextInstruction();
-        interpreter.executeInstruction(instructionBuffer);
+        if (!state.isPaused()) {
+            loadNextInstruction();
+            interpreter.executeInstruction(instructionBuffer);
+        }
     }
 
     /**

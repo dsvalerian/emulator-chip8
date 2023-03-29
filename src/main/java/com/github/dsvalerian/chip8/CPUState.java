@@ -64,6 +64,7 @@ public class CPUState {
     private Register programCounter;
     private Register delayTimer;
     private Register soundTimer;
+    private boolean paused;
 
     /**
      * Construct a {@link CPUState}.
@@ -77,6 +78,7 @@ public class CPUState {
         programCounter = new Register(PROGRAM_COUNTER_SIZE);
         delayTimer = new Register(DELAY_TIMER_SIZE);
         soundTimer = new Register(SOUND_TIMER_SIZE);
+        paused = false;
     }
 
     /**
@@ -229,6 +231,27 @@ public class CPUState {
      */
     public void setSt(int value) {
         soundTimer.set(value);
+    }
+
+    /**
+     * Set the state of execution to paused.
+     */
+    public void pause() {
+        paused = true;
+    }
+
+    /**
+     * Set the state of execution to not paused.
+     */
+    public void resume() {
+        paused = false;
+    }
+
+    /**
+     * @return True if the state of execution is paused.
+     */
+    public boolean isPaused() {
+        return paused;
     }
 
     /**

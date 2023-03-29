@@ -1,6 +1,6 @@
-package com.github.dsvalerian.chip8;
+package com.github.dsvalerian.chip8.data;
 
-import com.github.dsvalerian.chip8.data.ROM;
+import com.github.dsvalerian.chip8.CPUState;
 
 import java.util.HashMap;
 import java.util.Map;
