@@ -227,7 +227,7 @@ public class Interpreter {
      * Clear the display.
      */
     private void clearScreen() {
-        screen.clearScreen();
+        screen.clear();
 
         incrementPc();
     }
@@ -531,10 +531,10 @@ public class Interpreter {
                 int currentBit = (spriteRow & (1 << shiftAmount)) >> shiftAmount;
                 int xCoordinate = (state.readV(x) + j) % Screen.WIDTH;
                 int yCoordinate = (state.readV(y) + i) % Screen.HEIGHT;
-                int oldPixel = screen.readPixel(xCoordinate, yCoordinate);
+                int oldPixel = screen.readPixel(xCoordinate, yCoordinate) == true ? 1 : 0;
                 int newPixel = oldPixel ^ currentBit;
 
-                screen.setPixel(xCoordinate, yCoordinate, newPixel);
+                screen.setPixel(xCoordinate, yCoordinate, newPixel == 1 ? true : false);
                 pixelsDeactivated = oldPixel == 1 && newPixel == 0 ? true : pixelsDeactivated;
             }
         }

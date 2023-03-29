@@ -315,26 +315,26 @@ public class InterpreterTest {
         interpreter.executeInstruction(currentInstruction);
 
         // Verify a 4x5 zero is drawn to the screen.
-        Assertions.assertEquals(1, screen.readPixel(0, 0));
-        Assertions.assertEquals(1, screen.readPixel(1, 0));
-        Assertions.assertEquals(1, screen.readPixel(2, 0));
-        Assertions.assertEquals(1, screen.readPixel(3, 0));
-        Assertions.assertEquals(1, screen.readPixel(0, 1));
-        Assertions.assertEquals(0, screen.readPixel(1, 1));
-        Assertions.assertEquals(0, screen.readPixel(2, 1));
-        Assertions.assertEquals(1, screen.readPixel(3, 1));
-        Assertions.assertEquals(1, screen.readPixel(0, 2));
-        Assertions.assertEquals(0, screen.readPixel(1, 2));
-        Assertions.assertEquals(0, screen.readPixel(2, 2));
-        Assertions.assertEquals(1, screen.readPixel(3, 2));
-        Assertions.assertEquals(1, screen.readPixel(0, 3));
-        Assertions.assertEquals(0, screen.readPixel(1, 3));
-        Assertions.assertEquals(0, screen.readPixel(2, 3));
-        Assertions.assertEquals(1, screen.readPixel(3, 3));
-        Assertions.assertEquals(1, screen.readPixel(0, 4));
-        Assertions.assertEquals(1, screen.readPixel(1, 4));
-        Assertions.assertEquals(1, screen.readPixel(2, 4));
-        Assertions.assertEquals(1, screen.readPixel(3, 4));
+        Assertions.assertTrue(screen.readPixel(0, 0));
+        Assertions.assertTrue(screen.readPixel(1, 0));
+        Assertions.assertTrue(screen.readPixel(2, 0));
+        Assertions.assertTrue(screen.readPixel(3, 0));
+        Assertions.assertTrue(screen.readPixel(0, 1));
+        Assertions.assertFalse(screen.readPixel(1, 1));
+        Assertions.assertFalse(screen.readPixel(2, 1));
+        Assertions.assertTrue(screen.readPixel(3, 1));
+        Assertions.assertTrue(screen.readPixel(0, 2));
+        Assertions.assertFalse(screen.readPixel(1, 2));
+        Assertions.assertFalse(screen.readPixel(2, 2));
+        Assertions.assertTrue(screen.readPixel(3, 2));
+        Assertions.assertTrue(screen.readPixel(0, 3));
+        Assertions.assertFalse(screen.readPixel(1, 3));
+        Assertions.assertFalse(screen.readPixel(2, 3));
+        Assertions.assertTrue(screen.readPixel(3, 3));
+        Assertions.assertTrue(screen.readPixel(0, 4));
+        Assertions.assertTrue(screen.readPixel(1, 4));
+        Assertions.assertTrue(screen.readPixel(2, 4));
+        Assertions.assertTrue(screen.readPixel(3, 4));
 
         // 00E0 - CLS
         currentInstruction.set(0x00E0);
@@ -343,7 +343,7 @@ public class InterpreterTest {
         // Verify screen is clear.
         for (int i = 0; i < Screen.WIDTH; i++) {
             for (int j = 0; j < Screen.HEIGHT; j++) {
-                Assertions.assertEquals(0, screen.readPixel(i, j));
+                Assertions.assertFalse(screen.readPixel(i, j));
             }
         }
     }
