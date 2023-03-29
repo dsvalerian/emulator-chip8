@@ -1,8 +1,9 @@
-package com.github.dsvalerian.chip8;
+package com.github.dsvalerian.chip8.cpu;
 
 import com.github.dsvalerian.chip8.data.ROM;
 import com.github.dsvalerian.chip8.data.Register;
 import com.github.dsvalerian.chip8.data.Sprites;
+import com.github.dsvalerian.chip8.exception.NoProgramLoadedException;
 import com.github.dsvalerian.chip8.io.Keyboard;
 import com.github.dsvalerian.chip8.io.Screen;
 
@@ -11,31 +12,23 @@ import com.github.dsvalerian.chip8.io.Screen;
  * executing programs.
  */
 public class CPU {
-    private final int PROGRAM_START_ADDRESS = 0x200;
+    private static final int PROGRAM_START_ADDRESS = 0x200;
+    private static final CPUSpeed SPEED = CPUSpeed.FULL;
 
     private CPUState state;
+    private CPUTimings timings;
     private Interpreter interpreter;
-    private Screen screen;
-    private Keyboard keyboard;
 
     private Register instructionBuffer;
     private ROM program;
 
-    /**
-     * Construct a {@link CPU}.
-     *
-     * @param screen The {@link Screen} used by the system.
-     * @param keyboard The {@link Keyboard} used by the system.
-     */
-    public CPU(Screen screen, Keyboard keyboard) {
-        state = new CPUState();
-        interpreter = new Interpreter(state, screen, keyboard);
-        this.screen = screen;
-        this.keyboard = keyboard;
-        instructionBuffer = new Register(Interpreter.INSTRUCTION_BITS);
-        program = ROM.fromEmpty();
+    protected CPU(CPUState state, CPUTimings timings, Screen screen, Keyboard keyboard) {
+        this.state = state;
+        this.timings = timings;
+        this.interpreter = new Interpreter(state, screen, keyboard);
 
-        // Load sprites into main memory.
+        instructionBuffer = new Register(Interpreter.INSTRUCTION_BITS);
+        program = null;
         Sprites.load(state);
     }
 
@@ -43,10 +36,19 @@ public class CPU {
      * Read the next instruction and execute it.
      */
     public void processNextInstruction() {
+        if (program == null) {
+            throw new NoProgramLoadedException();
+        }
+
         // Read and execute the next instruction. The state has the program and program counter already.
         if (!state.isPaused()) {
+            long startTime = System.nanoTime();
+
             loadNextInstruction();
             interpreter.executeInstruction(instructionBuffer);
+
+            timings.finishCycle(startTime);
+            timings.handleTimers();
         }
     }
 
@@ -54,6 +56,10 @@ public class CPU {
      * @return True if there are still more instructions in the loaded program for the CPU to process.
      */
     public boolean hasMoreInstructions() {
+        if (program == null) {
+            throw new NoProgramLoadedException();
+        }
+
         return state.readPc() < PROGRAM_START_ADDRESS + program.getSize() &&
                 state.readPc() >= PROGRAM_START_ADDRESS;
     }

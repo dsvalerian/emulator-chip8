@@ -1,4 +1,4 @@
-package com.github.dsvalerian.chip8;
+package com.github.dsvalerian.chip8.cpu;
 
 import com.github.dsvalerian.chip8.data.Bits;
 import com.github.dsvalerian.chip8.data.Register;
@@ -520,7 +520,6 @@ public class Interpreter {
      */
     private void draw(int x, int y, int n) {
         boolean pixelsDeactivated = false;
-        System.out.println(String.format("x: %d, y: %d, n: %d", x, y, n));
 
         for (int i = 0; i < n; i++) {
             int spriteRow = state.readMemory(state.readI() + i);

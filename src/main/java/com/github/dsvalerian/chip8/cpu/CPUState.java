@@ -1,4 +1,4 @@
-package com.github.dsvalerian.chip8;
+package com.github.dsvalerian.chip8.cpu;
 
 import com.github.dsvalerian.chip8.data.Bits;
 import com.github.dsvalerian.chip8.data.MemoryBlock;
@@ -266,5 +266,29 @@ public class CPUState {
      */
     private boolean isStackFull() {
         return stackPointer.read() == stack.getSize();
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder()
+                .append("{")
+                .append("PC: ").append(readPc()).append(", ")
+                .append("V Registers: [");
+
+        for (int i = 0; i < NUM_V_REGISTERS; i++) {
+            builder.append(readV(i));
+
+            if (i != NUM_V_REGISTERS - 1) {
+                builder.append(", ");
+            }
+        }
+
+        builder
+                .append("], ")
+                .append("I: ").append(readI()).append(", ")
+                .append("SP: ").append(stackPointer.read())
+                .append("}");
+
+        return builder.toString();
     }
 }

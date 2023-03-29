@@ -55,4 +55,19 @@ public class Screen {
             }
         }
     }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+
+        for (int i = 0; i < HEIGHT; i++) {
+            for (int j = 0; j < WIDTH; j++) {
+                builder.append(pixels[j][i] ? "0" : ".")
+                        .append(" ");
+            }
+            builder.append("\n");
+        }
+
+        return builder.toString();
+    }
 }
