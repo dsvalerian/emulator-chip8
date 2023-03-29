@@ -1,5 +1,6 @@
-package com.github.dsvalerian.chip8;
+package com.github.dsvalerian.chip8.cpu;
 
+import com.github.dsvalerian.chip8.cpu.CPUState;
 import com.github.dsvalerian.chip8.exception.StackEmptyException;
 import com.github.dsvalerian.chip8.exception.StackFullException;
 import org.junit.jupiter.api.Assertions;
@@ -72,5 +73,11 @@ public class CPUStateTest {
                state.pushStack(0);
            }
         });
+    }
+
+    @Test
+    public void toStringTest() {
+        String expected = "{PC: 0, V Registers: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], I: 0, SP: 0}";
+        Assertions.assertEquals(expected, state.toString());
     }
 }

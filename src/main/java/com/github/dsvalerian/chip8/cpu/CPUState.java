@@ -1,8 +1,7 @@
-package com.github.dsvalerian.chip8;
+package com.github.dsvalerian.chip8.cpu;
 
 import com.github.dsvalerian.chip8.data.Bits;
 import com.github.dsvalerian.chip8.data.MemoryBlock;
-import com.github.dsvalerian.chip8.data.ROM;
 import com.github.dsvalerian.chip8.data.Register;
 import com.github.dsvalerian.chip8.exception.StackEmptyException;
 import com.github.dsvalerian.chip8.exception.StackFullException;
@@ -65,6 +64,7 @@ public class CPUState {
     private Register programCounter;
     private Register delayTimer;
     private Register soundTimer;
+    private boolean paused;
 
     /**
      * Construct a {@link CPUState}.
@@ -78,6 +78,7 @@ public class CPUState {
         programCounter = new Register(PROGRAM_COUNTER_SIZE);
         delayTimer = new Register(DELAY_TIMER_SIZE);
         soundTimer = new Register(SOUND_TIMER_SIZE);
+        paused = false;
     }
 
     /**
@@ -233,6 +234,27 @@ public class CPUState {
     }
 
     /**
+     * Set the state of execution to paused.
+     */
+    public void pause() {
+        paused = true;
+    }
+
+    /**
+     * Set the state of execution to not paused.
+     */
+    public void resume() {
+        paused = false;
+    }
+
+    /**
+     * @return True if the state of execution is paused.
+     */
+    public boolean isPaused() {
+        return paused;
+    }
+
+    /**
      * @return True if the subroutine stack is empty.
      */
     private boolean isStackEmpty() {
@@ -244,5 +266,29 @@ public class CPUState {
      */
     private boolean isStackFull() {
         return stackPointer.read() == stack.getSize();
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder()
+                .append("{")
+                .append("PC: ").append(readPc()).append(", ")
+                .append("V Registers: [");
+
+        for (int i = 0; i < NUM_V_REGISTERS; i++) {
+            builder.append(readV(i));
+
+            if (i != NUM_V_REGISTERS - 1) {
+                builder.append(", ");
+            }
+        }
+
+        builder
+                .append("], ")
+                .append("I: ").append(readI()).append(", ")
+                .append("SP: ").append(stackPointer.read())
+                .append("}");
+
+        return builder.toString();
     }
 }

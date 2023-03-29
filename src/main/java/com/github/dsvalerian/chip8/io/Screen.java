@@ -1,4 +1,4 @@
-package com.github.dsvalerian.chip8;
+package com.github.dsvalerian.chip8.io;
 
 /**
  * Represents a Chip-8 screen. Handles setting and reading pixels.
@@ -13,7 +13,7 @@ public class Screen {
      */
     public static final int HEIGHT = 32;
 
-    private int[][] pixels = new int[WIDTH][HEIGHT];
+    private boolean[][] pixels = new boolean[WIDTH][HEIGHT];
 
     /**
      * Set a pixel at (x, y) to either active or inactive.
@@ -22,14 +22,10 @@ public class Screen {
      * @param y The row in the screen.
      * @param active 1 or 0 for the pixel at (x, y) to be active or inactive.
      */
-    public void setPixel(int x, int y, int active) {
+    public void setPixel(int x, int y, boolean active) {
         if (x >= WIDTH || x < 0 || y >= HEIGHT || y < 0) {
             throw new IllegalArgumentException("Cannot set a pixel outside of the screen space " +
                     WIDTH + " * " + HEIGHT + ".");
-        }
-
-        if (active != 1 && active != 0) {
-            throw new IllegalArgumentException("Cannot set a pixel to a value other than 1 or 0.");
         }
 
         pixels[x][y] = active;
@@ -40,7 +36,7 @@ public class Screen {
      * @param y The row in the screen.
      * @return 1 if the pixel at (x, y) is active, 0 otherwise.
      */
-    public int readPixel(int x, int y) {
+    public boolean readPixel(int x, int y) {
         if (x >= WIDTH || x < 0 || y >= HEIGHT || y < 0) {
             throw new IllegalArgumentException("Cannot get a pixel outside of the screen space " +
                     WIDTH + " * " + HEIGHT);
@@ -52,26 +48,26 @@ public class Screen {
     /**
      * Deactivate every pixel in the screen.
      */
-    public void clearScreen() {
+    public void clear() {
         for (int i = 0; i < pixels.length; i++) {
             for (int j = 0; j < pixels[i].length; j++) {
-                setPixel(i, j, 0);
+                setPixel(i, j, false);
             }
         }
     }
 
-    /**
-     * Prints the screen's contents to System.out, where a '0' represents an active pixel
-     * and a '.' represents an inactive pixel.
-     */
-    public void print() {
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+
         for (int i = 0; i < HEIGHT; i++) {
             for (int j = 0; j < WIDTH; j++) {
-                System.out.print(readPixel(j, i) == 0 ? "." : "0");
-                System.out.print(" ");
+                builder.append(pixels[j][i] ? "0" : ".")
+                        .append(" ");
             }
-
-            System.out.println();
+            builder.append("\n");
         }
+
+        return builder.toString();
     }
 }

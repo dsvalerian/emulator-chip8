@@ -1,6 +1,6 @@
-package com.github.dsvalerian.chip8;
+package com.github.dsvalerian.chip8.data;
 
-import com.github.dsvalerian.chip8.data.ROM;
+import com.github.dsvalerian.chip8.cpu.CPUState;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,22 +19,22 @@ public class Sprites {
             "80 F0 80 80";
 
     private static final Map<Integer, Integer> SPRITES_ADDRESS_TABLE = new HashMap<>() {{
-        put(0x0, 0);
-        put(0x1, 5);
-        put(0x2, 10);
-        put(0x3, 15);
-        put(0x4, 20);
-        put(0x5, 25);
-        put(0x6, 30);
-        put(0x7, 35);
-        put(0x8, 40);
-        put(0x9, 45);
-        put(0xA, 50);
-        put(0xB, 55);
-        put(0xC, 60);
-        put(0xD, 65);
-        put(0xE, 70);
-        put(0xF, 75);
+        put(0x0, SPRITES_START_ADDRESS + 0);
+        put(0x1, SPRITES_START_ADDRESS + 5);
+        put(0x2, SPRITES_START_ADDRESS + 10);
+        put(0x3, SPRITES_START_ADDRESS + 15);
+        put(0x4, SPRITES_START_ADDRESS + 20);
+        put(0x5, SPRITES_START_ADDRESS + 25);
+        put(0x6, SPRITES_START_ADDRESS + 30);
+        put(0x7, SPRITES_START_ADDRESS + 35);
+        put(0x8, SPRITES_START_ADDRESS + 40);
+        put(0x9, SPRITES_START_ADDRESS + 45);
+        put(0xA, SPRITES_START_ADDRESS + 50);
+        put(0xB, SPRITES_START_ADDRESS + 55);
+        put(0xC, SPRITES_START_ADDRESS + 60);
+        put(0xD, SPRITES_START_ADDRESS + 65);
+        put(0xE, SPRITES_START_ADDRESS + 70);
+        put(0xF, SPRITES_START_ADDRESS + 75);
     }};
 
     /**

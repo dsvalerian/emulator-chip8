@@ -1,8 +1,11 @@
-package com.github.dsvalerian.chip8;
+package com.github.dsvalerian.chip8.cpu;
 
 import com.github.dsvalerian.chip8.data.Bits;
 import com.github.dsvalerian.chip8.data.Register;
+import com.github.dsvalerian.chip8.data.Sprites;
 import com.github.dsvalerian.chip8.exception.UnsupportedInstructionException;
+import com.github.dsvalerian.chip8.io.Keyboard;
+import com.github.dsvalerian.chip8.io.Screen;
 
 import java.util.Random;
 
@@ -23,6 +26,7 @@ public class Interpreter {
 
     private CPUState state;
     private Screen screen;
+    private Keyboard keyboard;
     private Random random;
 
     /**
@@ -30,10 +34,12 @@ public class Interpreter {
      *
      * @param state The {@link CPUState} that will be used when processing instructions.
      * @param screen The {@link Screen} that will be drawn to when processing instructions.
+     * @param keyboard The {@link Keyboard} that is checked when processing instructions.
      */
-    public Interpreter(CPUState state, Screen screen) {
+    public Interpreter(CPUState state, Screen screen, Keyboard keyboard) {
         this.state = state;
         this.screen = screen;
+        this.keyboard = keyboard;
         random = new Random();
     }
 
@@ -145,6 +151,7 @@ public class Interpreter {
                     case 0x55: loadVRegistersIntoIAddress(getX(instruction)); break;
                     // Fx65
                     case 0x65: loadIBlockIntoVRegisters(getX(instruction)); break;
+                    default: throw new UnsupportedInstructionException(instruction);
                 }
                 break;
             default: throw new UnsupportedInstructionException(instruction);
@@ -220,7 +227,7 @@ public class Interpreter {
      * Clear the display.
      */
     private void clearScreen() {
-        screen.clearScreen();
+        screen.clear();
 
         incrementPc();
     }
@@ -313,7 +320,9 @@ public class Interpreter {
      * Checks the keyboard, and if the key corresponding to the value of Vx is currently in the down position, PC is increased by 2.
      */
     private void skipIfKeyPressed(int x) {
-        // todo implement
+        if (keyboard.isPressed(x)) {
+            incrementPc();
+        }
 
         incrementPc();
     }
@@ -323,7 +332,9 @@ public class Interpreter {
      * Checks the keyboard, and if the key corresponding to the value of Vx is currently in the up position, PC is increased by 2.
      */
     private void skipIfKeyNotPressed(int x) {
-        // todo implement
+        if (!keyboard.isPressed(x)) {
+            incrementPc();
+        }
 
         incrementPc();
     }
@@ -509,7 +520,6 @@ public class Interpreter {
      */
     private void draw(int x, int y, int n) {
         boolean pixelsDeactivated = false;
-        System.out.println(String.format("x: %d, y: %d, n: %d", x, y, n));
 
         for (int i = 0; i < n; i++) {
             int spriteRow = state.readMemory(state.readI() + i);
@@ -520,10 +530,10 @@ public class Interpreter {
                 int currentBit = (spriteRow & (1 << shiftAmount)) >> shiftAmount;
                 int xCoordinate = (state.readV(x) + j) % Screen.WIDTH;
                 int yCoordinate = (state.readV(y) + i) % Screen.HEIGHT;
-                int oldPixel = screen.readPixel(xCoordinate, yCoordinate);
+                int oldPixel = screen.readPixel(xCoordinate, yCoordinate) == true ? 1 : 0;
                 int newPixel = oldPixel ^ currentBit;
 
-                screen.setPixel(xCoordinate, yCoordinate, newPixel);
+                screen.setPixel(xCoordinate, yCoordinate, newPixel == 1 ? true : false);
                 pixelsDeactivated = oldPixel == 1 && newPixel == 0 ? true : pixelsDeactivated;
             }
         }
@@ -548,9 +558,15 @@ public class Interpreter {
      * All execution stops until a key is pressed, then the value of that key is stored in Vx.
      */
     private void loadOnKeyPress(int x) {
-        // todo implement
+        state.pause();
 
-        incrementPc();
+        keyboard.setOnNextKeyPress((lastKeyPressed) -> {
+            // Finish the LD Vx, K instruction.
+            state.setV(x, lastKeyPressed);
+            incrementPc();
+
+            state.resume();
+        });
     }
 
     /**

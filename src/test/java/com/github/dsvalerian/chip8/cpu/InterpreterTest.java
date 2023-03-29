@@ -1,6 +1,10 @@
-package com.github.dsvalerian.chip8;
+package com.github.dsvalerian.chip8.cpu;
 
 import com.github.dsvalerian.chip8.data.Register;
+import com.github.dsvalerian.chip8.data.Sprites;
+import com.github.dsvalerian.chip8.exception.UnsupportedInstructionException;
+import com.github.dsvalerian.chip8.io.Keyboard;
+import com.github.dsvalerian.chip8.io.Screen;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -8,6 +12,7 @@ import org.junit.jupiter.api.Test;
 public class InterpreterTest {
     private CPUState state;
     private Screen screen;
+    private Keyboard keyboard;
     private Interpreter interpreter;
     private Register currentInstruction;
 
@@ -15,11 +20,10 @@ public class InterpreterTest {
     public void setUp() {
         state = new CPUState();
         screen = new Screen();
-        interpreter = new Interpreter(state, screen);
+        keyboard = new Keyboard();
+        interpreter = new Interpreter(state, screen, keyboard);
         currentInstruction = new Register(Interpreter.INSTRUCTION_BITS);
-
         Sprites.load(state);
-
         Assertions.assertEquals(0x00, state.readPc());
     }
 
@@ -254,26 +258,37 @@ public class InterpreterTest {
 
     @Test
     public void skipTest() {
-        // 3xkk - SE Vx, byte
+        // 3xkk - SE V0, 0x00
         currentInstruction.set(0x3000);
         interpreter.executeInstruction(currentInstruction);
         Assertions.assertEquals(0x4, state.readPc());
 
-        // 5xy0 - SE Vx, Vy
+        // 5xy0 - SE V0, V1
         currentInstruction.set(0x5010);
         interpreter.executeInstruction(currentInstruction);
         Assertions.assertEquals(0x8, state.readPc());
 
-        // 4xkk - SNE Vx, byte
-        currentInstruction.set(0x4000);
-        interpreter.executeInstruction(currentInstruction);
-        Assertions.assertEquals(0xA, state.readPc());
-
-        // 9xy0 - SNE Vx, Vy
-        currentInstruction.set(0x9010);
+        // 4xkk - SNE V0, 0x10
+        currentInstruction.set(0x4010);
         interpreter.executeInstruction(currentInstruction);
         Assertions.assertEquals(0xC, state.readPc());
+
+        // 9xy0 - SNE V0, V1
+        currentInstruction.set(0x9010);
+        interpreter.executeInstruction(currentInstruction);
+        Assertions.assertEquals(0xE, state.readPc());
+
+        // 6xkk - LD V0, 0x25
+        currentInstruction.set(0x6025);
+        interpreter.executeInstruction(currentInstruction);
+        Assertions.assertEquals(0x10, state.readPc());
+
+        // 9xy0 - SNE V0, V1
+        currentInstruction.set(0x9010);
+        interpreter.executeInstruction(currentInstruction);
+        Assertions.assertEquals(0x14, state.readPc());
     }
+
 
     @Test
     public void advancedLoadTest() {
@@ -300,26 +315,26 @@ public class InterpreterTest {
         interpreter.executeInstruction(currentInstruction);
 
         // Verify a 4x5 zero is drawn to the screen.
-        Assertions.assertEquals(1, screen.readPixel(0, 0));
-        Assertions.assertEquals(1, screen.readPixel(1, 0));
-        Assertions.assertEquals(1, screen.readPixel(2, 0));
-        Assertions.assertEquals(1, screen.readPixel(3, 0));
-        Assertions.assertEquals(1, screen.readPixel(0, 1));
-        Assertions.assertEquals(0, screen.readPixel(1, 1));
-        Assertions.assertEquals(0, screen.readPixel(2, 1));
-        Assertions.assertEquals(1, screen.readPixel(3, 1));
-        Assertions.assertEquals(1, screen.readPixel(0, 2));
-        Assertions.assertEquals(0, screen.readPixel(1, 2));
-        Assertions.assertEquals(0, screen.readPixel(2, 2));
-        Assertions.assertEquals(1, screen.readPixel(3, 2));
-        Assertions.assertEquals(1, screen.readPixel(0, 3));
-        Assertions.assertEquals(0, screen.readPixel(1, 3));
-        Assertions.assertEquals(0, screen.readPixel(2, 3));
-        Assertions.assertEquals(1, screen.readPixel(3, 3));
-        Assertions.assertEquals(1, screen.readPixel(0, 4));
-        Assertions.assertEquals(1, screen.readPixel(1, 4));
-        Assertions.assertEquals(1, screen.readPixel(2, 4));
-        Assertions.assertEquals(1, screen.readPixel(3, 4));
+        Assertions.assertTrue(screen.readPixel(0, 0));
+        Assertions.assertTrue(screen.readPixel(1, 0));
+        Assertions.assertTrue(screen.readPixel(2, 0));
+        Assertions.assertTrue(screen.readPixel(3, 0));
+        Assertions.assertTrue(screen.readPixel(0, 1));
+        Assertions.assertFalse(screen.readPixel(1, 1));
+        Assertions.assertFalse(screen.readPixel(2, 1));
+        Assertions.assertTrue(screen.readPixel(3, 1));
+        Assertions.assertTrue(screen.readPixel(0, 2));
+        Assertions.assertFalse(screen.readPixel(1, 2));
+        Assertions.assertFalse(screen.readPixel(2, 2));
+        Assertions.assertTrue(screen.readPixel(3, 2));
+        Assertions.assertTrue(screen.readPixel(0, 3));
+        Assertions.assertFalse(screen.readPixel(1, 3));
+        Assertions.assertFalse(screen.readPixel(2, 3));
+        Assertions.assertTrue(screen.readPixel(3, 3));
+        Assertions.assertTrue(screen.readPixel(0, 4));
+        Assertions.assertTrue(screen.readPixel(1, 4));
+        Assertions.assertTrue(screen.readPixel(2, 4));
+        Assertions.assertTrue(screen.readPixel(3, 4));
 
         // 00E0 - CLS
         currentInstruction.set(0x00E0);
@@ -328,14 +343,64 @@ public class InterpreterTest {
         // Verify screen is clear.
         for (int i = 0; i < Screen.WIDTH; i++) {
             for (int j = 0; j < Screen.HEIGHT; j++) {
-                Assertions.assertEquals(0, screen.readPixel(i, j));
+                Assertions.assertFalse(screen.readPixel(i, j));
             }
         }
     }
 
     @Test
-    public void test() {
-        System.out.println(1 << CPUState.V_REGISTER_SIZE.getValue());
+    public void sysTest() {
+        // 0nnn - SYS 123
+        currentInstruction.set(0x0123);
+        interpreter.executeInstruction(currentInstruction);
+
+        // Verify PC was incremented.
+        Assertions.assertEquals(2, state.readPc());
+    }
+
+    @Test
+    public void keyPressTest() {
+        keyboard.press(0);
+
+        currentInstruction.set(0xE09E);
+        interpreter.executeInstruction(currentInstruction);
+        Assertions.assertEquals(0x4, state.readPc());
+
+        currentInstruction.set(0xE1A1);
+        interpreter.executeInstruction(currentInstruction);
+        Assertions.assertEquals(0x8, state.readPc());
+
+        // Fx0A - LD Vx, K
+        currentInstruction.set(0xF50A);
+        interpreter.executeInstruction(currentInstruction);
+
+        // Press a key to resume execution.
+        keyboard.press(10);
+        Assertions.assertEquals(10, state.readV(5));
+
+    }
+
+    @Test
+    public void unsupportedInstructionsTest() {
+        currentInstruction.set(0x5001);
+        Assertions.assertThrows(UnsupportedInstructionException.class, () ->
+            interpreter.executeInstruction(currentInstruction));
+
+        currentInstruction.set(0x800F);
+        Assertions.assertThrows(UnsupportedInstructionException.class, () ->
+                interpreter.executeInstruction(currentInstruction));
+
+        currentInstruction.set(0x9001);
+        Assertions.assertThrows(UnsupportedInstructionException.class, () ->
+                interpreter.executeInstruction(currentInstruction));
+
+        currentInstruction.set(0xE09F);
+        Assertions.assertThrows(UnsupportedInstructionException.class, () ->
+                interpreter.executeInstruction(currentInstruction));
+
+        currentInstruction.set(0xF066);
+        Assertions.assertThrows(UnsupportedInstructionException.class, () ->
+                interpreter.executeInstruction(currentInstruction));
     }
 
     // todo loading sprite
