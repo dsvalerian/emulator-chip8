@@ -44,7 +44,8 @@ public class Keyboard {
 
     /**
      * Check if a key is pressed.
-     * @param k The key to check, from 0-15 (inclusive).
+     * @param k The key to check.
+     * @return True if key k is pressed.
      */
     public boolean isPressed(int k) {
         if (k >= NUM_KEYS || k < 0) {

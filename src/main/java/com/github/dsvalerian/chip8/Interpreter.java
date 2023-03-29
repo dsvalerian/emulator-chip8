@@ -34,6 +34,7 @@ public class Interpreter {
      *
      * @param state The {@link CPUState} that will be used when processing instructions.
      * @param screen The {@link Screen} that will be drawn to when processing instructions.
+     * @param keyboard The {@link Keyboard} that is checked when processing instructions.
      */
     public Interpreter(CPUState state, Screen screen, Keyboard keyboard) {
         this.state = state;

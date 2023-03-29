@@ -25,6 +25,7 @@ public class CPU {
      * Construct a {@link CPU}.
      *
      * @param screen The {@link Screen} used by the system.
+     * @param keyboard The {@link Keyboard} used by the system.
      */
     public CPU(Screen screen, Keyboard keyboard) {
         state = new CPUState();
