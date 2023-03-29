@@ -41,4 +41,18 @@ public class ScreenTest {
         Assertions.assertThrows(IllegalArgumentException.class, () -> screen.readPixel(31, 32));
         Assertions.assertThrows(IllegalArgumentException.class, () -> screen.readPixel(64, 31));
     }
+
+    @Test
+    public void toStringTest() {
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < screen.HEIGHT; i++) {
+            for (int j = 0; j < screen.WIDTH; j++) {
+                builder.append(". ");
+            }
+
+            builder.append("\n");
+        }
+
+        Assertions.assertEquals(builder.toString(), screen.toString());
+    }
 }
