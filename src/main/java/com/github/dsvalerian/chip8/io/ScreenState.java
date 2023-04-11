@@ -3,7 +3,7 @@ package com.github.dsvalerian.chip8.io;
 /**
  * Represents a Chip-8 screen. Handles setting and reading pixels.
  */
-public class Screen {
+public class ScreenState {
     /**
      * The width of the screen.
      */
@@ -13,22 +13,22 @@ public class Screen {
      */
     public static final int HEIGHT = 32;
 
-    private boolean[][] pixels = new boolean[WIDTH][HEIGHT];
+    private Pixel[][] pixels = new Pixel[WIDTH][HEIGHT];
 
     /**
      * Set a pixel at (x, y) to either active or inactive.
      *
      * @param x The column in the screen.
      * @param y The row in the screen.
-     * @param active 1 or 0 for the pixel at (x, y) to be active or inactive.
+     * @param pixel Pixel.ACTIVE or Pixel.INACTIVE.
      */
-    public void setPixel(int x, int y, boolean active) {
+    public void setPixel(int x, int y, Pixel pixel) {
         if (x >= WIDTH || x < 0 || y >= HEIGHT || y < 0) {
             throw new IllegalArgumentException("Cannot set a pixel outside of the screen space " +
                     WIDTH + " * " + HEIGHT + ".");
         }
 
-        pixels[x][y] = active;
+        pixels[x][y] = pixel;
     }
 
     /**
@@ -36,7 +36,7 @@ public class Screen {
      * @param y The row in the screen.
      * @return 1 if the pixel at (x, y) is active, 0 otherwise.
      */
-    public boolean readPixel(int x, int y) {
+    public Pixel readPixel(int x, int y) {
         if (x >= WIDTH || x < 0 || y >= HEIGHT || y < 0) {
             throw new IllegalArgumentException("Cannot get a pixel outside of the screen space " +
                     WIDTH + " * " + HEIGHT);
@@ -51,7 +51,7 @@ public class Screen {
     public void clear() {
         for (int i = 0; i < pixels.length; i++) {
             for (int j = 0; j < pixels[i].length; j++) {
-                setPixel(i, j, false);
+                setPixel(i, j, Pixel.INACTIVE);
             }
         }
     }
@@ -62,7 +62,7 @@ public class Screen {
 
         for (int i = 0; i < HEIGHT; i++) {
             for (int j = 0; j < WIDTH; j++) {
-                builder.append(pixels[j][i] ? "0" : ".")
+                builder.append(pixels[j][i] == Pixel.ACTIVE ? "0" : ".")
                         .append(" ");
             }
             builder.append("\n");

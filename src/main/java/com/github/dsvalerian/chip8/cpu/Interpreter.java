@@ -4,8 +4,9 @@ import com.github.dsvalerian.chip8.data.Bits;
 import com.github.dsvalerian.chip8.data.Register;
 import com.github.dsvalerian.chip8.data.Sprites;
 import com.github.dsvalerian.chip8.exception.UnsupportedInstructionException;
-import com.github.dsvalerian.chip8.io.Keyboard;
-import com.github.dsvalerian.chip8.io.Screen;
+import com.github.dsvalerian.chip8.io.KeyState;
+import com.github.dsvalerian.chip8.io.Pixel;
+import com.github.dsvalerian.chip8.io.ScreenState;
 
 import java.util.Random;
 
@@ -25,21 +26,21 @@ public class Interpreter {
     private final int MAX_V_REGISTER_VALUE = 1 << CPUState.V_REGISTER_SIZE.getValue();
 
     private CPUState state;
-    private Screen screen;
-    private Keyboard keyboard;
+    private ScreenState screenState;
+    private KeyState keyState;
     private Random random;
 
     /**
      * Constructs a {@link Interpreter} with an assigned {@link CPUState}.
      *
      * @param state The {@link CPUState} that will be used when processing instructions.
-     * @param screen The {@link Screen} that will be drawn to when processing instructions.
-     * @param keyboard The {@link Keyboard} that is checked when processing instructions.
+     * @param screenState The {@link ScreenState} that will be drawn to when processing instructions.
+     * @param keyState The {@link KeyState} that is checked when processing instructions.
      */
-    public Interpreter(CPUState state, Screen screen, Keyboard keyboard) {
+    public Interpreter(CPUState state, ScreenState screenState, KeyState keyState) {
         this.state = state;
-        this.screen = screen;
-        this.keyboard = keyboard;
+        this.screenState = screenState;
+        this.keyState = keyState;
         random = new Random();
     }
 
@@ -227,7 +228,7 @@ public class Interpreter {
      * Clear the display.
      */
     private void clearScreen() {
-        screen.clear();
+        screenState.clear();
 
         incrementPc();
     }
@@ -320,7 +321,7 @@ public class Interpreter {
      * Checks the keyboard, and if the key corresponding to the value of Vx is currently in the down position, PC is increased by 2.
      */
     private void skipIfKeyPressed(int x) {
-        if (keyboard.isPressed(x)) {
+        if (keyState.isPressed(x)) {
             incrementPc();
         }
 
@@ -332,7 +333,7 @@ public class Interpreter {
      * Checks the keyboard, and if the key corresponding to the value of Vx is currently in the up position, PC is increased by 2.
      */
     private void skipIfKeyNotPressed(int x) {
-        if (!keyboard.isPressed(x)) {
+        if (!keyState.isPressed(x)) {
             incrementPc();
         }
 
@@ -528,12 +529,12 @@ public class Interpreter {
             for (int j = 0; j < 8; j++) {
                 int shiftAmount = 8 - j - 1;
                 int currentBit = (spriteRow & (1 << shiftAmount)) >> shiftAmount;
-                int xCoordinate = (state.readV(x) + j) % Screen.WIDTH;
-                int yCoordinate = (state.readV(y) + i) % Screen.HEIGHT;
-                int oldPixel = screen.readPixel(xCoordinate, yCoordinate) == true ? 1 : 0;
+                int xCoordinate = (state.readV(x) + j) % ScreenState.WIDTH;
+                int yCoordinate = (state.readV(y) + i) % ScreenState.HEIGHT;
+                int oldPixel = screenState.readPixel(xCoordinate, yCoordinate) == Pixel.ACTIVE ? 1 : 0;
                 int newPixel = oldPixel ^ currentBit;
 
-                screen.setPixel(xCoordinate, yCoordinate, newPixel == 1 ? true : false);
+                screenState.setPixel(xCoordinate, yCoordinate, newPixel == 1 ? Pixel.ACTIVE : Pixel.INACTIVE);
                 pixelsDeactivated = oldPixel == 1 && newPixel == 0 ? true : pixelsDeactivated;
             }
         }
@@ -560,7 +561,7 @@ public class Interpreter {
     private void loadOnKeyPress(int x) {
         state.pause();
 
-        keyboard.setOnNextKeyPress((lastKeyPressed) -> {
+        keyState.setOnNextKeyPress((lastKeyPressed) -> {
             // Finish the LD Vx, K instruction.
             state.setV(x, lastKeyPressed);
             incrementPc();

@@ -5,7 +5,7 @@ import java.util.function.IntConsumer;
 /**
  * Representation of the Chip-8 16-key keypad.
  */
-public class Keyboard {
+public class KeyState {
     private final int NUM_KEYS = 16;
     private boolean[] keys = new boolean[NUM_KEYS];
     private IntConsumer onNextKeyPress = null;

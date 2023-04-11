@@ -3,25 +3,26 @@ package com.github.dsvalerian.chip8.cpu;
 import com.github.dsvalerian.chip8.data.Register;
 import com.github.dsvalerian.chip8.data.Sprites;
 import com.github.dsvalerian.chip8.exception.UnsupportedInstructionException;
-import com.github.dsvalerian.chip8.io.Keyboard;
-import com.github.dsvalerian.chip8.io.Screen;
+import com.github.dsvalerian.chip8.io.KeyState;
+import com.github.dsvalerian.chip8.io.Pixel;
+import com.github.dsvalerian.chip8.io.ScreenState;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class InterpreterTest {
     private CPUState state;
-    private Screen screen;
-    private Keyboard keyboard;
+    private ScreenState screenState;
+    private KeyState keyState;
     private Interpreter interpreter;
     private Register currentInstruction;
 
     @BeforeEach
     public void setUp() {
         state = new CPUState();
-        screen = new Screen();
-        keyboard = new Keyboard();
-        interpreter = new Interpreter(state, screen, keyboard);
+        screenState = new ScreenState();
+        keyState = new KeyState();
+        interpreter = new Interpreter(state, screenState, keyState);
         currentInstruction = new Register(Interpreter.INSTRUCTION_BITS);
         Sprites.load(state);
         Assertions.assertEquals(0x00, state.readPc());
@@ -315,35 +316,35 @@ public class InterpreterTest {
         interpreter.executeInstruction(currentInstruction);
 
         // Verify a 4x5 zero is drawn to the screen.
-        Assertions.assertTrue(screen.readPixel(0, 0));
-        Assertions.assertTrue(screen.readPixel(1, 0));
-        Assertions.assertTrue(screen.readPixel(2, 0));
-        Assertions.assertTrue(screen.readPixel(3, 0));
-        Assertions.assertTrue(screen.readPixel(0, 1));
-        Assertions.assertFalse(screen.readPixel(1, 1));
-        Assertions.assertFalse(screen.readPixel(2, 1));
-        Assertions.assertTrue(screen.readPixel(3, 1));
-        Assertions.assertTrue(screen.readPixel(0, 2));
-        Assertions.assertFalse(screen.readPixel(1, 2));
-        Assertions.assertFalse(screen.readPixel(2, 2));
-        Assertions.assertTrue(screen.readPixel(3, 2));
-        Assertions.assertTrue(screen.readPixel(0, 3));
-        Assertions.assertFalse(screen.readPixel(1, 3));
-        Assertions.assertFalse(screen.readPixel(2, 3));
-        Assertions.assertTrue(screen.readPixel(3, 3));
-        Assertions.assertTrue(screen.readPixel(0, 4));
-        Assertions.assertTrue(screen.readPixel(1, 4));
-        Assertions.assertTrue(screen.readPixel(2, 4));
-        Assertions.assertTrue(screen.readPixel(3, 4));
+        Assertions.assertEquals(Pixel.ACTIVE, screenState.readPixel(0, 0));
+        Assertions.assertEquals(Pixel.ACTIVE, screenState.readPixel(1, 0));
+        Assertions.assertEquals(Pixel.ACTIVE, screenState.readPixel(2, 0));
+        Assertions.assertEquals(Pixel.ACTIVE, screenState.readPixel(3, 0));
+        Assertions.assertEquals(Pixel.ACTIVE, screenState.readPixel(0, 1));
+        Assertions.assertEquals(Pixel.INACTIVE, screenState.readPixel(1, 1));
+        Assertions.assertEquals(Pixel.INACTIVE, screenState.readPixel(2, 1));
+        Assertions.assertEquals(Pixel.ACTIVE, screenState.readPixel(3, 1));
+        Assertions.assertEquals(Pixel.ACTIVE, screenState.readPixel(0, 2));
+        Assertions.assertEquals(Pixel.INACTIVE, screenState.readPixel(1, 2));
+        Assertions.assertEquals(Pixel.INACTIVE, screenState.readPixel(2, 2));
+        Assertions.assertEquals(Pixel.ACTIVE, screenState.readPixel(3, 2));
+        Assertions.assertEquals(Pixel.ACTIVE, screenState.readPixel(0, 3));
+        Assertions.assertEquals(Pixel.INACTIVE, screenState.readPixel(1, 3));
+        Assertions.assertEquals(Pixel.INACTIVE, screenState.readPixel(2, 3));
+        Assertions.assertEquals(Pixel.ACTIVE, screenState.readPixel(3, 3));
+        Assertions.assertEquals(Pixel.ACTIVE, screenState.readPixel(0, 4));
+        Assertions.assertEquals(Pixel.ACTIVE, screenState.readPixel(1, 4));
+        Assertions.assertEquals(Pixel.ACTIVE, screenState.readPixel(2, 4));
+        Assertions.assertEquals(Pixel.ACTIVE, screenState.readPixel(3, 4));
 
         // 00E0 - CLS
         currentInstruction.set(0x00E0);
         interpreter.executeInstruction(currentInstruction);
 
         // Verify screen is clear.
-        for (int i = 0; i < Screen.WIDTH; i++) {
-            for (int j = 0; j < Screen.HEIGHT; j++) {
-                Assertions.assertFalse(screen.readPixel(i, j));
+        for (int i = 0; i < ScreenState.WIDTH; i++) {
+            for (int j = 0; j < ScreenState.HEIGHT; j++) {
+                Assertions.assertEquals(Pixel.INACTIVE, screenState.readPixel(i, j));
             }
         }
     }
@@ -360,7 +361,7 @@ public class InterpreterTest {
 
     @Test
     public void keyPressTest() {
-        keyboard.press(0);
+        keyState.press(0);
 
         currentInstruction.set(0xE09E);
         interpreter.executeInstruction(currentInstruction);
@@ -375,7 +376,7 @@ public class InterpreterTest {
         interpreter.executeInstruction(currentInstruction);
 
         // Press a key to resume execution.
-        keyboard.press(10);
+        keyState.press(10);
         Assertions.assertEquals(10, state.readV(5));
 
     }
