@@ -24,11 +24,10 @@ public class CPU {
      * Create a new {@link CPU}.
      * @param state Represents the state of the CPU.
      * @param screenState Represents the system screen.
-     * @param keyState Represents the state of the keyboard.
      */
-    public CPU(CPUState state, ScreenState screenState, KeyState keyState) {
+    public CPU(CPUState state, ScreenState screenState) {
         this.state = state;
-        this.interpreter = new Interpreter(state, screenState, keyState);
+        this.interpreter = new Interpreter(state, screenState);
 
         instructionBuffer = new Register(Interpreter.INSTRUCTION_BITS);
         program = null;

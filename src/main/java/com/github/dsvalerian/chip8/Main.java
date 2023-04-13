@@ -2,6 +2,7 @@ package com.github.dsvalerian.chip8;
 
 import com.github.dsvalerian.chip8.data.ROM;
 import com.github.dsvalerian.chip8.gui.GUI;
+import com.github.dsvalerian.chip8.io.KeyHandler;
 
 import java.io.File;
 import java.io.IOException;
@@ -10,7 +11,7 @@ import java.io.IOException;
  * The main class of the program.
  */
 public class Main {
-    private static GUI gui;
+    private static final GUI UI = GUI.getInstance();
     private static Emulator currentEmulator;
     private static Thread currentEmulatorThread;
 
@@ -19,7 +20,7 @@ public class Main {
      * @param args Program arguments. None are supported.
      */
     public static void main(String[] args) {
-        gui = new GUI();
+        UI.addKeyListener(KeyHandler.getInstance());
     }
 
     /**
@@ -56,7 +57,7 @@ public class Main {
             currentEmulator.stop();
         }
 
-        currentEmulator = new Emulator(gui, program);
+        currentEmulator = new Emulator(UI, program);
         currentEmulatorThread = new Thread(currentEmulator);
         currentEmulatorThread.start();
     }
@@ -65,6 +66,6 @@ public class Main {
      * @return The main GUI.
      */
     public static GUI getGUI() {
-        return gui;
+        return UI;
     }
 }

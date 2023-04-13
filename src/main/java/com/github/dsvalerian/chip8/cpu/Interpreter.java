@@ -23,11 +23,11 @@ public class Interpreter {
      */
     public static final int PC_STEP_SIZE = 2;
 
-    private final int MAX_V_REGISTER_VALUE = 1 << CPUState.V_REGISTER_SIZE.getValue();
+    private static final int MAX_V_REGISTER_VALUE = 1 << CPUState.V_REGISTER_SIZE.getValue();
+    private static final KeyState KEY_STATE = KeyState.getInstance();
 
     private CPUState state;
     private ScreenState screenState;
-    private KeyState keyState;
     private Random random;
 
     /**
@@ -35,12 +35,10 @@ public class Interpreter {
      *
      * @param state The {@link CPUState} that will be used when processing instructions.
      * @param screenState The {@link ScreenState} that will be drawn to when processing instructions.
-     * @param keyState The {@link KeyState} that is checked when processing instructions.
      */
-    public Interpreter(CPUState state, ScreenState screenState, KeyState keyState) {
+    public Interpreter(CPUState state, ScreenState screenState) {
         this.state = state;
         this.screenState = screenState;
-        this.keyState = keyState;
         random = new Random();
     }
 
@@ -321,7 +319,7 @@ public class Interpreter {
      * Checks the keyboard, and if the key corresponding to the value of Vx is currently in the down position, PC is increased by 2.
      */
     private void skipIfKeyPressed(int x) {
-        if (keyState.isPressed(x)) {
+        if (KEY_STATE.isPressed(x)) {
             incrementPc();
         }
 
@@ -333,7 +331,7 @@ public class Interpreter {
      * Checks the keyboard, and if the key corresponding to the value of Vx is currently in the up position, PC is increased by 2.
      */
     private void skipIfKeyNotPressed(int x) {
-        if (!keyState.isPressed(x)) {
+        if (!KEY_STATE.isPressed(x)) {
             incrementPc();
         }
 
@@ -561,7 +559,7 @@ public class Interpreter {
     private void loadOnKeyPress(int x) {
         state.pause();
 
-        keyState.setOnNextKeyPress((lastKeyPressed) -> {
+        KEY_STATE.setOnNextKeyPress((lastKeyPressed) -> {
             // Finish the LD Vx, K instruction.
             state.setV(x, lastKeyPressed);
             incrementPc();

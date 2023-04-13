@@ -13,15 +13,13 @@ public class CPUTest {
 
     private CPUState state;
     private ScreenState screenState;
-    private KeyState keyState;
     private CPU cpu;
 
     @BeforeEach
     public void setUp() {
         state = new CPUState();
         screenState = new ScreenState();
-        keyState = new KeyState();
-        cpu = new CPU(state, screenState, keyState);
+        cpu = new CPU(state, screenState);
     }
 
     @Test

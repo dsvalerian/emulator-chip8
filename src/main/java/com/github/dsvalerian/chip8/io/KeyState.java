@@ -3,14 +3,33 @@ package com.github.dsvalerian.chip8.io;
 import java.util.function.IntConsumer;
 
 /**
- * Representation of the Chip-8 16-key keypad.
+ * Singleton representation of the Chip-8 16-key keypad.
+ * It's a singleton because there is only one keyboard state that we should
+ * be tracking for the entire application.
  */
 public class KeyState {
+    private static KeyState instance = null;
+
     private final int NUM_KEYS = 16;
     private boolean[] keys = new boolean[NUM_KEYS];
     private IntConsumer onNextKeyPress = null;
 
     private int lastKeyPressed = -1;
+
+    private KeyState() {
+        // Overwriting it to make it private, but it doesn't actually do anything.
+    }
+
+    /**
+     * @return A singleton instance of {@link KeyState}.
+     */
+    public static KeyState getInstance() {
+        if (instance == null) {
+            instance = new KeyState();
+        }
+
+        return instance;
+    }
 
     /**
      * Press a key.

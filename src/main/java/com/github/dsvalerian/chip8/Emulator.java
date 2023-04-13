@@ -33,8 +33,7 @@ public class Emulator implements Runnable {
 
         CPUState state = new CPUState();
         screenState = new ScreenState();
-        KeyState keyState = new KeyState();
-        cpu = new CPU(state, screenState, keyState);
+        cpu = new CPU(state, screenState);
     }
 
     /**

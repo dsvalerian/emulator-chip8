@@ -11,9 +11,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class InterpreterTest {
+    private static final KeyState KEY_STATE = KeyState.getInstance();
     private CPUState state;
     private ScreenState screenState;
-    private KeyState keyState;
     private Interpreter interpreter;
     private Register currentInstruction;
 
@@ -21,8 +21,7 @@ public class InterpreterTest {
     public void setUp() {
         state = new CPUState();
         screenState = new ScreenState();
-        keyState = new KeyState();
-        interpreter = new Interpreter(state, screenState, keyState);
+        interpreter = new Interpreter(state, screenState);
         currentInstruction = new Register(Interpreter.INSTRUCTION_BITS);
         Sprites.load(state);
         Assertions.assertEquals(0x00, state.readPc());
@@ -361,7 +360,7 @@ public class InterpreterTest {
 
     @Test
     public void keyPressTest() {
-        keyState.press(0);
+        KEY_STATE.press(0);
 
         currentInstruction.set(0xE09E);
         interpreter.executeInstruction(currentInstruction);
@@ -376,7 +375,7 @@ public class InterpreterTest {
         interpreter.executeInstruction(currentInstruction);
 
         // Press a key to resume execution.
-        keyState.press(10);
+        KEY_STATE.press(10);
         Assertions.assertEquals(10, state.readV(5));
 
     }

@@ -1,5 +1,6 @@
 package com.github.dsvalerian.chip8.gui;
 
+import com.github.dsvalerian.chip8.io.KeyState;
 import com.github.dsvalerian.chip8.io.ScreenState;
 
 import javax.swing.*;
@@ -20,10 +21,12 @@ public class GUI extends JFrame {
      */
     private final ScreenPanel screenPanel = new ScreenPanel();
 
+    private static GUI instance = null;
+
     /**
      * Construct the default {@link GUI}.
      */
-    public GUI() {
+    private GUI() {
         // Set up the window.
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);
@@ -39,6 +42,17 @@ public class GUI extends JFrame {
 
         setLocationRelativeTo(null);
         setVisible(true);
+    }
+
+    /**
+     * @return A singleton instance of {@link GUI}, the main window of the UI.
+     */
+    public static GUI getInstance() {
+        if (instance == null) {
+            instance = new GUI();
+        }
+
+        return instance;
     }
 
     /**
