@@ -44,7 +44,7 @@ public class MainMenuBar extends JMenuBar {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            int returnVal = fileChooser.showOpenDialog(Main.getGUI());
+            int returnVal = fileChooser.showOpenDialog(GUI.getInstance());
 
             if (returnVal == JFileChooser.APPROVE_OPTION) {
                 Main.createAndRunEmulatorForProgram(fileChooser.getSelectedFile());

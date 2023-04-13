@@ -50,18 +50,40 @@ public class KeyHandler implements KeyListener {
         return instance;
     }
 
+    /**
+     * This is unhandled, does nothing.
+     * @param event The event to be processed.
+     */
     @Override
     public void keyTyped(KeyEvent event) {
 
     }
 
+    /**
+     * Called when a key is pressed. Sets the corresponding key to be
+     * pressed in the {@link KeyState} singleton.
+     * @param event The event to be processed.
+     */
     @Override
     public void keyPressed(KeyEvent event) {
-        STATE.press(KEY_MAP.get(event.getKeyCode()));
+        Integer pressedKey = KEY_MAP.get(event.getKeyCode());
+
+        if (pressedKey != null) {
+            STATE.press(pressedKey);
+        }
     }
 
+    /**
+     * Called when a key is released. Sets the corresponding key to be
+     * released in the {@link KeyState} singleton.
+     * @param event The event to be processed.
+     */
     @Override
     public void keyReleased(KeyEvent event) {
-        STATE.release(KEY_MAP.get(event.getKeyCode()));
+        Integer pressedKey = KEY_MAP.get(event.getKeyCode());
+
+        if (pressedKey != null) {
+            STATE.release(pressedKey);
+        }
     }
 }

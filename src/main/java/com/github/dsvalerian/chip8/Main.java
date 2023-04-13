@@ -61,11 +61,4 @@ public class Main {
         currentEmulatorThread = new Thread(currentEmulator);
         currentEmulatorThread.start();
     }
-
-    /**
-     * @return The main GUI.
-     */
-    public static GUI getGUI() {
-        return UI;
-    }
 }
