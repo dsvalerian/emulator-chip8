@@ -56,30 +56,15 @@ public class CPUState {
      */
     public static final Bits SOUND_TIMER_SIZE = Bits.EIGHT;
 
-    private MemoryBlock memory;
-    private MemoryBlock stack;
-    private Register stackPointer;
-    private MemoryBlock vRegisters;
-    private Register iRegister;
-    private Register programCounter;
-    private Register delayTimer;
-    private Register soundTimer;
-    private boolean paused;
-
-    /**
-     * Construct a {@link CPUState}.
-     */
-    public CPUState() {
-        memory = new MemoryBlock(MEMORY_SIZE, MEMORY_REGISTER_SIZE);
-        stack = new MemoryBlock(STACK_SIZE, STACK_REGISTER_SIZE);
-        stackPointer = new Register(STACK_POINTER_SIZE);
-        vRegisters = new MemoryBlock(NUM_V_REGISTERS, V_REGISTER_SIZE);
-        iRegister = new Register(I_REGISTER_SIZE);
-        programCounter = new Register(PROGRAM_COUNTER_SIZE);
-        delayTimer = new Register(DELAY_TIMER_SIZE);
-        soundTimer = new Register(SOUND_TIMER_SIZE);
-        paused = false;
-    }
+    private final MemoryBlock MEMORY = new MemoryBlock(MEMORY_SIZE, MEMORY_REGISTER_SIZE);
+    private final MemoryBlock STACK = new MemoryBlock(STACK_SIZE, STACK_REGISTER_SIZE);
+    private final Register STACK_POINTER = new Register(STACK_POINTER_SIZE);
+    private final MemoryBlock V_REGISTERS = new MemoryBlock(NUM_V_REGISTERS, V_REGISTER_SIZE);
+    private final Register I_REGISTER = new Register(I_REGISTER_SIZE);
+    private final Register PROGRAM_COUNTER = new Register(PROGRAM_COUNTER_SIZE);
+    private final Register DELAY_TIMER = new Register(DELAY_TIMER_SIZE);
+    private final Register SOUND_TIMER = new Register(SOUND_TIMER_SIZE);
+    private boolean paused = false;
 
     /**
      * Read the value at an address in main memory.
@@ -88,7 +73,7 @@ public class CPUState {
      * @return The value at the address.
      */
     public int readMemory(int address) {
-        return memory.read(address);
+        return MEMORY.read(address);
     }
 
     /**
@@ -98,7 +83,7 @@ public class CPUState {
      * @param value The value to set.
      */
     public void setMemory(int address, int value) {
-        memory.set(address, value);
+        MEMORY.set(address, value);
     }
 
     /**
@@ -123,8 +108,8 @@ public class CPUState {
             throw new StackEmptyException();
         }
 
-        stackPointer.set(stackPointer.read() - 1);
-        return stack.read(stackPointer.read());
+        STACK_POINTER.set(STACK_POINTER.read() - 1);
+        return STACK.read(STACK_POINTER.read());
     }
 
     /**
@@ -137,8 +122,8 @@ public class CPUState {
             throw new StackFullException();
         }
 
-        stack.set(stackPointer, value);
-        stackPointer.set(stackPointer.read() + 1);
+        STACK.set(STACK_POINTER, value);
+        STACK_POINTER.set(STACK_POINTER.read() + 1);
     }
 
     /**
@@ -148,7 +133,7 @@ public class CPUState {
      * @return The value stored in the Vx register.
      */
     public int readV(int x) {
-        return vRegisters.read(x);
+        return V_REGISTERS.read(x);
     }
 
     /**
@@ -158,7 +143,7 @@ public class CPUState {
      * @param value The value to set.
      */
     public void setV(int x, int value) {
-        vRegisters.set(x, value);
+        V_REGISTERS.set(x, value);
     }
 
     /**
@@ -167,7 +152,7 @@ public class CPUState {
      * @return The value.
      */
     public int readI() {
-        return iRegister.read();
+        return I_REGISTER.read();
     }
 
     /**
@@ -176,7 +161,7 @@ public class CPUState {
      * @param value The value.
      */
     public void setI(int value) {
-        iRegister.set(value);
+        I_REGISTER.set(value);
     }
 
     /**
@@ -185,7 +170,7 @@ public class CPUState {
      * @return The value.
      */
     public int readPc() {
-        return programCounter.read();
+        return PROGRAM_COUNTER.read();
     }
 
     /**
@@ -194,7 +179,7 @@ public class CPUState {
      * @param value The value.
      */
     public void setPc(int value) {
-        programCounter.set(value);
+        PROGRAM_COUNTER.set(value);
     }
 
     /**
@@ -203,7 +188,7 @@ public class CPUState {
      * @return The value.
      */
     public int readDt() {
-        return delayTimer.read();
+        return DELAY_TIMER.read();
     }
 
     /**
@@ -212,7 +197,7 @@ public class CPUState {
      * @param value The value.
      */
     public void setDt(int value) {
-        delayTimer.set(value);
+        DELAY_TIMER.set(value);
     }
 
     /**
@@ -221,7 +206,7 @@ public class CPUState {
      * @return The value.
      */
     public int readSt() {
-        return soundTimer.read();
+        return SOUND_TIMER.read();
     }
 
     /**
@@ -230,7 +215,7 @@ public class CPUState {
      * @param value The value.
      */
     public void setSt(int value) {
-        soundTimer.set(value);
+        SOUND_TIMER.set(value);
     }
 
     /**
@@ -258,14 +243,14 @@ public class CPUState {
      * @return True if the subroutine stack is empty.
      */
     private boolean isStackEmpty() {
-        return stackPointer.read() == 0;
+        return STACK_POINTER.read() == 0;
     }
 
     /**
      * @return True if the subroutine stack is full.
      */
     private boolean isStackFull() {
-        return stackPointer.read() == stack.getSize();
+        return STACK_POINTER.read() == STACK.getSize();
     }
 
     @Override
@@ -286,7 +271,19 @@ public class CPUState {
         builder
                 .append("], ")
                 .append("I: ").append(readI()).append(", ")
-                .append("SP: ").append(stackPointer.read())
+                .append("SP: ").append(STACK_POINTER.read()).append(", ")
+                .append("Stack: [");
+
+        for (int i = 0; i < STACK_SIZE; i++) {
+            builder.append(STACK.read(i));
+
+            if (i != STACK_SIZE - 1) {
+                builder.append(", ");
+            }
+        }
+
+        builder
+                .append("]")
                 .append("}");
 
         return builder.toString();

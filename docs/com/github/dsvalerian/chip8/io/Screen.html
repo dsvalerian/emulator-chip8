@@ -72,13 +72,13 @@ loadScripts(document, 'script');</script>
 <h1 title="Class Screen" class="title">Class Screen</h1>
 </div>
 <div class="inheritance" title="Inheritance Tree"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">java.lang.Object</a>
-<div class="inheritance">com.github.dsvalerian.chip8.io.Screen</div>
+<div class="inheritance">com.github.dsvalerian.chip8.io.ScreenState</div>
 </div>
 <section class="class-description" id="class-description">
 <hr>
 <div class="type-signature"><span class="modifiers">public class </span><span class="element-name type-name-label">Screen</span>
 <span class="extends-implements">extends <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></span></div>
-<div class="block">Represents a Chip-8 screen. Handles setting and reading pixels.</div>
+<div class="block">Represents a Chip-8 screenState. Handles setting and reading pixels.</div>
 </section>
 <section class="summary">
 <ul class="summary-list">
@@ -94,12 +94,12 @@ loadScripts(document, 'script');</script>
 <div class="col-first even-row-color"><code>static final int</code></div>
 <div class="col-second even-row-color"><code><a href="#HEIGHT" class="member-name-link">HEIGHT</a></code></div>
 <div class="col-last even-row-color">
-<div class="block">The height of the screen.</div>
+<div class="block">The height of the screenState.</div>
 </div>
 <div class="col-first odd-row-color"><code>static final int</code></div>
 <div class="col-second odd-row-color"><code><a href="#WIDTH" class="member-name-link">WIDTH</a></code></div>
 <div class="col-last odd-row-color">
-<div class="block">The width of the screen.</div>
+<div class="block">The width of the screenState.</div>
 </div>
 </div>
 </section>
@@ -131,7 +131,7 @@ loadScripts(document, 'script');</script>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#clear()" class="member-name-link">clear</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Deactivate every pixel in the screen.</div>
+<div class="block">Deactivate every pixel in the screenState.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#readPixel(int,int)" class="member-name-link">readPixel</a><wbr>(int&nbsp;x,
@@ -168,12 +168,12 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="WIDTH">
 <h3>WIDTH</h3>
 <div class="member-signature"><span class="modifiers">public static final</span>&nbsp;<span class="return-type">int</span>&nbsp;<span class="element-name">WIDTH</span></div>
-<div class="block">The width of the screen.</div>
+<div class="block">The width of the screenState.</div>
 <dl class="notes">
 <dt>See Also:</dt>
 <dd>
 <ul class="see-list">
-<li><a href="../../../../../constant-values.html#com.github.dsvalerian.chip8.io.Screen.WIDTH">Constant Field Values</a></li>
+<li><a href="../../../../../constant-values.html#com.github.dsvalerian.chip8.io.ScreenState.WIDTH">Constant Field Values</a></li>
 </ul>
 </dd>
 </dl>
@@ -183,12 +183,12 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="HEIGHT">
 <h3>HEIGHT</h3>
 <div class="member-signature"><span class="modifiers">public static final</span>&nbsp;<span class="return-type">int</span>&nbsp;<span class="element-name">HEIGHT</span></div>
-<div class="block">The height of the screen.</div>
+<div class="block">The height of the screenState.</div>
 <dl class="notes">
 <dt>See Also:</dt>
 <dd>
 <ul class="see-list">
-<li><a href="../../../../../constant-values.html#com.github.dsvalerian.chip8.io.Screen.HEIGHT">Constant Field Values</a></li>
+<li><a href="../../../../../constant-values.html#com.github.dsvalerian.chip8.io.ScreenState.HEIGHT">Constant Field Values</a></li>
 </ul>
 </dd>
 </dl>
@@ -225,8 +225,8 @@ loadScripts(document, 'script');</script>
 <div class="block">Set a pixel at (x, y) to either active or inactive.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
-<dd><code>x</code> - The column in the screen.</dd>
-<dd><code>y</code> - The row in the screen.</dd>
+<dd><code>x</code> - The column in the screenState.</dd>
+<dd><code>y</code> - The row in the screenState.</dd>
 <dd><code>active</code> - 1 or 0 for the pixel at (x, y) to be active or inactive.</dd>
 </dl>
 </section>
@@ -238,8 +238,8 @@ loadScripts(document, 'script');</script>
  int&nbsp;y)</span></div>
 <dl class="notes">
 <dt>Parameters:</dt>
-<dd><code>x</code> - The column in the screen.</dd>
-<dd><code>y</code> - The row in the screen.</dd>
+<dd><code>x</code> - The column in the screenState.</dd>
+<dd><code>y</code> - The row in the screenState.</dd>
 <dt>Returns:</dt>
 <dd>1 if the pixel at (x, y) is active, 0 otherwise.</dd>
 </dl>
@@ -249,7 +249,7 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="clear()">
 <h3>clear</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">clear</span>()</div>
-<div class="block">Deactivate every pixel in the screen.</div>
+<div class="block">Deactivate every pixel in the screenState.</div>
 </section>
 </li>
 <li>

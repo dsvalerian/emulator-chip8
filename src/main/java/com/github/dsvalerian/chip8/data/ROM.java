@@ -63,12 +63,21 @@ public class ROM extends MemoryBlock {
      * Return a new ROM containing byte data from a file.
      *
      * @param filePath The path to the file.
-     * @return A new {@link ROM} or null if filepath is incorrect.
+     * @return A new {@link ROM}.
      * @throws IOException if given file path is not valid or there is issue reading the bytes.
      */
     public static ROM fromFile(String filePath) throws IOException {
-        File file = new File(filePath);
+        return fromFile(new File(filePath));
+    }
 
+    /**
+     * Return a new ROM containing byte data from a file.
+     *
+     * @param file The file containing the ROM data.
+     * @return A new {@link ROM}.
+     * @throws IOException if given file is not valid or there is an issue reading it.
+     */
+    public static ROM fromFile(File file) throws IOException {
         if (file.length() >= Integer.MAX_VALUE) {
             throw new UnsupportedOperationException("cannot read a file greater than " + Integer.MAX_VALUE + " bytes");
         }
@@ -88,20 +97,11 @@ public class ROM extends MemoryBlock {
     }
 
     /**
-     * Return a new empty ROM.
-     *
-     * @return An empty {@link ROM}.
-     */
-    public static ROM fromEmpty() {
-        return new ROM(new int[0], Bits.EIGHT);
-    }
-
-    /**
      * Unsupported operation. Cannot set an address in read-only memory.
      */
     @Override
     public void set(int address, Register value) {
-        throw new UnsupportedOperationException("cannot set an address in a block of read-only memory");
+        throw new UnsupportedOperationException("Cannot set an address in a block of read-only memory.");
     }
 
     /**
@@ -109,7 +109,7 @@ public class ROM extends MemoryBlock {
      */
     @Override
     public void set(Register address, int value) {
-        throw new UnsupportedOperationException("cannot set an address in a block of read-only memory");
+        throw new UnsupportedOperationException("Cannot set an address in a block of read-only memory.");
     }
 
     /**
@@ -117,7 +117,7 @@ public class ROM extends MemoryBlock {
      */
     @Override
     public void set(Register address, Register value) {
-        throw new UnsupportedOperationException("cannot set an address in a block of read-only memory");
+        throw new UnsupportedOperationException("Cannot set an address in a block of read-only memory.");
     }
 
     /**
@@ -125,6 +125,6 @@ public class ROM extends MemoryBlock {
      */
     @Override
     public void set(int address, int value) {
-        throw new UnsupportedOperationException("cannot set an address in a block of read-only memory");
+        throw new UnsupportedOperationException("Cannot set an address in a block of read-only memory.");
     }
 }
