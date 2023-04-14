@@ -76,7 +76,6 @@ public class Emulator implements Runnable {
 
     /**
      * Gets run once per CPU update.
-     * TODO should probably have cpu instructions in a different method that runs on its own timings.
      */
     public void update() {
         if (cpu.hasMoreInstructions()) {
