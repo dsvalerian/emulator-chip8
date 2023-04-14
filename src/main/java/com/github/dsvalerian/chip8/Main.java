@@ -16,7 +16,9 @@ public class Main {
     private static Thread currentEmulatorThread;
 
     /**
-     * The main method/entry point into the program.
+     * The main method/entry point into the program. Doesn't do much on its own because
+     * the {@link GUI} being statically assigned will run it, and then buttons from there
+     * will trigger different methods.
      * @param args Program arguments. None are supported.
      */
     public static void main(String[] args) {

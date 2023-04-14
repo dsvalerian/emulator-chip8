@@ -320,6 +320,7 @@ public class Interpreter {
      */
     private void skipIfKeyPressed(int x) {
         if (KEY_STATE.isPressed(x)) {
+            System.out.println("Key " + x + " pressed.");
             incrementPc();
         }
 
@@ -332,6 +333,7 @@ public class Interpreter {
      */
     private void skipIfKeyNotPressed(int x) {
         if (!KEY_STATE.isPressed(x)) {
+            System.out.println("Key " + x + " not pressed.");
             incrementPc();
         }
 
@@ -569,6 +571,7 @@ public class Interpreter {
      * All execution stops until a key is pressed, then the value of that key is stored in Vx.
      */
     private void loadOnKeyPress(int x) {
+        System.out.println("loadOnKeyPress");
         STATE.pause();
 
         KEY_STATE.setOnNextKeyPress((lastKeyPressed) -> {

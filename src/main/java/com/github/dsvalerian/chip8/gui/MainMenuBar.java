@@ -100,6 +100,7 @@ public class MainMenuBar extends JMenuBar {
             if (currentEmulator != null) {
                 if (currentEmulator.isPaused()) {
                     currentEmulator.update();
+                    currentEmulator.draw();
                 }
             }
         }
