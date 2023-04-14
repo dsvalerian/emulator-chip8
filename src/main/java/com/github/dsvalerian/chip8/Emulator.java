@@ -83,6 +83,7 @@ public class Emulator implements Runnable {
         }
 
         //System.out.println(cpu);
+        System.out.println(UI.getKeyListeners()[0].toString());
     }
 
     /**

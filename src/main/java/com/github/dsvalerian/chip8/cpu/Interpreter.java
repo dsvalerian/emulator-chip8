@@ -320,7 +320,6 @@ public class Interpreter {
      */
     private void skipIfKeyPressed(int x) {
         if (KEY_STATE.isPressed(x)) {
-            System.out.println("Key " + x + " pressed.");
             incrementPc();
         }
 
@@ -333,7 +332,6 @@ public class Interpreter {
      */
     private void skipIfKeyNotPressed(int x) {
         if (!KEY_STATE.isPressed(x)) {
-            System.out.println("Key " + x + " not pressed.");
             incrementPc();
         }
 

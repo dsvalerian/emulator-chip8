@@ -48,9 +48,9 @@ public class MainMenuBar extends JMenuBar {
         fileMenu.add(exitItem);
 
         playPauseButton.addActionListener(new PlayPauseButtonListener());
-        playPauseButton.setFocusPainted(false);
+        playPauseButton.setFocusable(false);
         nextUpdateButton.addActionListener(new NextUpdateButtonListener());
-        nextUpdateButton.setFocusPainted(false);
+        nextUpdateButton.setFocusable(false);
 
         // Adding menus to bar.
         add(fileMenu);
