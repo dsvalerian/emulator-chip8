@@ -319,7 +319,7 @@ public class Interpreter {
      * Checks the keyboard, and if the key corresponding to the value of Vx is currently in the down position, PC is increased by 2.
      */
     private void skipIfKeyPressed(int x) {
-        if (KEY_STATE.isPressed(x)) {
+        if (KEY_STATE.isPressed(STATE.readV(x))) {
             incrementPc();
         }
 
@@ -331,7 +331,7 @@ public class Interpreter {
      * Checks the keyboard, and if the key corresponding to the value of Vx is currently in the up position, PC is increased by 2.
      */
     private void skipIfKeyNotPressed(int x) {
-        if (!KEY_STATE.isPressed(x)) {
+        if (!KEY_STATE.isPressed(STATE.readV(x))) {
             incrementPc();
         }
 
@@ -569,7 +569,6 @@ public class Interpreter {
      * All execution stops until a key is pressed, then the value of that key is stored in Vx.
      */
     private void loadOnKeyPress(int x) {
-        System.out.println("loadOnKeyPress");
         STATE.pause();
 
         KEY_STATE.setOnNextKeyPress((lastKeyPressed) -> {

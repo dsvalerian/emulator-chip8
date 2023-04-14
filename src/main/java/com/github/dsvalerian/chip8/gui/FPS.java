@@ -4,7 +4,8 @@ package com.github.dsvalerian.chip8.gui;
  * Frames per second enum.
  */
 public enum FPS {
-    SIXTY(60);
+    SIXTY(60),
+    ONE_TWENTY(120);
 
     private int fps;
 

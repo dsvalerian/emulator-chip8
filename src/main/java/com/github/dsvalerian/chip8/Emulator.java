@@ -14,7 +14,7 @@ import com.github.dsvalerian.chip8.io.ScreenState;
  * and GUI updates. Run in a new thread for each program that is loaded.
  */
 public class Emulator implements Runnable {
-    private static final FPS FRAMES_PER_SECOND = FPS.SIXTY;
+    private static final FPS FRAMES_PER_SECOND = FPS.ONE_TWENTY;
     private static final CPUSpeed CPU_SPEED = CPUSpeed.FULL;
     private static final int FRAME_TIME_NANO = 1000000000 / FRAMES_PER_SECOND.getValue();
     private static final int CPU_TIME_NANO = 1000000000 / CPU_SPEED.getHertz();
@@ -56,11 +56,13 @@ public class Emulator implements Runnable {
             if (paused == false) {
                 // Check that it's time to update the cpu.
                 if (System.nanoTime() - lastUpdate >= CPU_TIME_NANO) {
+                    lastUpdate = System.nanoTime();
                     update();
                 }
 
                 // Check that it's time to draw a frame.
                 if (System.nanoTime() - lastFrame >= FRAME_TIME_NANO) {
+                    lastFrame = System.nanoTime();
                     draw();
                 }
             }
@@ -78,12 +80,14 @@ public class Emulator implements Runnable {
      * Gets run once per CPU update.
      */
     public void update() {
+
+
         if (cpu.hasMoreInstructions()) {
             cpu.processNextInstruction();
         }
 
         //System.out.println(cpu);
-        System.out.println(UI.getKeyListeners()[0].toString());
+        //System.out.println(UI.getKeyListeners()[0].toString());
     }
 
     /**

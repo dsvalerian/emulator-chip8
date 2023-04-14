@@ -370,7 +370,7 @@ public class InterpreterTest {
 
         currentInstruction.set(0xE1A1);
         interpreter.executeInstruction(currentInstruction);
-        Assertions.assertEquals(0x8, state.readPc());
+        Assertions.assertEquals(0x6, state.readPc());
 
         // Fx0A - LD Vx, K
         currentInstruction.set(0xF50A);
