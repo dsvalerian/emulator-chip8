@@ -44,12 +44,12 @@ public class InterpreterTest {
         // RET
         currentInstruction.set(0x00EE);
         interpreter.executeInstruction(currentInstruction);
-        Assertions.assertEquals(0x0455, state.readPc());
+        Assertions.assertEquals(0x0457, state.readPc());
 
         // RET
         currentInstruction.set(0x00EE);
         interpreter.executeInstruction(currentInstruction);
-        Assertions.assertEquals(0x0200, state.readPc());
+        Assertions.assertEquals(0x0202, state.readPc());
     }
 
     @Test
