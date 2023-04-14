@@ -48,6 +48,7 @@ public class Main {
             System.err.println("Failed loading ROM.");
         }
         else {
+            GUI.updateTitleWithFileName(romFile.getName());
             startEmulator(rom);
         }
     }
@@ -57,8 +58,15 @@ public class Main {
             currentEmulator.stop();
         }
 
-        currentEmulator = new Emulator(UI, program);
+        currentEmulator = new Emulator(program);
         currentEmulatorThread = new Thread(currentEmulator);
         currentEmulatorThread.start();
+    }
+
+    /**
+     * @return The currently-running {@link Emulator}.
+     */
+    public static Emulator getCurrentEmulator() {
+        return currentEmulator;
     }
 }

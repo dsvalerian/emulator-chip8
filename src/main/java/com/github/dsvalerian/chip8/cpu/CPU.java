@@ -88,4 +88,9 @@ public class CPU {
     private void resetPc() {
         state.setPc(PROGRAM_START_ADDRESS);
     }
+
+    @Override
+    public String toString() {
+        return state.toString();
+    }
 }

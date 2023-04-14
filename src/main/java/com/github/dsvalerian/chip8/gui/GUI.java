@@ -63,4 +63,12 @@ public class GUI extends JFrame {
         screenPanel.drawScreen(screen);
         screenPanel.repaint();
     }
+
+    /**
+     * Update the title of the window to include the filename.
+     * @param fileName The name of the program currently running.
+     */
+    public static void updateTitleWithFileName(String fileName) {
+        getInstance().setTitle(WINDOW_TITLE + " [" + fileName + "]");
+    }
 }

@@ -77,7 +77,8 @@ public class CPUStateTest {
 
     @Test
     public void toStringTest() {
-        String expected = "{PC: 0, V Registers: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], I: 0, SP: 0}";
+        String expected = "{PC: 0, V Registers: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], I: 0, SP: 0, " +
+                "Stack: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}";
         Assertions.assertEquals(expected, state.toString());
     }
 }

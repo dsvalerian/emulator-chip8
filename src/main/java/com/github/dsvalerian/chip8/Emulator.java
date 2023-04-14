@@ -15,20 +15,19 @@ public class Emulator implements Runnable {
     private static final int FPS = 60;
     private static final int FRAME_TIME_MS = 1000 / FPS;
 
-    private GUI gui;
+    private static final GUI UI = GUI.getInstance();
     private ScreenState screenState;
     private CPU cpu;
     private ROM program;
+    private boolean paused;
 
     private boolean shouldStop = false;
 
     /**
      * Create a new {@link Emulator}.
-     * @param gui The {@link GUI} in which this emulator is contained.
      * @param program The {@link ROM} program this emulator will run.
      */
-    public Emulator(GUI gui, ROM program) {
-        this.gui = gui;
+    public Emulator(ROM program) {
         this.program = program;
 
         CPUState state = new CPUState();
@@ -48,7 +47,9 @@ public class Emulator implements Runnable {
                 return;
             }
 
-            update();
+            if (paused == false) {
+                update();
+            }
 
             try {
                 Thread.sleep(FRAME_TIME_MS);
@@ -67,11 +68,34 @@ public class Emulator implements Runnable {
     }
 
     // Updates once per frame.
-    private void update() {
+    public void update() {
         if (cpu.hasMoreInstructions()) {
             cpu.processNextInstruction();
         }
 
-        gui.drawScreen(screenState);
+        System.out.println(cpu);
+
+        UI.drawScreen(screenState);
+    }
+
+    /**
+     * Pauses the emulator.
+     */
+    public void pause() {
+        paused = true;
+    }
+
+    /**
+     * Unpauses the emulator.
+     */
+    public void resume() {
+        paused = false;
+    }
+
+    /**
+     * @return True if the emulator is currently processing updates, false otherwise.
+     */
+    public boolean isPaused() {
+        return paused;
     }
 }

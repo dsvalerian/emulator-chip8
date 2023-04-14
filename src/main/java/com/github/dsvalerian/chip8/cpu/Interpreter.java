@@ -238,6 +238,7 @@ public class Interpreter {
      */
     private void ret() {
         state.setPc(state.popStack());
+        incrementPc();
     }
 
     /**

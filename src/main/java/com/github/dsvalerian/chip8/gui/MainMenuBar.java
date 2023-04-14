@@ -1,5 +1,6 @@
 package com.github.dsvalerian.chip8.gui;
 
+import com.github.dsvalerian.chip8.Emulator;
 import com.github.dsvalerian.chip8.Main;
 
 import javax.swing.*;
@@ -25,6 +26,9 @@ public class MainMenuBar extends JMenuBar {
      */
     private JMenuItem exitItem = new JMenuItem("Exit");
 
+    private JButton playPauseButton = new JButton("\u23EF");
+    private JButton nextUpdateButton = new JButton("\u23E9");
+
     /**
      * Create a new {@link MainMenuBar}.
      */
@@ -35,8 +39,15 @@ public class MainMenuBar extends JMenuBar {
         fileMenu.add(loadROMItem);
         fileMenu.add(exitItem);
 
+        playPauseButton.addActionListener(new PlayPauseButtonListener());
+        playPauseButton.setFocusPainted(false);
+        nextUpdateButton.addActionListener(new NextUpdateButtonListener());
+        nextUpdateButton.setFocusPainted(false);
+
         // Adding menus to bar.
         add(fileMenu);
+        add(playPauseButton);
+        add(nextUpdateButton);
     }
 
     class LoadROMListener implements ActionListener {
@@ -56,6 +67,33 @@ public class MainMenuBar extends JMenuBar {
         @Override
         public void actionPerformed(ActionEvent e) {
             System.exit(0);
+        }
+    }
+
+    class PlayPauseButtonListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            Emulator currentEmulator = Main.getCurrentEmulator();
+            if (currentEmulator != null) {
+                if (currentEmulator.isPaused()) {
+                    currentEmulator.resume();
+                }
+                else {
+                    currentEmulator.pause();
+                }
+            }
+        }
+    }
+
+    class NextUpdateButtonListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            Emulator currentEmulator = Main.getCurrentEmulator();
+            if (currentEmulator != null) {
+                if (currentEmulator.isPaused()) {
+                    currentEmulator.update();
+                }
+            }
         }
     }
 }

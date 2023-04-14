@@ -29,6 +29,8 @@ public class InterpreterTest {
 
     @Test
     public void subroutineTest() {
+        state.setPc(0x0200);
+
         // CALL 0x455
         currentInstruction.set(0x2455);
         interpreter.executeInstruction(currentInstruction);
@@ -47,7 +49,7 @@ public class InterpreterTest {
         // RET
         currentInstruction.set(0x00EE);
         interpreter.executeInstruction(currentInstruction);
-        Assertions.assertEquals(0x0000, state.readPc());
+        Assertions.assertEquals(0x0200, state.readPc());
     }
 
     @Test
