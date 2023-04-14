@@ -67,7 +67,10 @@ public class Emulator implements Runnable {
         shouldStop = true;
     }
 
-    // Updates once per frame.
+    /**
+     * Gets run once per frame.
+     * TODO should probably have cpu instructions in a different method that runs on its own timings.
+     */
     public void update() {
         if (cpu.hasMoreInstructions()) {
             cpu.processNextInstruction();

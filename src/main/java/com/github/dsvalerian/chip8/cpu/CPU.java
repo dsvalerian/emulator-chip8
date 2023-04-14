@@ -4,7 +4,6 @@ import com.github.dsvalerian.chip8.data.ROM;
 import com.github.dsvalerian.chip8.data.Register;
 import com.github.dsvalerian.chip8.data.Sprites;
 import com.github.dsvalerian.chip8.exception.NoProgramLoadedException;
-import com.github.dsvalerian.chip8.io.KeyState;
 import com.github.dsvalerian.chip8.io.ScreenState;
 
 /**

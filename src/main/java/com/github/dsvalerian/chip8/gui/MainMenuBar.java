@@ -26,7 +26,15 @@ public class MainMenuBar extends JMenuBar {
      */
     private JMenuItem exitItem = new JMenuItem("Exit");
 
+    /**
+     * Button for toggling the emulator to play/pause.
+     */
     private JButton playPauseButton = new JButton("\u23EF");
+
+    /**
+     * Button for running the next emulator update. Only works when
+     * the emulator is paused.
+     */
     private JButton nextUpdateButton = new JButton("\u23E9");
 
     /**
