@@ -436,10 +436,10 @@ public class Interpreter {
      * and the results stored in Vx.
      */
     private void subtractVyFromVx(int x, int y) {
-        // Note: Do NOT set VF before doing the math.
+        // Note: Do NOT set VF before doing the math, otherwise it is wrong.
         int newVf = STATE.readV(x) > STATE.readV(y) ? 1 : 0;
 
-        // if newValue is negative, add it to the max value (so it wraps around, essentially)
+        // if newValue is negative, add it to the max value (so it wraps around, essentially).
         int newValue = STATE.readV(x) - STATE.readV(y);
         newValue = newValue < 0 ? MAX_V_REGISTER_VALUE + newValue : newValue;
 
@@ -455,10 +455,10 @@ public class Interpreter {
      * and the results stored in Vx.
      */
     private void subtractVxFromVy(int x, int y) {
-        // Note: Do NOT set VF before doing the math.
+        // Note: Do NOT set VF before doing the math, otherwise it is wrong.
         int newVf = STATE.readV(x) < STATE.readV(y) ? 1 : 0;
 
-        // if newValue is negative, add it to the max value (so it wraps around, essentially)
+        // if newValue is negative, add it to the max value (so it wraps around, essentially).
         int newValue = STATE.readV(y) - STATE.readV(x);
         newValue = newValue < 0 ? MAX_V_REGISTER_VALUE + newValue : newValue;
 
@@ -475,8 +475,12 @@ public class Interpreter {
      * VY is unchanged
      */
     private void shr(int x, int y) {
+        // Note: We get the LSB before setting things because y might be VF, so it's not
+        // guaranteed that it's unchanged.
+        int leastSignificantBit = STATE.readV(y) & 0b1;
+
         STATE.setV(x, (STATE.readV(y) >> 1) & 0xFF);
-        STATE.setV(0xF, STATE.readV(y) & 0b1);
+        STATE.setV(0xF, leastSignificantBit);
 
         incrementPc();
     }
@@ -488,8 +492,12 @@ public class Interpreter {
      * VY is unchanged
      */
     private void shl(int x, int y) {
+        // Note: We get the MSB before setting things because y might be VF, so it's not
+        // guaranteed that it's unchanged.
+        int mostSignificantBit = (STATE.readV(y) & 0b10000000) >> 7;
+
         STATE.setV(x, STATE.readV(y) << 1 & 0xFF);
-        STATE.setV(0xF, (STATE.readV(y) & 0b10000000) >> 7);
+        STATE.setV(0xF, mostSignificantBit);
 
         incrementPc();
     }
