@@ -1,8 +1,10 @@
 package com.github.dsvalerian.chip8;
 
 import com.github.dsvalerian.chip8.cpu.CPU;
+import com.github.dsvalerian.chip8.cpu.CPUSpeed;
 import com.github.dsvalerian.chip8.cpu.CPUState;
 import com.github.dsvalerian.chip8.data.ROM;
+import com.github.dsvalerian.chip8.gui.FPS;
 import com.github.dsvalerian.chip8.gui.GUI;
 import com.github.dsvalerian.chip8.io.KeyState;
 import com.github.dsvalerian.chip8.io.ScreenState;
@@ -12,8 +14,10 @@ import com.github.dsvalerian.chip8.io.ScreenState;
  * and GUI updates. Run in a new thread for each program that is loaded.
  */
 public class Emulator implements Runnable {
-    private static final int FPS = 60;
-    private static final int FRAME_TIME_MS = 1000 / FPS;
+    private static final FPS FRAMES_PER_SECOND = FPS.SIXTY;
+    private static final CPUSpeed CPU_SPEED = CPUSpeed.FULL;
+    private static final int FRAME_TIME_NANO = 1000000000 / FRAMES_PER_SECOND.getValue();
+    private static final int CPU_TIME_NANO = 1000000000 / CPU_SPEED.getHertz();
 
     private static final GUI UI = GUI.getInstance();
     private ScreenState screenState;
@@ -41,6 +45,8 @@ public class Emulator implements Runnable {
     @Override
     public void run() {
         cpu.loadProgram(program);
+        long lastUpdate = 0;
+        long lastFrame = 0;
 
         while (true) {
             if (shouldStop) {
@@ -48,14 +54,15 @@ public class Emulator implements Runnable {
             }
 
             if (paused == false) {
-                update();
-            }
+                // Check that it's time to update the cpu.
+                if (System.nanoTime() - lastUpdate >= CPU_TIME_NANO) {
+                    update();
+                }
 
-            try {
-                Thread.sleep(FRAME_TIME_MS);
-            }
-            catch (InterruptedException ex) {
-                System.err.println("Emulator frame sleep interrupted.");
+                // Check that it's time to draw a frame.
+                if (System.nanoTime() - lastFrame >= FRAME_TIME_NANO) {
+                    draw();
+                }
             }
         }
     }
@@ -68,16 +75,21 @@ public class Emulator implements Runnable {
     }
 
     /**
-     * Gets run once per frame.
-     * TODO should probably have cpu instructions in a different method that runs on its own timings.
+     * Gets run once per CPU update.
      */
     public void update() {
         if (cpu.hasMoreInstructions()) {
             cpu.processNextInstruction();
         }
 
-        System.out.println(cpu);
+        //System.out.println(cpu);
+        System.out.println(UI.getKeyListeners()[0].toString());
+    }
 
+    /**
+     * Gets run once per frame.
+     */
+    public void draw() {
         UI.drawScreen(screenState);
     }
 

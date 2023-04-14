@@ -404,8 +404,4 @@ public class InterpreterTest {
         Assertions.assertThrows(UnsupportedInstructionException.class, () ->
                 interpreter.executeInstruction(currentInstruction));
     }
-
-    // todo loading sprite
-    // todo load decimal
-    // todo load on keypress
 }

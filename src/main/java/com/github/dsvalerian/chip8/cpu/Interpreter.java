@@ -569,6 +569,7 @@ public class Interpreter {
      * All execution stops until a key is pressed, then the value of that key is stored in Vx.
      */
     private void loadOnKeyPress(int x) {
+        System.out.println("loadOnKeyPress");
         STATE.pause();
 
         KEY_STATE.setOnNextKeyPress((lastKeyPressed) -> {

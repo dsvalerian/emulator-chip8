@@ -86,4 +86,9 @@ public class KeyHandler implements KeyListener {
             STATE.release(pressedKey);
         }
     }
+
+    @Override
+    public String toString() {
+        return STATE.toString();
+    }
 }

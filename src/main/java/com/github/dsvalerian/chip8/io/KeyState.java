@@ -88,4 +88,22 @@ public class KeyState {
     public void setOnNextKeyPress(IntConsumer consumer) {
         this.onNextKeyPress = consumer;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder()
+                .append("Keys: [");
+
+        for (int i = 0; i < NUM_KEYS; i++) {
+            builder.append(keys[i]);
+
+            if (i != NUM_KEYS - 1) {
+                builder.append(", ");
+            }
+        }
+
+        builder.append("]");
+
+        return builder.toString();
+    }
 }
