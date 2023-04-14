@@ -472,7 +472,7 @@ public class Interpreter {
      * VY is unchanged
      */
     private void shr(int x, int y) {
-        state.setV(x, state.readV(y) >> 1);
+        state.setV(x, (state.readV(y) >> 1) & 0xFF);
         state.setV(0xF, state.readV(y) & 0b1);
 
         incrementPc();
@@ -485,7 +485,7 @@ public class Interpreter {
      * VY is unchanged
      */
     private void shl(int x, int y) {
-        state.setV(x, state.readV(y) << 1);
+        state.setV(x, state.readV(y) << 1 & 0xFF);
         state.setV(0xF, (state.readV(y) & 0b10000000) >> 7);
 
         incrementPc();
