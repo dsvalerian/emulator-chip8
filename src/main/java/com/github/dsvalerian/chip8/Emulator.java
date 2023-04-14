@@ -15,7 +15,7 @@ import com.github.dsvalerian.chip8.io.ScreenState;
  */
 public class Emulator implements Runnable {
     private static final FPS FRAMES_PER_SECOND = FPS.ONE_TWENTY;
-    private static final CPUSpeed CPU_SPEED = CPUSpeed.FULL;
+    private static final CPUSpeed CPU_SPEED = CPUSpeed.DOUBLE;
     private static final int FRAME_TIME_NANO = 1000000000 / FRAMES_PER_SECOND.getValue();
     private static final int CPU_TIME_NANO = 1000000000 / CPU_SPEED.getHertz();
 
